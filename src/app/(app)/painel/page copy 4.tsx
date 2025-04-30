@@ -1,12 +1,10 @@
 'use client';
 
 import { useDashboardData } from '@/hooks/useDashboardData';
-import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { Home, Users, Truck, Wrench, Settings } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Aside } from '@/components/ui/Aside';
 
 export default function PainelPage() {
   const {
@@ -17,13 +15,10 @@ export default function PainelPage() {
     loading,
   } = useDashboardData();
 
-  const { user, signOut } = useAuth();
-  const router = useRouter();
-
   return (
     <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
       {/* Sidebar */}
-      {/* <aside className='hidden md:flex flex-col w-64 bg-DARK_700 p-6 space-y-6 pb-12'>
+      <aside className='hidden md:flex flex-col w-64 bg-DARK_700 p-6 space-y-6 pb-12'>
         <div className='text-2xl font-bold text-TINTS_CARROT_100 flex items-center gap-2'>
           <img
             src='/gearIcon.svg'
@@ -66,33 +61,16 @@ export default function PainelPage() {
             <Settings size={16} /> Configurações
           </a>
         </nav>
-      </aside> */}
-      <Aside />
+      </aside>
 
       {/* Conteúdo Principal */}
       <div className='flex-1 flex flex-col'>
         {/* Header */}
-        <header className='p-6 border-b border-DARK_600 bg-DARK_400 flex justify-between items-center'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Painel</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Confiança e qualidade no serviço.
-            </p>
-          </div>
-          <div className='flex items-center gap-4'>
-            <span className='text-sm text-LIGHT_100'>
-              Olá, {user?.name || 'Usuário'}
-            </span>
-            <button
-              onClick={() => {
-                signOut();
-                router.push('/login');
-              }}
-              className='bg-TINTS_CARROT_100 hover:bg-TINTS_CARROT_100/90 text-DARK_100 font-semibold px-4 py-2 rounded transition'
-            >
-              Logout
-            </button>
-          </div>
+        <header className='p-6 border-b border-DARK_600 bg-DARK_400'>
+          <h1 className='text-3xl font-bold font-roboto'>Painel</h1>
+          <p className='text-LIGHT_500 mt-1'>
+            Confiança e qualidade no serviço.
+          </p>
         </header>
 
         <main className='flex-1 p-6 space-y-6'>

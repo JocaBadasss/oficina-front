@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     try {
       await login({ email, password });
-      router.push('/dashboard'); // Redireciona pro painel depois do login!
+      router.push('/painel'); // Redireciona pro painel depois do login!
     } catch (error) {
       console.error('Erro no login', error);
       alert('Erro no login. Verifique seus dados!');

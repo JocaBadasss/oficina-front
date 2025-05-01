@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 // import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Aside } from '@/components/ui/Aside';
+import { Aside } from '@/components/Aside';
 
 interface Client {
   id: string;

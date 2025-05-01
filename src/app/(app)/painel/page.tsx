@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Aside } from '@/components/ui/Aside';
+import { Aside } from '@/components/Aside';
 
 export default function PainelPage() {
   const {

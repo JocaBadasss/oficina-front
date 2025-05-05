@@ -27,6 +27,7 @@ interface Client {
   email: string;
   cpf?: string;
   address?: string;
+  createdAt?: string;
 }
 
 function formatCPF(cpf: string): string {
@@ -73,17 +74,19 @@ export default function DetalhesClientePage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
+        <header className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold font-roboto'>Cliente</h1>
+            <h1 className='text-3xl font-bold font-roboto'>
+              Detalhes do Cliente
+            </h1>
             <p className='text-LIGHT_500 mt-1'>
-              Gerencie as informações do cliente.
+              Informações completas do cliente selecionado.
             </p>
           </div>
 
           {client && (
             <a
-              href={`/clientes/${client.id}/editar`}
+              href={`/clientes/editar/${client.id}`}
               className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-base hover:bg-TINTS_CARROT_100/90 transition self-start md:self-auto'
             >
               Editar
@@ -95,53 +98,65 @@ export default function DetalhesClientePage() {
           {loading ? (
             <Skeleton className='h-60 w-full' />
           ) : client ? (
-            <>
-              <div>
-                <h3 className='text-sm text-LIGHT_500 uppercase mb-4'>
-                  Informações de Contato
-                </h3>
-                <h2 className='text-3xl font-bold font-roboto mb-6'>
-                  {client.name}
-                </h2>
-                <div className='grid grid-cols-1 sm:grid-cols-2 gap-y-3 text-sm mb-10'>
-                  <div>
-                    <span className='text-LIGHT_500 uppercase text-base'>
-                      Telefone
-                    </span>
-                    <div>{formatPhone(client.phone)}</div>
-                  </div>
-                  <div>
-                    <span className='text-LIGHT_500 uppercase text-base'>
-                      E-mail
-                    </span>
-                    <div>{client.email}</div>
-                  </div>
-                  {client.cpf && (
-                    <div>
-                      <span className='text-LIGHT_500 uppercase text-base'>
-                        CPF
-                      </span>
-                      <div>{formatCPF(client.cpf)}</div>
-                    </div>
-                  )}
-                  {client.address && (
-                    <div>
-                      <span className='text-LIGHT_500 uppercase text-base'>
-                        Endereço
-                      </span>
-                      <div>{client.address}</div>
-                    </div>
-                  )}
+            <div className='space-y-6'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <div>
+                  <h2 className='text-sm text-LIGHT_500 uppercase'>Nome</h2>
+                  <p className='text-2xl font-bold text-LIGHT_100'>
+                    {client.name}
+                  </p>
                 </div>
+                <div>
+                  <h2 className='text-sm text-LIGHT_500 uppercase'>Telefone</h2>
+                  <p className='text-lg font-medium text-LIGHT_100'>
+                    {formatPhone(client.phone)}
+                  </p>
+                </div>
+                <div>
+                  <h2 className='text-sm text-LIGHT_500 uppercase'>E-mail</h2>
+                  <p className='text-lg font-medium text-LIGHT_100'>
+                    {client.email}
+                  </p>
+                </div>
+                {client.cpf && (
+                  <div>
+                    <h2 className='text-sm text-LIGHT_500 uppercase'>CPF</h2>
+                    <p className='text-lg font-medium text-LIGHT_100'>
+                      {formatCPF(client.cpf)}
+                    </p>
+                  </div>
+                )}
+                {client.address && (
+                  <div>
+                    <h2 className='text-sm text-LIGHT_500 uppercase'>
+                      Endereço
+                    </h2>
+                    <p className='text-lg font-medium text-LIGHT_100'>
+                      {client.address}
+                    </p>
+                  </div>
+                )}
+                {client.createdAt && (
+                  <div>
+                    <h2 className='text-sm text-LIGHT_500 uppercase'>
+                      Adicionado em
+                    </h2>
+                    <p className='text-lg font-medium text-LIGHT_100'>
+                      {format(new Date(client.createdAt), 'dd/MM/yyyy HH:mm')}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              <div className='border-t border-DARK_600 pt-6'>
-                <h3 className='text-lg text-LIGHT_200 uppercase mb-4'>
+              <hr className='border-DARK_900 my-4' />
+
+              <div>
+                <h2 className='text-sm text-LIGHT_500 uppercase mb-4'>
                   Ordens de Serviço
-                </h3>
+                </h2>
                 {orders.length === 0 ? (
-                  <p className='text-LIGHT_500 text-sm text-center lg:text-left'>
-                    Nenhuma ordem de serviço
+                  <p className='text-LIGHT_500 text-sm'>
+                    Nenhuma ordem de serviço encontrada.
                   </p>
                 ) : (
                   <ul className='space-y-2'>
@@ -149,16 +164,18 @@ export default function DetalhesClientePage() {
                       <li key={order.id}>
                         <a
                           href={`/ordens/${order.id}`}
-                          className=' text-sm border border-DARK_600 rounded p-3 bg-DARK_700 w-full flex justify-between items-start gap-4 hover:bg-DARK_800 transition duration-200'
+                          className='text-base border border-DARK_600 rounded p-3 bg-DARK_700 w-full flex justify-between items-start gap-4 hover:bg-DARK_800 transition duration-200'
                         >
-                          <div className='text-LIGHT_100 font-medium'>
+                          <div className='text-base text-LIGHT_100 font-medium'>
                             {format(
                               new Date(order.createdAt),
                               "dd 'de' MMMM 'de' yyyy",
-                              { locale: ptBR }
+                              {
+                                locale: ptBR,
+                              }
                             )}
                           </div>
-                          <div className='text-LIGHT_500 text-center flex-1'>
+                          <div className='text-base text-LIGHT_500 text-center flex-1'>
                             {order.complaints}
                           </div>
                           <div
@@ -176,7 +193,7 @@ export default function DetalhesClientePage() {
                   </ul>
                 )}
               </div>
-            </>
+            </div>
           ) : (
             <p className='text-LIGHT_500'>Cliente não encontrado.</p>
           )}

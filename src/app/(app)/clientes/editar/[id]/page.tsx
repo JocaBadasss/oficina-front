@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Aside } from '@/components/Aside';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
@@ -28,10 +28,10 @@ const clientSchema = z.object({
 
 type ClientFormData = z.infer<typeof clientSchema>;
 
-export default function NovoClientePage() {
+export default function EditarClientePage() {
+  const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -43,10 +43,33 @@ export default function NovoClientePage() {
     resolver: zodResolver(clientSchema),
   });
 
+  useEffect(() => {
+    async function fetchClient() {
+      try {
+        const response = await api.get(`/clients/${params.id}`);
+        const { name, email, phone, address, cpf, cnpj } = response.data;
+        setValue('name', name);
+        setValue('email', email);
+        setValue('phone', mask(phone, ['(99) 99999-9999']));
+        setValue('address', address);
+        setValue(
+          'cpfOrCnpj',
+          mask(cpf || cnpj, ['999.999.999-99', '99.999.999/9999-99'])
+        );
+      } catch (error) {
+        console.error('Erro ao buscar cliente:', error);
+        toast({
+          title: 'Erro ao carregar cliente.',
+          variant: 'destructive',
+        });
+      }
+    }
+    fetchClient();
+  }, [params.id, setValue, toast]);
+
   async function onSubmit(data: ClientFormData) {
     try {
-      setIsSubmitting(true);
-      await api.post('/clients', {
+      await api.patch(`/clients/${params.id}`, {
         name: data.name,
         email: data.email,
         phone: data.phone.replace(/\D/g, ''),
@@ -55,18 +78,16 @@ export default function NovoClientePage() {
         cnpj: data.cpfOrCnpj?.length === 14 ? data.cpfOrCnpj : undefined,
       });
       toast({
-        title: 'Cliente cadastrado com sucesso!',
+        title: 'Cliente atualizado com sucesso!',
         variant: 'success',
       });
       router.push('/clientes');
     } catch (error) {
-      console.error('Erro ao criar cliente:', error);
+      console.error('Erro ao salvar alterações:', error);
       toast({
-        title: 'Erro ao criar cliente.',
+        title: 'Erro ao salvar alterações.',
         variant: 'destructive',
       });
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -77,9 +98,9 @@ export default function NovoClientePage() {
       <main className='flex-1 p-6 space-y-6'>
         <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
-            <h1 className='text-3xl font-bold font-roboto'>Novo Cliente</h1>
+            <h1 className='text-3xl font-bold font-roboto'>Editar Cliente</h1>
             <p className='text-LIGHT_500 mt-1'>
-              Adicione um novo cliente ao sistema.
+              Atualize as informações do cliente.
             </p>
           </div>
 
@@ -212,11 +233,9 @@ export default function NovoClientePage() {
             <div className='md:col-span-2'>
               <button
                 type='submit'
-                disabled={isSubmitting}
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto flex items-center justify-center gap-2'
+                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
               >
-                {isSubmitting && <Loader2 className='h-4 w-4 animate-spin' />}{' '}
-                Salvar Cliente
+                Salvar Alterações
               </button>
             </div>
           </form>

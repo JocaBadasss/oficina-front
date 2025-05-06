@@ -2,6 +2,7 @@
 
 import { Home, Users, Truck, Wrench, Settings } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function Aside() {
   return (
@@ -23,31 +24,37 @@ export function Aside() {
           >
             <Home size={16} /> Painel
           </a>
-          <a
+          <Link
+            href='/novo-atendimento'
+            className='hover:text-TINTS_CARROT_100 flex gap-2 items-center text-TINTS_CAKE_200'
+          >
+            <Users size={16} /> Novo atendimento
+          </Link>
+          <Link
             href='/clientes'
             className='hover:text-TINTS_CARROT_100 flex gap-2 items-center'
           >
             <Users size={16} /> Clientes
-          </a>
-          <a
+          </Link>
+          <Link
             href='/veiculos'
             className='hover:text-TINTS_CARROT_100 flex gap-2 items-center'
           >
             <Truck size={16} /> Veículos
-          </a>
-          <a
+          </Link>
+          <Link
             href='/ordens'
             className='hover:text-TINTS_CARROT_100 flex gap-2 items-center'
           >
             <Wrench size={16} /> Ordens de serviço
-          </a>
+          </Link>
         </div>
-        <a
+        <Link
           href='/configuracoes'
           className='hover:text-TINTS_CARROT_100 flex gap-2 items-center'
         >
           <Settings size={16} /> Configurações
-        </a>
+        </Link>
       </nav>
     </aside>
   );

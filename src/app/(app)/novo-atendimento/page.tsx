@@ -200,7 +200,7 @@ export default function NovoAtendimentoPage() {
       });
 
       toast({ title: 'Atendimento criado com sucesso!' });
-      router.push(`/tracking/${orderRes.data.id}`);
+      router.push(`/ordens/${orderRes.data.id}`);
       reset();
     } catch (error) {
       let backendMessage = 'Tente novamente.';
@@ -221,7 +221,6 @@ export default function NovoAtendimentoPage() {
         variant: 'destructive',
       });
     }
-
   };
 
   useEffect(() => {

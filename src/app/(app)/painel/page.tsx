@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Aside } from '@/components/Aside';
+import Link from 'next/link';
 
 export default function PainelPage() {
   const {
@@ -113,13 +114,13 @@ export default function PainelPage() {
             {loading ? (
               <Skeleton className='h-28 rounded-lg w-full' />
             ) : (
-              <a
-                href='#'
+              <Link
+                href='/ordens'
                 className='bg-TINTS_CARROT_100 text-LIGHT_200 rounded-lg p-6 text-center font-roboto shadow-md hover:bg-TINTS_CARROT_100/90 transition cursor-pointer'
               >
                 <h2 className='text-4xl font-bold'>{totalOpenOrders}</h2>
                 <p className='text-lg font-medium'>Ordens Abertas</p>
-              </a>
+              </Link>
             )}
           </div>
 

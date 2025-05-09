@@ -73,7 +73,7 @@ export default function DetalhesOrdemPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
+        <header className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap'>
           <div>
             <h1 className='text-3xl font-bold font-roboto'>Ordem de Serviço</h1>
             <p className='text-LIGHT_500 mt-1'>
@@ -81,16 +81,16 @@ export default function DetalhesOrdemPage() {
             </p>
           </div>
 
-          <div className='flex gap-2'>
+          <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
             <Link
               href={`/ordens/editar/${order?.id}`}
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition flex items-center gap-2'
+              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition flex items-center gap-2 justify-center'
             >
               <Pencil size={16} /> Editar
             </Link>
             <Link
               href='/ordens'
-              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2'
+              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2 justify-center'
             >
               <ArrowLeft size={16} /> Voltar
             </Link>
@@ -153,38 +153,46 @@ export default function DetalhesOrdemPage() {
                   <h2 className='text-xs text-LIGHT_500 uppercase'>
                     Nível de Combustível
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>
-                    {fuelLabels[order.fuelLevel] || order.fuelLevel}
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {fuelLabels[order.fuelLevel] || '-'}
                   </p>
                 </div>
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>
                     Nível de Arla
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>{order.adblueLevel}</p>
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {order.adblueLevel || '-'}
+                  </p>
                 </div>
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>
                     Quilometragem
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>
-                    {order.km.toLocaleString()} km
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {typeof order.km === 'number'
+                      ? `${order.km.toLocaleString()} km`
+                      : '—'}
                   </p>
                 </div>
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>
                     Estado dos Pneus
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>{order.tireStatus}</p>
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {order.tireStatus || '-'}
+                  </p>
                 </div>
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>Espelhos</h2>
-                  <p className='text-sm text-LIGHT_300'>{order.mirrorStatus}</p>
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {order.mirrorStatus || '-'}
+                  </p>
                 </div>
                 <div className='sm:col-span-2 lg:col-span-3'>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>Pintura</h2>
-                  <p className='text-sm text-LIGHT_300'>
-                    {order.paintingStatus}
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {order.paintingStatus || '-'}
                   </p>
                 </div>
               </div>
@@ -192,18 +200,22 @@ export default function DetalhesOrdemPage() {
               <hr className='border-DARK_900' />
 
               <div>
-                <h2 className='text-sm text-LIGHT_500 uppercase mb-1'>
+                <h2 className='text-sm font-bold text-LIGHT_500 uppercase mb-1'>
                   Reclamações
                 </h2>
-                <p className='text-sm text-LIGHT_300'>{order.complaints}</p>
+                <p className='text-sm font-bold text-LIGHT_300'>
+                  {order.complaints || '-'}
+                </p>
               </div>
 
               {order.notes && (
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase mb-1'>
+                  <h2 className='text-sm font-bold text-LIGHT_500 uppercase mb-1'>
                     Observações
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>{order.notes}</p>
+                  <p className='text-sm font-bold text-LIGHT_300'>
+                    {order.notes}
+                  </p>
                 </div>
               )}
             </div>

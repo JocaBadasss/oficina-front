@@ -84,7 +84,7 @@ export default function EditarOrdemPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
+        <header className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap'>
           <div>
             <h1 className='text-3xl font-bold font-roboto'>Editar Ordem</h1>
             <p className='text-LIGHT_500 mt-1'>
@@ -94,7 +94,7 @@ export default function EditarOrdemPage() {
 
           <Link
             href='/ordens'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2'
+            className='w-full sm:w-auto bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center justify-center gap-2'
           >
             <ArrowLeft size={16} /> Voltar
           </Link>

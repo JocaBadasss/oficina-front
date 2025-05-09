@@ -78,6 +78,10 @@
   }
 }
 
+main {
+  margin-bottom: 4rem;
+}
+
 @layer base {
   * {
     @apply border-border;

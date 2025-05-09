@@ -1,5 +1,3 @@
-// código recebido colado aqui
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -33,6 +31,7 @@ const statusLabels: Record<string, string> = {
   FINALIZADO: 'Finalizado',
 };
 
+
 export default function OrdensPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,28 +60,28 @@ export default function OrdensPage() {
   });
 
   return (
-    <div className='flex flex-col md:flex-row min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
+    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
       <Aside />
 
-      <main className='flex-1 p-4 sm:p-6 space-y-6'>
-        <header className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <main className='flex-1 p-6 space-y-6'>
+        <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
-            <h1 className='text-2xl sm:text-3xl font-bold font-roboto'>
+            <h1 className='text-3xl font-bold font-roboto'>
               Ordens de Serviço
             </h1>
-            <p className='text-LIGHT_500 mt-1 text-sm sm:text-base'>
+            <p className='text-LIGHT_500 mt-1'>
               Visualize e gerencie as ordens de serviço cadastradas.
             </p>
           </div>
           <Link
             href='/ordens/nova'
-            className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto'
+            className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition'
           >
             <Plus size={16} /> Nova Ordem
           </Link>
         </header>
 
-        <section className='bg-DARK_700 rounded-lg p-4 sm:p-6 space-y-4'>
+        <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
           <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800'>
             <Search
               size={16}
@@ -104,7 +103,7 @@ export default function OrdensPage() {
               <Skeleton className='h-6 w-full' />
             </div>
           ) : filteredOrders.length === 0 ? (
-            <p className='text-LIGHT_500 text-sm'>Nenhuma ordem encontrada.</p>
+            <p className='text-LIGHT_500'>Nenhuma ordem encontrada.</p>
           ) : (
             <ul className='space-y-4'>
               {filteredOrders.map((order) => (
@@ -114,36 +113,39 @@ export default function OrdensPage() {
                 >
                   <Link
                     href={`/ordens/${order.id}`}
-                    className='block space-y-2'
+                    className='block'
                   >
-                    <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1'>
-                      <span className='text-sm text-LIGHT_500'>
+                    <div className='flex justify-between items-start'>
+                      <div className='text-sm text-LIGHT_500'>
                         {format(
                           new Date(order.createdAt),
                           "dd 'de' MMMM 'de' yyyy",
-                          { locale: ptBR }
+                          {
+                            locale: ptBR,
+                          }
                         )}
-                      </span>
+                      </div>
                       <span
-                        className={`text-xs font-semibold px-2 py-1 rounded uppercase whitespace-nowrap w-fit
-                          ${
-                            order.status === 'FINALIZADO'
-                              ? 'bg-TINTS_MINT_100 text-DARK_100'
-                              : 'bg-TINTS_CARROT_100 text-DARK_100'
-                          }`}
+                        className={`text-xs font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${
+                          order.status === 'FINALIZADO'
+                            ? 'bg-TINTS_MINT_100 text-DARK_100'
+                            : 'bg-TINTS_CARROT_100 text-DARK_100'
+                        }`}
                       >
                         {statusLabels[order.status] || order.status}
                       </span>
                     </div>
 
-                    <p className='font-semibold text-LIGHT_100 truncate'>
+                    <p className='mt-1 font-semibold text-LIGHT_100'>
                       {order.vehicle.plate} — {order.vehicle.model} (
                       {order.vehicle.brand})
                     </p>
-                    <p className='text-sm text-LIGHT_500 truncate'>
+                    <p className='text-sm text-LIGHT_500'>
                       Cliente: {order.vehicle.client.name}
                     </p>
-                    <p className='text-sm text-LIGHT_300'>{order.complaints}</p>
+                    <p className='text-sm text-LIGHT_300 mt-1'>
+                      {order.complaints}
+                    </p>
                   </Link>
                 </li>
               ))}

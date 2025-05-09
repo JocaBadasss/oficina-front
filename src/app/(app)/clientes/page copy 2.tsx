@@ -50,32 +50,30 @@ export default function ClientesPage() {
   ];
 
   return (
-    <div className='flex flex-col md:flex-row min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
+    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
       <Aside />
 
-      <main className='flex-1 p-4 sm:p-6 space-y-6 w-full'>
-        <header className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <main className='flex-1 p-6 space-y-6'>
+        <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
-            <h1 className='text-2xl sm:text-3xl font-bold font-roboto'>
-              Clientes
-            </h1>
-            <p className='text-LIGHT_500 mt-1 text-sm sm:text-base'>
+            <h1 className='text-3xl font-bold font-roboto'>Clientes</h1>
+            <p className='text-LIGHT_500 mt-1'>
               Gerencie todos os seus clientes.
             </p>
           </div>
           <Link
             href='/clientes/novo'
-            className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto'
+            className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition self-start md:self-auto'
           >
             <Plus size={16} /> Adicionar Cliente
           </Link>
         </header>
 
-        <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
+        <section className='grid grid-cols-1 lg:grid-cols-3 gap-6 items-start'>
           {/* Lista de Clientes */}
-          <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-DARK_700 rounded-lg p-4 sm:p-6 space-y-4'>
-              <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800 focus-within:ring-2 ring-TINTS_CARROT_100 transition'>
+          <div className='col-span-2'>
+            <div className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+              <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800'>
                 <Search
                   size={16}
                   className='text-LIGHT_500'
@@ -89,9 +87,7 @@ export default function ClientesPage() {
                 />
               </div>
 
-              <h2 className='text-lg sm:text-xl font-semibold'>
-                Lista de Clientes
-              </h2>
+              <h2 className='text-xl font-semibold'>Lista de Clientes</h2>
 
               {loading ? (
                 <div className='space-y-2'>
@@ -100,33 +96,23 @@ export default function ClientesPage() {
                   <Skeleton className='h-6 w-full' />
                 </div>
               ) : filteredClients.length === 0 ? (
-                <p className='text-LIGHT_500 text-sm'>
-                  Nenhum cliente encontrado.
-                </p>
+                <p className='text-LIGHT_500'>Nenhum cliente encontrado.</p>
               ) : (
                 <ul className='divide-y divide-LIGHT_700'>
                   {filteredClients.map((client) => (
                     <li
                       key={client.id}
-                      className='py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 hover:bg-DARK_800  px-2 rounded transition'
+                      className='py-3 flex justify-between items-center hover:bg-DARK_800 px-2 rounded transition'
                     >
-                      <div className='flex-1 min-w-0'>
-                        <p className='font-medium text-LIGHT_100 truncate'>
+                      <div>
+                        <p className='font-medium text-LIGHT_100'>
                           {client.name}
                         </p>
-                        <p className='text-sm text-LIGHT_500 truncate'>
-                          {client.phone}
-                        </p>
-                        <p className='text-xs text-LIGHT_500 mt-1'>
-                          Cadastrado em{' '}
-                          {new Date(client.createdAt).toLocaleDateString(
-                            'pt-BR'
-                          )}
-                        </p>
+                        <p className='text-sm text-LIGHT_500'>{client.phone}</p>
                       </div>
                       <a
                         href={`/clientes/${client.id}`}
-                        className='text-sm text-TINTS_CARROT_100 hover:underline whitespace-nowrap'
+                        className='text-sm text-TINTS_CARROT_100 hover:underline'
                       >
                         Ver detalhes
                       </a>
@@ -138,7 +124,7 @@ export default function ClientesPage() {
           </div>
 
           {/* Total de Clientes com gráfico */}
-          <div className='bg-DARK_700 rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
+          <div className='bg-DARK_700 rounded-lg p-6 col-span-1 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
             <div className='w-full text-center'>
               <h2 className='text-sm text-LIGHT_500 uppercase tracking-wide'>
                 Clientes Cadastrados
@@ -146,7 +132,7 @@ export default function ClientesPage() {
               {loading ? (
                 <Skeleton className='h-8 w-16 mt-2 mx-auto' />
               ) : (
-                <p className='text-5xl sm:text-6xl font-bold text-primary mt-1'>
+                <p className='text-6xl font-bold text-primary mt-1'>
                   {clients.length}
                 </p>
               )}

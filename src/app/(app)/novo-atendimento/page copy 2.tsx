@@ -29,11 +29,7 @@ const baseSchema = z.object({
   // CLIENTE
   name: z.string().optional(),
   email: z.string().email('Email inválido').optional(),
-  phone: z
-    .string()
-    .min(10, 'Telefone inválido')
-    .transform((val) => val.replace(/\D/g, ''))
-    .optional(),
+  phone: z.string().min(10, 'Telefone inválido').optional(),
   cpfOrCnpj: z
     .string()
     .transform((val) => val.replace(/\D/g, ''))
@@ -119,6 +115,8 @@ export default function NovoAtendimentoPage() {
   const [selectedVehicleId, setSelectedVehicleId] = useState('');
   const [createNewClient, setCreateNewClient] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [formattedPhone, setFormattedPhone] = useState('');
+
 
   const {
     register,
@@ -352,15 +350,14 @@ export default function NovoAtendimentoPage() {
                     id='phone'
                     {...register('phone')}
                     onChange={(e) => {
-                      const masked = mask(e.target.value.replace(/\D/g, ''), [
-                        '(99) 99999-9999',
-                      ]);
-                      setValue('phone', masked);
+                      const raw = e.target.value.replace(/\D/g, '');
+                      const masked = mask(raw, ['(99) 99999-9999']);
+                      setFormattedPhone(masked);
+                      setValue('phone', raw); // valor cru para envio
                     }}
-                    value={watch('phone') || ''}
+                    value={formattedPhone}
                     className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
                   />
-
                   {errors.phone && (
                     <span className='text-red-500 text-xs'>
                       {errors.phone.message}

@@ -8,6 +8,8 @@ import { Plus, Search, CalendarClock } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { Car, User, ClipboardList, ArrowRight } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 
 interface Appointment {
   id: string;
@@ -63,28 +65,27 @@ export default function AgendamentosPage() {
   ).length;
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
+    <div className='flex flex-col md:flex-row min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
       <Aside />
 
-      <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Agendamentos</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Gerencie os agendamentos cadastrados.
-            </p>
-          </div>
-          <Link
-            href='/agendamentos/novo'
-            className='w-full sm:w-auto bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-TINTS_CARROT_100/90 transition'
-          >
-            <Plus size={16} /> Novo Agendamento
-          </Link>
-        </header>
+      <main className='flex-1 p-4 sm:p-6 space-y-6 '>
+        <PageHeader
+          title='Agendamentos'
+          subtitle='Gerencie os agendamentos cadastrados.'
+          rightSlot={
+            <Link
+              href='/agendamentos/novo'
+              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+            >
+              <Plus size={16} /> Novo Agendamento
+            </Link>
+          }
+          backHref='/painel'
+        />
 
-        <section className='grid grid-cols-1 lg:grid-cols-3 gap-6 items-start'>
-          <div className='col-span-2'>
-            <div className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+        <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
+          <div className='col-span-1 xl:col-span-2'>
+            <div className='bg-DARK_700 rounded-lg p-4 space-y-4'>
               <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800'>
                 <Search
                   size={16}
@@ -112,14 +113,19 @@ export default function AgendamentosPage() {
                   {filteredAppointments.map((appt) => (
                     <li
                       key={appt.id}
-                      className='border border-DARK_600 rounded-md p-4 bg-DARK_800 hover:bg-DARK_900 transition'
+                      className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4'
                     >
                       <Link
                         href={`/agendamentos/${appt.id}`}
-                        className='block'
+                        className='block space-y-4'
                       >
-                        <div className='flex justify-between items-start'>
-                          <div className='text-sm text-LIGHT_500'>
+                        {/* Data e Status */}
+                        <div className='flex justify-between items-center flex-wrap gap-2'>
+                          <div className='flex items-center gap-2 text-sm text-LIGHT_500'>
+                            <CalendarClock
+                              size={16}
+                              className='text-TINTS_CARROT_100'
+                            />
                             {format(
                               new Date(appt.createdAt),
                               "dd 'de' MMMM 'de' yyyy",
@@ -128,31 +134,76 @@ export default function AgendamentosPage() {
                               }
                             )}
                           </div>
+
                           <span
-                            className={`text-xs font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${
-                              appt.status === 'CONFIRMADO'
-                                ? 'bg-TINTS_MINT_100 text-DARK_100'
-                                : appt.status === 'CANCELADO'
-                                ? 'bg-TINTS_TOMATO_200 text-LIGHT_100'
-                                : 'bg-TINTS_CARROT_100 text-DARK_100'
-                            }`}
+                            className={`text-[10px] font-semibold px-3 py-1 rounded capitalize w-fit
+              ${
+                appt.status === 'CONFIRMADO'
+                  ? 'bg-TINTS_MINT_100 text-DARK_100'
+                  : appt.status === 'CANCELADO'
+                  ? 'bg-TINTS_TOMATO_200 text-LIGHT_100'
+                  : 'bg-TINTS_CARROT_100 text-DARK_100'
+              }`}
                           >
                             {statusLabels[appt.status] || appt.status}
                           </span>
                         </div>
 
-                        <p className='mt-1 font-semibold text-LIGHT_100'>
-                          {appt.vehicle.plate} — {appt.vehicle.model} (
-                          {appt.vehicle.brand})
-                        </p>
-                        <p className='text-sm text-LIGHT_500'>
-                          Cliente: {appt.vehicle.client.name}
-                        </p>
+                        {/* Veículo */}
+                        <div className='flex items-start gap-3'>
+                          <Car
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1 min-w-0'>
+                            <p className='text-sm text-LIGHT_500'>Veículo</p>
+                            <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
+                              {appt.vehicle.plate}
+                            </p>
+                            <p className='text-sm text-LIGHT_100'>
+                              {appt.vehicle.model} ({appt.vehicle.brand})
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Cliente */}
+                        <div className='flex items-start gap-3'>
+                          <User
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1'>
+                            <p className='text-sm text-LIGHT_500'>Cliente</p>
+                            <p className='text-sm text-LIGHT_100 truncate'>
+                              {appt.vehicle.client.name}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Observações */}
                         {appt.notes && (
-                          <p className='text-sm text-LIGHT_300 mt-1'>
-                            {appt.notes}
-                          </p>
+                          <div className='flex items-start gap-3'>
+                            <ClipboardList
+                              size={20}
+                              className='text-TINTS_CARROT_100 mt-0.5'
+                            />
+                            <div className='flex-1'>
+                              <p className='text-sm text-LIGHT_500'>
+                                Observações
+                              </p>
+                              <p className='text-sm text-LIGHT_300 leading-snug'>
+                                {appt.notes}
+                              </p>
+                            </div>
+                          </div>
                         )}
+
+                        {/* Link final */}
+                        <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
+                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
+                            Ver detalhes <ArrowRight size={14} />
+                          </span>
+                        </div>
                       </Link>
                     </li>
                   ))}
@@ -161,12 +212,12 @@ export default function AgendamentosPage() {
             </div>
           </div>
 
-          <div className='bg-DARK_700 rounded-lg p-6 col-span-1 flex flex-col justify-center items-center gap-4 h-44 text-center'>
+          <div className='bg-DARK_700  rounded-lg p-4 sm:p-6  flex flex-col justify-center items-center gap-4 min-h-44 text-center '>
             <CalendarClock
               size={32}
               className='text-TINTS_CARROT_100'
             />
-            <div>
+            <div className='w-full text-center'>
               <h2 className='text-sm text-LIGHT_500 uppercase tracking-wide'>
                 Agendamentos Pendentes
               </h2>

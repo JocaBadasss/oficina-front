@@ -110,40 +110,50 @@ export default function AcompanhamentoPage() {
 
   return (
     <div className='min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <div className='bg-DARK_900 px-6 py-6 shadow-md border-b border-DARK_700'>
-        <div className='max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2'>
-          <div className='flex items-center gap-3'>
+      <div className='bg-DARK_900 border-b border-DARK_700 py-6 px-4 sm:px-6 shadow-md'>
+        <div className='max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left'>
+          {/* Branding */}
+          <div className='flex items-center justify-center sm:justify-start gap-3'>
             <Image
               src='/gearIcon.svg'
               alt='Ícone de engrenagem'
-              width={36}
-              height={36}
+              width={40}
+              height={40}
             />
-            <span className='text-2xl font-bold text-TINTS_CARROT_100'>
+            <span className='text-2xl font-bold text-TINTS_CARROT_100 tracking-wide'>
               OFICINA
             </span>
           </div>
-          <p className='text-sm text-LIGHT_300 font-medium'>
-            Bem-vindo ao seu acompanhamento de serviço
-          </p>
+
+          {/* Saudação */}
+          <div className='space-y-1'>
+            <p className='text-sm sm:text-base text-LIGHT_100 font-semibold'>
+              Olá, {data.client.name.split(' ')[0]}!
+            </p>
+            <p className='text-sm text-LIGHT_300 leading-snug'>
+              Acompanhe abaixo o status do serviço do seu veículo.
+            </p>
+          </div>
         </div>
       </div>
 
-      <main className='p-6 max-w-5xl mx-auto'>
+      <main className='p-6 max-w-5xl mx-auto mb-0'>
         <header className='mb-8 space-y-4 text-center'>
           <h1 className='text-4xl font-bold font-roboto text-LIGHT_100'>
             Acompanhamento
           </h1>
-          {isFinalizado ? (
-            <p className='text-TINTS_MINT_100 font-semibold text-lg'>
-              Tudo certo, o seu veículo está pronto para retirada!
-            </p>
-          ) : (
+          {!isFinalizado && (
             <p className='text-LIGHT_500 text-base'>
               Seu veículo está em manutenção. Acompanhe o andamento abaixo.
             </p>
           )}
           <StepperMUI currentStatus={data.status} />
+          {isFinalizado && (
+            <div className='mt-6 p-4 rounded-lg bg-TINTS_MINT_100/10 border border-TINTS_MINT_100 text-TINTS_MINT_100 text-sm font-medium text-center'>
+              Seu veículo está pronto para retirada. Entre em contato com a
+              oficina para agendar a entrega!
+            </div>
+          )}
         </header>
 
         <div className='bg-DARK_700 rounded-xl p-6 mb-6'>
@@ -180,10 +190,13 @@ export default function AcompanhamentoPage() {
             </div>
           </div>
 
-          <div>
-            <h2 className='text-sm text-LIGHT_500 uppercase mb-1'>Veículo</h2>
-            <p className='text-lg font-medium text-LIGHT_100'>
-              {data.vehicle.plate} - {data.vehicle.brand} {data.vehicle.model}
+          <div className='bg-DARK_800 border border-DARK_600 rounded-lg p-4 space-y-2'>
+            <h2 className='text-sm text-LIGHT_500 uppercase'>Veículo</h2>
+            <p className='text-lg font-semibold text-TINTS_CAKE_200'>
+              {data.vehicle.plate}
+            </p>
+            <p className='text-sm text-LIGHT_100'>
+              {data.vehicle.model} ({data.vehicle.brand})
             </p>
           </div>
 
@@ -194,31 +207,31 @@ export default function AcompanhamentoPage() {
             <p className='text-base text-LIGHT_300'>{data.complaints}</p>
           </div>
 
-          <div className='grid md:grid-cols-2 gap-4'>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>KM</h3>
-              <p>{data.km ? data.km.toLocaleString('pt-BR') + ' km' : '-'}</p>
-            </div>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>Combustível</h3>
-              <p>{data.fuelLevel ? fuelLevelLabels[data.fuelLevel] : '-'}</p>
-            </div>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>Adblue</h3>
-              <p>{data.adblueLevel}</p>
-            </div>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>Pneus</h3>
-              <p>{data.tireStatus}</p>
-            </div>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>Espelhos</h3>
-              <p>{data.mirrorStatus}</p>
-            </div>
-            <div>
-              <h3 className='text-sm text-LIGHT_500 uppercase'>Pintura</h3>
-              <p>{data.paintingStatus}</p>
-            </div>
+          <div className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
+            {[
+              {
+                label: 'KM',
+                value: data.km ? `${data.km.toLocaleString()} km` : '—',
+              },
+              {
+                label: 'Combustível',
+                value: fuelLevelLabels[data.fuelLevel] || '—',
+              },
+              { label: 'Adblue', value: data.adblueLevel || '—' },
+              { label: 'Pneus', value: data.tireStatus || '—' },
+              { label: 'Espelhos', value: data.mirrorStatus || '—' },
+              { label: 'Pintura', value: data.paintingStatus || '—' },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className='bg-DARK_800 p-4 rounded-lg border border-DARK_600'
+              >
+                <p className='text-xs text-LIGHT_500 uppercase'>{item.label}</p>
+                <p className='text-base font-semibold text-LIGHT_100'>
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -262,11 +275,17 @@ export default function AcompanhamentoPage() {
           )}
         </section>
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-4 mt-6'>
-          <h2 className='text-sm text-LIGHT_500 uppercase'>Relatório Final</h2>
+        <section className='bg-DARK_700 rounded-lg p-6 mt-6'>
+          <h2 className='text-sm text-LIGHT_500 uppercase mb-4 flex items-center gap-2'>
+            <span className='inline-block w-2 h-2 bg-TINTS_CARROT_100 rounded-full'></span>
+            Relatório Final
+          </h2>
+
           {data.report ? (
-            <div className='space-y-2'>
-              <p>{data.report.description}</p>
+            <div className='bg-DARK_800 border border-DARK_600 rounded-lg p-4 space-y-2'>
+              <p className='text-base text-LIGHT_300'>
+                {data.report.description}
+              </p>
               <p className='text-xs text-LIGHT_500'>
                 Adicionado em{' '}
                 {format(new Date(data.report.createdAt), 'dd/MM/yyyy HH:mm')}

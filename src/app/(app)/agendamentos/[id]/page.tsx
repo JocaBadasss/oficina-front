@@ -7,8 +7,7 @@ import { Aside } from '@/components/Aside';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { PageHeader } from '@/components/PageHeader';
 
 interface Appointment {
   id: string;
@@ -56,21 +55,12 @@ export default function DetalhesAgendamentoPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Agendamento</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Informações completas do agendamento.
-            </p>
-          </div>
-
-          <Link
-            href='/agendamentos'
-            className='w-full sm:w-auto bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center justify-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Agendamento'
+          subtitle='Informações completas do agendamento.'
+          backHref='/agendamentos'
+          isDetails
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
           {loading || !appointment ? (
@@ -82,11 +72,7 @@ export default function DetalhesAgendamentoPage() {
           ) : (
             <div className='space-y-6'>
               <div className='text-sm text-LIGHT_500'>
-                Criado em:{' '}
-                {format(new Date(appointment.createdAt), 'dd/MM/yyyy HH:mm', {
-                  locale: ptBR,
-                })}
-                <br />
+                Criado em: <br />
                 Agendado para:{' '}
                 {format(new Date(appointment.date), 'dd/MM/yyyy HH:mm', {
                   locale: ptBR,

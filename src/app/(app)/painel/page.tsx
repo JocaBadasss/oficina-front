@@ -10,6 +10,7 @@ import { Aside } from '@/components/Aside';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, FileText } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 
 const statusLabels: Record<string, string> = {
   AGUARDANDO: 'Aguardando',
@@ -34,31 +35,15 @@ export default function PainelPage() {
       <Aside />
 
       <div className='flex-1 flex flex-col'>
-        <header className='px-4 py-4 md:px-6 md:py-6 border-b border-DARK_600 bg-DARK_400 flex flex-col md:flex-row md:justify-between md:items-center gap-2'>
-          <div>
-            <h1 className='text-2xl md:text-3xl font-bold font-roboto'>
-              Painel
-            </h1>
-            <p className='text-LIGHT_500 mt-1 text-sm md:text-base'>
-              Confiança e qualidade no serviço.
-            </p>
-          </div>
-          <div className='flex items-center gap-2 md:gap-4 w-full md:w-auto justify-between md:justify-end'>
-            <span className='text-sm truncate max-w-[160px] md:max-w-none'>
-              Olá, {user?.name || 'Usuário'}
-            </span>
-            <button
-              onClick={() => {
-                signOut();
-                router.push('/login');
-              }}
-              className='bg-TINTS_CARROT_100 hover:bg-TINTS_CARROT_100/90 text-DARK_100 font-semibold px-4 py-2 rounded transition text-sm md:text-base'
-            >
-              Logout
-            </button>
-          </div>
-        </header>
-
+        <PageHeader
+          title='Painel'
+          subtitle='Confiança e qualidade no serviço.'
+          userName={user?.name}
+          onLogout={() => {
+            signOut();
+            router.push('/login');
+          }}
+        />
         <main className='flex-1 p-4 md:p-6 space-y-8'>
           <h1 className='text-2xl md:text-3xl font-bold font-roboto'>
             Visão Geral
@@ -114,7 +99,7 @@ export default function PainelPage() {
               <h3 className='text-xl md:text-2xl font-semibold mb-2'>
                 Agendamentos
               </h3>
-              <div className='bg-DARK_700 rounded-lg min-h-[140px] max-h-[calc(100vh-320px)] overflow-y-auto scrollbar-thin scrollbar-thumb-TINTS_CARROT_100 scrollbar-track-DARK_900 rounded-md'>
+              <div className='bg-DARK_700 p-3 rounded-lg min-h-[140px] max-h-[calc(100vh-320px)] overflow-y-auto scrollbar-thin scrollbar-thumb-TINTS_CARROT_100 scrollbar-track-DARK_900 rounded-md'>
                 {loading ? (
                   <div className='p-3 space-y-3'>
                     <Skeleton className='h-6 w-full' />

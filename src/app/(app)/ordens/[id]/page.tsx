@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { ArrowLeft, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
+import { PageHeader } from '@/components/PageHeader';
 
 interface Order {
   id: string;
@@ -73,29 +74,14 @@ export default function DetalhesOrdemPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Ordem de Serviço</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Detalhes completos da ordem de serviço selecionada.
-            </p>
-          </div>
-
-          <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
-            <Link
-              href={`/ordens/editar/${order?.id}`}
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition flex items-center gap-2 justify-center'
-            >
-              <Pencil size={16} /> Editar
-            </Link>
-            <Link
-              href='/ordens'
-              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2 justify-center'
-            >
-              <ArrowLeft size={16} /> Voltar
-            </Link>
-          </div>
-        </header>
+        <PageHeader
+          title='Ordem de Serviço'
+          subtitle='Detalhes completos da ordem de serviço selecionada.'
+          backHref='/ordens'
+          editHref={`/ordens/editar/${order?.id}`}
+          showEdit
+          isDetails
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
           {loading || !order ? (

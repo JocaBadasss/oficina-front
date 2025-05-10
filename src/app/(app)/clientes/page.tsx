@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { mask } from 'remask';
 import { Plus, Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Aside } from '@/components/Aside';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { api } from '@/services/api';
 import Link from 'next/link';
+import { User, Phone, Calendar, ArrowRight } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 
 interface Client {
   id: string;
@@ -54,22 +57,19 @@ export default function ClientesPage() {
       <Aside />
 
       <main className='flex-1 p-4 sm:p-6 space-y-6 w-full'>
-        <header className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <h1 className='text-2xl sm:text-3xl font-bold font-roboto'>
-              Clientes
-            </h1>
-            <p className='text-LIGHT_500 mt-1 text-sm sm:text-base'>
-              Gerencie todos os seus clientes.
-            </p>
-          </div>
-          <Link
-            href='/clientes/novo'
-            className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto'
-          >
-            <Plus size={16} /> Adicionar Cliente
-          </Link>
-        </header>
+        <PageHeader
+          title='Clientes'
+          subtitle='Gerencie todos os seus clientes.'
+          rightSlot={
+            <Link
+              href='/clientes/novo'
+              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+            >
+              <Plus size={16} /> Adicionar Cliente
+            </Link>
+          }
+          backHref='/painel'
+        />
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           {/* Lista de Clientes */}
@@ -104,32 +104,69 @@ export default function ClientesPage() {
                   Nenhum cliente encontrado.
                 </p>
               ) : (
-                <ul className='divide-y divide-LIGHT_700'>
+                <ul className='space-y-4'>
                   {filteredClients.map((client) => (
                     <li
                       key={client.id}
-                      className='py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 hover:bg-DARK_800  px-2 rounded transition'
+                      className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4'
                     >
-                      <div className='flex-1 min-w-0'>
-                        <p className='font-medium text-LIGHT_100 truncate'>
-                          {client.name}
-                        </p>
-                        <p className='text-sm text-LIGHT_500 truncate'>
-                          {client.phone}
-                        </p>
-                        <p className='text-xs text-LIGHT_500 mt-1'>
-                          Cadastrado em{' '}
-                          {new Date(client.createdAt).toLocaleDateString(
-                            'pt-BR'
-                          )}
-                        </p>
-                      </div>
-                      <a
+                      <Link
                         href={`/clientes/${client.id}`}
-                        className='text-sm text-TINTS_CARROT_100 hover:underline whitespace-nowrap'
+                        className='block space-y-4'
                       >
-                        Ver detalhes
-                      </a>
+                        {/* Nome do cliente */}
+                        <div className='flex items-start gap-3'>
+                          <User
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1 min-w-0'>
+                            <p className='text-sm text-LIGHT_500'>Nome</p>
+                            <p className='text-lg font-semibold text-TINTS_CAKE_200 truncate'>
+                              {client.name}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Telefone */}
+                        <div className='flex items-start gap-3'>
+                          <Phone
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1'>
+                            <p className='text-sm text-LIGHT_500'>Telefone</p>
+                            <p className='text-sm text-LIGHT_100 truncate'>
+                              {mask(client.phone, '(99) 99999-9999')}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Data de cadastro */}
+                        <div className='flex items-start gap-3'>
+                          <Calendar
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div>
+                            <p className='text-sm text-LIGHT_500'>
+                              Cadastrado em
+                            </p>
+                            <p className='text-sm text-LIGHT_300'>
+                              {new Date(client.createdAt).toLocaleDateString(
+                                'pt-BR'
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Link de ação */}
+                        <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
+                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
+                            Ver detalhes <ArrowRight size={14} />
+                          </span>
+                        </div>
+                      </Link>
                     </li>
                   ))}
                 </ul>

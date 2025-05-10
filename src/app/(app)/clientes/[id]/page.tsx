@@ -7,6 +7,7 @@ import { Aside } from '@/components/Aside';
 import { api } from '@/services/api';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PageHeader } from '@/components/PageHeader';
 
 interface ServiceOrder {
   id: string;
@@ -74,75 +75,65 @@ export default function DetalhesClientePage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>
-              Detalhes do Cliente
-            </h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Informações completas do cliente selecionado.
-            </p>
-          </div>
-
-          {client && (
-            <a
-              href={`/clientes/editar/${client.id}`}
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-base hover:bg-TINTS_CARROT_100/90 transition self-start md:self-auto'
-            >
-              Editar
-            </a>
-          )}
-        </header>
+        {client && (
+          <PageHeader
+            title='Detalhes do Cliente'
+            subtitle='Informações completas do cliente selecionado.'
+            backHref='/clientes'
+            editHref={`/clientes/editar/${client.id}`}
+            showEdit
+            isDetails
+          />
+        )}
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-6'>
           {loading ? (
             <Skeleton className='h-60 w-full' />
           ) : client ? (
             <div className='space-y-6'>
+              {client.createdAt && (
+                <div className='text-sm text-LIGHT_500'>
+                  Criado em:{' '}
+                  {format(new Date(client.createdAt), 'dd/MM/yyyy HH:mm', {
+                    locale: ptBR,
+                  })}
+                </div>
+              )}
+
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Nome</h2>
-                  <p className='text-2xl font-bold text-LIGHT_100'>
+                  <h2 className='text-xs text-LIGHT_500 uppercase'>Nome</h2>
+                  <p className='text-lg font-semibold text-LIGHT_100'>
                     {client.name}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Telefone</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
+                  <h2 className='text-xs text-LIGHT_500 uppercase'>Telefone</h2>
+                  <p className='text-lg font-semibold  text-LIGHT_100'>
                     {formatPhone(client.phone)}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>E-mail</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
+                  <h2 className='text-xs text-LIGHT_500 uppercase'>E-mail</h2>
+                  <p className='text-lg font-semibold  text-LIGHT_100'>
                     {client.email}
                   </p>
                 </div>
                 {client.cpf && (
                   <div>
-                    <h2 className='text-sm text-LIGHT_500 uppercase'>CPF</h2>
-                    <p className='text-lg font-medium text-LIGHT_100'>
+                    <h2 className='text-xs text-LIGHT_500 uppercase'>CPF</h2>
+                    <p className='text-lg font-semibold  text-LIGHT_100'>
                       {formatCPF(client.cpf)}
                     </p>
                   </div>
                 )}
                 {client.address && (
                   <div>
-                    <h2 className='text-sm text-LIGHT_500 uppercase'>
+                    <h2 className='text-xs text-LIGHT_500 uppercase'>
                       Endereço
                     </h2>
-                    <p className='text-lg font-medium text-LIGHT_100'>
+                    <p className='text-lg font-semibold  text-LIGHT_100'>
                       {client.address}
-                    </p>
-                  </div>
-                )}
-                {client.createdAt && (
-                  <div>
-                    <h2 className='text-sm text-LIGHT_500 uppercase'>
-                      Adicionado em
-                    </h2>
-                    <p className='text-lg font-medium text-LIGHT_100'>
-                      {format(new Date(client.createdAt), 'dd/MM/yyyy HH:mm')}
                     </p>
                   </div>
                 )}
@@ -151,11 +142,11 @@ export default function DetalhesClientePage() {
               <hr className='border-DARK_900 my-4' />
 
               <div>
-                <h2 className='text-sm text-LIGHT_500 uppercase mb-4'>
+                <h2 className='text-xs text-LIGHT_500 uppercase mb-4'>
                   Ordens de Serviço
                 </h2>
                 {orders.length === 0 ? (
-                  <p className='text-LIGHT_500 text-sm'>
+                  <p className='text-LIGHT_500 text-xs'>
                     Nenhuma ordem de serviço encontrada.
                   </p>
                 ) : (
@@ -166,7 +157,7 @@ export default function DetalhesClientePage() {
                           href={`/ordens/${order.id}`}
                           className='text-base border border-DARK_600 rounded p-3 bg-DARK_700 w-full flex justify-between items-start gap-4 hover:bg-DARK_800 transition duration-200'
                         >
-                          <div className='text-base text-LIGHT_100 font-medium'>
+                          <div className='text-base text-LIGHT_100 font-semibold '>
                             {format(
                               new Date(order.createdAt),
                               "dd 'de' MMMM 'de' yyyy",

@@ -113,7 +113,7 @@ export function Aside() {
                 <MoreHorizontal size={20} />
                 Mais
               </button>
-              <div className='absolute bottom-12 left-[-24px] transform -translate-x-1/2 ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-2 transition-all z-50 w-40'>
+              <div className='absolute bottom-12 left-[-24px] transform -translate-x-1/2 ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 translate-y-2 transition-all z-50 w-40'>
                 <Link
                   href='/agendamentos'
                   className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'

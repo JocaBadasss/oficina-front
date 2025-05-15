@@ -44,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const error = err as { response?: { status: number } };
         if (error.response?.status === 401) {
           try {
-            await api.post('/refresh-token');
+            await api.get('/sessions/refresh');
             const response = await api.get<User>('/users/me');
             setUser(response.data);
           } catch {

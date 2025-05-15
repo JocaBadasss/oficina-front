@@ -8,7 +8,6 @@ import { mask } from 'remask';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
-import StepperStatus, { StepperMUI } from '@/components/Stepper';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
@@ -16,6 +15,7 @@ import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import StepperMUI from '@/components/Stepper';
 
 interface TrackingData {
   id: string;
@@ -215,7 +215,7 @@ export default function AcompanhamentoPage() {
               },
               {
                 label: 'Combustível',
-                value: fuelLevelLabels[data.fuelLevel] || '—',
+                value: fuelLevelLabels[data.fuelLevel ?? ''] || '—',
               },
               { label: 'Adblue', value: data.adblueLevel || '—' },
               { label: 'Pneus', value: data.tireStatus || '—' },

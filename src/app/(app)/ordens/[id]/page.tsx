@@ -6,7 +6,6 @@ import { Aside } from '@/components/Aside';
 import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
-import { ArrowLeft, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { PageHeader } from '@/components/PageHeader';
 

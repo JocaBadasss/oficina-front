@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+
 import { api } from '@/services/api';
 import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
@@ -21,102 +21,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
 import { PageHeader } from '@/components/PageHeader';
+import { fullSchema, NovoAtendimentoFormData } from './schemas/novoAtendimento';
+import { AxiosError } from 'axios';
+import { ChevronsDown, Plus } from 'lucide-react';
 
-const baseSchema = z.object({
-  // CLIENTE
-  name: z.string().optional(),
-  email: z.string().email('Email inválido').optional(),
-  phone: z
-    .string()
-    .min(10, 'Telefone inválido')
-    .transform((val) => val.replace(/\D/g, ''))
-    .optional(),
-  cpfOrCnpj: z
-    .string()
-    .transform((val) => val.replace(/\D/g, ''))
-    .refine((val) => val.length === 11 || val.length === 14, {
-      message: 'CPF ou CNPJ inválido',
-    })
-    .optional(),
-  address: z.string().optional(),
+interface Client {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  cpf?: string;
+  cnpj?: string;
+  address?: string;
+  createdAt?: string;
+}
 
-  // VEÍCULO
-  plate: z
-    .string()
-    .regex(/^[A-Z]{3}-\d{4}$/, 'Formato da placa inválido')
-    .optional(),
-  brand: z.string().optional(),
-  model: z.string().optional(),
-  year: z
-    .union([z.number(), z.nan()])
-    .optional()
-    .transform((val) => (isNaN(val) ? undefined : val)),
-
-  // ORDEM
-  km: z
-    .union([z.number(), z.nan()])
-    .optional()
-    .transform((val) => (isNaN(val) ? undefined : val)),
-  fuelLevel: z.string().optional(),
-  adblueLevel: z.string().optional(),
-  tireStatus: z.string().optional(),
-  mirrorStatus: z.string().optional(),
-  paintingStatus: z.string().optional(),
-  complaints: z.string().min(1, 'Reclamações são obrigatórias'),
-  notes: z.string().optional(),
-
-  // Flags de controle do fluxo (não vão pro backend)
-  createNewClient: z.boolean(),
-  selectedVehicleId: z.string().optional(),
-});
-
-// Schema com validações condicionais
-const fullSchema = baseSchema.superRefine((data, ctx) => {
-  if (data.createNewClient) {
-    if (!data.name)
-      ctx.addIssue({
-        path: ['name'],
-        message: 'Nome é obrigatório',
-        code: z.ZodIssueCode.custom,
-      });
-    if (!data.email)
-      ctx.addIssue({
-        path: ['email'],
-        message: 'Email é obrigatório',
-        code: z.ZodIssueCode.custom,
-      });
-    if (!data.phone)
-      ctx.addIssue({
-        path: ['phone'],
-        message: 'Telefone é obrigatório',
-        code: z.ZodIssueCode.custom,
-      });
-    if (!data.cpfOrCnpj)
-      ctx.addIssue({
-        path: ['cpfOrCnpj'],
-        message: 'CPF/CNPJ é obrigatório',
-        code: z.ZodIssueCode.custom,
-      });
-  }
-
-  if (!data.selectedVehicleId) {
-    if (!data.plate)
-      ctx.addIssue({
-        path: ['plate'],
-        message: 'Placa é obrigatória',
-        code: z.ZodIssueCode.custom,
-      });
-  }
-});
+interface Vehicle {
+  id: string;
+  plate: string;
+  model?: string;
+  brand?: string;
+  year?: number;
+  createdAt?: string;
+  clientId?: string;
+}
 
 export default function NovoAtendimentoPage() {
-  const [clients, setClients] = useState([]);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [vehicles, setVehicles] = useState([]);
-  const [selectedVehicleId, setSelectedVehicleId] = useState('');
+  const [clients, setClients] = useState<Client[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>('');
   const [createNewClient, setCreateNewClient] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -126,12 +61,20 @@ export default function NovoAtendimentoPage() {
     setValue,
     watch,
     reset,
-    formState: { errors },
-  } = useForm({
+    formState: { errors, isSubmitted },
+  } = useForm<NovoAtendimentoFormData>({
     resolver: zodResolver(fullSchema),
     defaultValues: {
       createNewClient: false,
       selectedVehicleId: '',
+      complaints: '',
+      notes: '',
+      km: undefined,
+      fuelLevel: '',
+      adblueLevel: '',
+      tireStatus: '',
+      mirrorStatus: '',
+      paintingStatus: '',
     },
   });
 
@@ -144,6 +87,7 @@ export default function NovoAtendimentoPage() {
         const res = await api.get('/clients');
         setClients(res.data);
       } catch (err) {
+        console.log(err);
         toast({ title: 'Erro ao carregar clientes', variant: 'destructive' });
       }
     }
@@ -157,25 +101,29 @@ export default function NovoAtendimentoPage() {
         const res = await api.get(`/clients/${selectedClient.id}/vehicles`);
         setVehicles(res.data);
       } catch (err) {
+        console.log(err);
         toast({ title: 'Erro ao carregar veículos', variant: 'destructive' });
       }
     }
     fetchVehicles();
-  }, [selectedClient]);
+  }, [selectedClient, toast]);
 
-  const onSubmit = async (data) => {
-    console.log('SUBMIT DATA:', data);
+  const onSubmit = async (data: NovoAtendimentoFormData) => {
+    console.log(data);
     try {
       let clientId = selectedClient?.id;
 
       if (createNewClient) {
+        const rawDoc = data.cpfOrCnpj!.replace(/\D/g, '');
+
         const clientRes = await api.post('/clients', {
           name: data.name,
-          cpf: data.cpfOrCnpj.replace(/\D/g, ''),
           email: data.email,
           phone: data.phone,
           address: data.address,
+          ...(rawDoc.length === 11 ? { cpf: rawDoc } : { cnpj: rawDoc }),
         });
+
         clientId = clientRes.data.id;
       }
 
@@ -207,18 +155,16 @@ export default function NovoAtendimentoPage() {
       toast({ title: 'Atendimento criado com sucesso!' });
       router.push(`/ordens/${orderRes.data.id}`);
       reset();
-    } catch (error) {
-      let backendMessage = 'Tente novamente.';
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string | string[] }>;
 
-      const raw = error?.response?.data?.message;
+      console.error('Erro ao finalizar atendimento:', error);
 
-      if (typeof raw === 'string') {
-        backendMessage = raw;
-      } else if (typeof raw === 'object' && Array.isArray(raw.message)) {
-        backendMessage = raw.message.join('\n');
-      } else if (typeof raw === 'object' && typeof raw.message === 'string') {
-        backendMessage = raw.message;
-      }
+      const rawMessage = error?.response?.data?.message;
+
+      const backendMessage = Array.isArray(rawMessage)
+        ? rawMessage.join('\n')
+        : rawMessage || 'Tente novamente.';
 
       toast({
         title: 'Erro ao finalizar atendimento',
@@ -260,45 +206,74 @@ export default function NovoAtendimentoPage() {
               onOpenChange={setIsPopoverOpen}
             >
               <PopoverTrigger asChild>
-                <div
+                <button
+                  type='button'
+                  className='w-full bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-left text-LIGHT_100 flex items-center justify-between'
                   onClick={() => setIsPopoverOpen(true)}
-                  className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 cursor-pointer'
                 >
-                  {selectedClient
-                    ? selectedClient.name
-                    : 'Selecione ou crie um cliente'}
-                </div>
+                  {selectedClient ? (
+                    selectedClient.name
+                  ) : createNewClient ? (
+                    <div className='inline-flex items-center gap-1'>
+                      <Plus className='w-4 h-4 opacity-70' />
+                      <span>Novo cliente</span>
+                    </div>
+                  ) : (
+                    'Selecione um cliente'
+                  )}
+                  <ChevronsDown className='ml-2 h-4 w-4 opacity-50' />
+                </button>
               </PopoverTrigger>
-              <PopoverContent className='w-full max-w-[90vw] sm:max-w-[400px] p-0'>
-                <Command>
-                  <CommandInput placeholder='Buscar cliente...' />
+
+              <PopoverContent
+                className='p-0 mt-1 z-50 w-[var(--radix-popover-trigger-width)] border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-lg rounded-none'
+                align='start'
+                sideOffset={4}
+              >
+                <Command className=' bg-DARK_800 '>
+                  <CommandInput
+                    placeholder='Buscar cliente...'
+                    className='h-9  bg-DARK_800'
+                  />
                   <CommandEmpty>Nenhum cliente encontrado.</CommandEmpty>
-                  <CommandGroup>
-                    {clients.map((client) => (
-                      <CommandItem
-                        key={client.id}
-                        onSelect={() => {
-                          setSelectedClient(client);
-                          setCreateNewClient(false);
-                          setIsPopoverOpen(false);
-                        }}
-                      >
-                        {client.name}
-                      </CommandItem>
-                    ))}
+
+                  <CommandGroup className=' bg-DARK_800'>
                     <CommandItem
+                      value='new'
+                      className='flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-TINTS_CAKE_200 bg-DARK_800  hover:bg-DARK_700 cursor-pointer'
                       onSelect={() => {
                         setSelectedClient(null);
                         setCreateNewClient(true);
                         setIsPopoverOpen(false);
                       }}
                     >
-                      + Criar novo cliente
+                      <Plus size={16} /> Criar novo cliente
                     </CommandItem>
+
+                    {clients.map((client) => (
+                      <CommandItem
+                        key={client.id}
+                        value={client.name}
+                        className='px-4 py-2 text-sm text-LIGHT_100 bg-DARK_800  hover:bg-DARK_700 cursor-pointer'
+                        onSelect={() => {
+                          setSelectedClient(client);
+                          setCreateNewClient(false);
+                          setIsPopoverOpen(false);
+                          setValue('clientId', client.id);
+                        }}
+                      >
+                        {client.name}
+                      </CommandItem>
+                    ))}
                   </CommandGroup>
                 </Command>
               </PopoverContent>
             </Popover>
+            {isSubmitted && !selectedClient && !createNewClient && (
+              <span className='text-red-500 text-xs mt-1 block'>
+                É necessário selecionar ou criar um cliente.
+              </span>
+            )}
 
             {createNewClient && (
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>

@@ -1,3 +1,4 @@
+// Página ajustada com loading visual
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -42,6 +43,7 @@ const statusOptions = [
   { label: 'Finalizado', value: 'FINALIZADO' },
 ];
 
+type FormData = z.infer<typeof orderSchema>;
 export default function EditarOrdemPage() {
   const {
     register,
@@ -50,10 +52,11 @@ export default function EditarOrdemPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(orderSchema) });
 
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const { id } = useParams();
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchOrder() {
@@ -61,6 +64,7 @@ export default function EditarOrdemPage() {
         const response = await api.get(`/service-orders/${id}`);
         reset(response.data);
       } catch (error) {
+        console.error('Erro ao buscar ordem:', error);
         toast({ title: 'Erro ao carregar ordem', variant: 'destructive' });
       } finally {
         setLoading(false);
@@ -69,14 +73,23 @@ export default function EditarOrdemPage() {
     fetchOrder();
   }, [id, reset, toast]);
 
-  async function onSubmit(data) {
+  async function onSubmit(data: FormData) {
     try {
       await api.patch(`/service-orders/${id}`, data);
       toast({ title: 'Ordem atualizada com sucesso!', variant: 'success' });
       router.push('/ordens');
     } catch (error) {
+      console.error('Erro ao atualizar ordem:', error);
       toast({ title: 'Erro ao atualizar ordem', variant: 'destructive' });
     }
+  }
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center min-h-screen bg-DARK_400 text-LIGHT_100'>
+        <p className='text-sm text-LIGHT_500'>Carregando ordem...</p>
+      </div>
+    );
   }
 
   return (

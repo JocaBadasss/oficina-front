@@ -1,7 +1,6 @@
-// Atualização com validação e formatação final do campo date+time
 'use client';
 
-import { useEffect, useState } from 'react';
+import { JSX, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -26,13 +25,24 @@ const schema = z.object({
   year: z
     .union([z.number(), z.nan()])
     .optional()
-    .transform((val) => (isNaN(val) ? undefined : val)),
+    .transform((val) => {
+      if (typeof val !== 'number' || isNaN(val)) return undefined;
+      return val;
+    }),
   date: z.string(),
   time: z.string().min(1, 'Escolha um horário'),
   notes: z.string().optional(),
 });
 
-const initialToast = {
+type FormData = z.infer<typeof schema>;
+
+const initialToast: {
+  title: string;
+  description: string;
+  variant: 'success';
+  duration: number;
+  icon: JSX.Element;
+} = {
   title: 'Agendamento criado com sucesso!',
   description: 'Você receberá uma confirmação por WhatsApp em breve.',
   variant: 'success',
@@ -55,7 +65,7 @@ export default function NovoAgendamentoPage() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -63,26 +73,29 @@ export default function NovoAgendamentoPage() {
 
   const selectedTime = watch('time');
 
-  useEffect(() => {
-    if (!date) return;
-    async function fetchTimes() {
-      setLoadingTimes(true);
-      try {
-        const res = await api.get('/appointments/available/hours', {
-          params: { date: format(date, 'yyyy-MM-dd') },
-        });
-        setAvailableTimes(res.data);
-      } catch (err) {
-        toast({ title: 'Erro ao carregar horários', variant: 'destructive' });
-      } finally {
-        setLoadingTimes(false);
-      }
-    }
-    fetchTimes();
-    setValue('date', format(date, 'yyyy-MM-dd'));
-  }, [date, setValue, toast]);
+  if (!date) return;
 
-  async function onSubmit(data) {
+  const formattedDate = format(date, 'yyyy-MM-dd');
+
+  async function fetchTimes() {
+    setLoadingTimes(true);
+    try {
+      const res = await api.get('/appointments/available/hours', {
+        params: { date: formattedDate },
+      });
+      setAvailableTimes(res.data);
+    } catch (err) {
+      console.log(err);
+      toast({ title: 'Erro ao carregar horários', variant: 'destructive' });
+    } finally {
+      setLoadingTimes(false);
+    }
+  }
+
+  fetchTimes();
+  setValue('date', formattedDate);
+
+  async function onSubmit(data: FormData) {
     try {
       setIsSubmitting(true);
 
@@ -110,6 +123,7 @@ export default function NovoAgendamentoPage() {
       setShowSuccess(true);
       setTimeout(() => router.push('/agendamentos'), 2000);
     } catch (err) {
+      console.log(err);
       toast({ title: 'Erro ao criar agendamento', variant: 'destructive' });
     } finally {
       setIsSubmitting(false);

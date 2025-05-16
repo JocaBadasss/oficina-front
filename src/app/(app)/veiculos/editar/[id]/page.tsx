@@ -8,8 +8,7 @@ import { api } from '@/services/api';
 import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { PageHeader } from '@/components/PageHeader';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -27,6 +26,19 @@ const vehicleSchema = z.object({
 
 type VehicleFormData = z.infer<typeof vehicleSchema>;
 
+type Vehicle = {
+  id: string;
+  plate: string;
+  brand: string;
+  model: string;
+  year: number;
+  clientId: string;
+  client: {
+    id: string;
+    name: string;
+  };
+};
+
 export default function EditarVeiculoPage() {
   const {
     register,
@@ -39,7 +51,7 @@ export default function EditarVeiculoPage() {
     resolver: zodResolver(vehicleSchema),
   });
 
-  const [vehicle, setVehicle] = useState<any>(null);
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams();
@@ -58,6 +70,7 @@ export default function EditarVeiculoPage() {
           year: data.year,
         });
       } catch (error) {
+        console.error('Erro ao carregar veículo:', error);
         toast({ title: 'Erro ao carregar veículo', variant: 'destructive' });
       }
     }
@@ -65,7 +78,7 @@ export default function EditarVeiculoPage() {
   }, [params.id, reset, toast]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value, { name }) => {
       if (name === 'plate' && value.plate) {
         const raw = value.plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
         const formatted =
@@ -84,6 +97,7 @@ export default function EditarVeiculoPage() {
       toast({ title: 'Veículo atualizado com sucesso!', variant: 'success' });
       router.push('/veiculos');
     } catch (error) {
+      console.error('Erro ao atualizar veículo:', error);
       toast({ title: 'Erro ao atualizar veículo', variant: 'destructive' });
     }
   }
@@ -93,21 +107,11 @@ export default function EditarVeiculoPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Editar Veículo</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Altere os dados do veículo selecionado.
-            </p>
-          </div>
-
-          <Link
-            href='/veiculos'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Editar veículo'
+          subtitle='Atualize as informações do veículo selecionado.'
+          backHref={`/veiculos/${params.id}`}
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6'>
           <form

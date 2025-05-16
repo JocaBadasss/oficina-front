@@ -29,7 +29,7 @@ export function Aside() {
   return (
     <>
       {/* Desktop Aside */}
-      <aside className='hidden md:fixed  md:inset-y-0 md:flex md:w-64 md:flex-col bg-DARK_700 p-6 space-y-6 pb-12 z-50'>
+      <aside className='hidden md:flex flex-col w-64 bg-DARK_700 p-6 space-y-6 pb-12'>
         <div className='text-2xl font-bold text-TINTS_CARROT_100 flex items-center gap-2'>
           <Image
             src='/gearIcon.svg'

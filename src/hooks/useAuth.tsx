@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
+import { logout } from '@/services/authService';
 import { useToast } from '@/components/ui/use-toast';
 
 interface User {
@@ -35,43 +36,49 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
   const { toast } = useToast();
 
-  async function loadUser() {
+  async function loadUser(isMounted: boolean) {
     try {
       const response = await api.get<User>('/users/me');
-      setUser(response.data);
-    } catch (err: unknown) {
-      if (typeof err === 'object' && err !== null && 'response' in err) {
-        const error = err as { response?: { status: number } };
-        if (error.response?.status === 401) {
-          try {
-            await api.get('/sessions/refresh');
-            const response = await api.get<User>('/users/me');
-            setUser(response.data);
-          } catch {
-            toast({
-              title: 'Sessão expirada',
-              description: 'Faça login novamente para continuar.',
-              variant: 'destructive',
-            });
-            router.push('/login');
-          }
-        }
-      } else {
-        console.error('Erro ao carregar usuário:', err);
+      if (isMounted) setUser(response.data);
+    } catch (err) {
+      console.error('Erro ao carregar usuário:', err);
+      if (isMounted) {
+        toast({
+          title: 'Sessão expirada',
+          description: 'Faça login novamente para continuar.',
+          variant: 'destructive',
+        });
+        setTimeout(() => {
+          router.push('/login');
+        }, 1000);
       }
     }
   }
 
   function signOut() {
-    api.post('/sessions/logout').finally(() => {
+    logout().finally(() => {
       setUser(null);
       router.push('/login');
+      toast({
+        title: 'Sessão encerrada',
+        description: 'Você foi desconectado.',
+        variant: 'destructive',
+      });
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
     });
   }
 
   useEffect(() => {
-    loadUser();
-  }, []);
+    let isMounted = true;
+
+    loadUser(isMounted);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [loadUser]);
 
   return (
     <AuthContext.Provider value={{ user, signOut }}>

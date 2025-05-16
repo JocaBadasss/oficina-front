@@ -11,6 +11,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
+import { PageHeader } from '@/components/PageHeader';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -96,21 +97,11 @@ export default function EditarClientePage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Editar Cliente</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Atualize as informações do cliente.
-            </p>
-          </div>
-
-          <Link
-            href='/clientes'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition self-start md:self-auto flex items-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Editar Cliente'
+          subtitle='Atualize as informações do cliente.'
+          backHref={`/clientes/${params.id}`}
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-6'>
           <form

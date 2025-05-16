@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { Aside } from '@/components/Aside';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
+import { PageHeader } from '@/components/PageHeader';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -75,21 +75,11 @@ export default function NovoClientePage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Novo Cliente</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Adicione um novo cliente ao sistema.
-            </p>
-          </div>
-
-          <Link
-            href='/clientes'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition self-start md:self-auto flex items-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Novo cliente'
+          subtitle='Cadastre um novo cliente.'
+          backHref='/clientes'
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-6'>
           <form

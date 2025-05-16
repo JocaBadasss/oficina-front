@@ -8,8 +8,7 @@ import { api } from '@/services/api';
 import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+import { PageHeader } from '@/components/PageHeader';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -49,6 +48,7 @@ export default function NovoVeiculoPage() {
         const response = await api.get('/clients');
         setClients(response.data);
       } catch (error) {
+        console.error('Erro ao buscar clientes:', error);
         toast({
           title: 'Erro ao carregar clientes',
           variant: 'destructive',
@@ -86,6 +86,7 @@ export default function NovoVeiculoPage() {
       });
       router.push('/veiculos');
     } catch (error) {
+      console.error('Erro ao criar veículo:', error);
       toast({
         title: 'Erro ao criar veículo',
         variant: 'destructive',
@@ -98,21 +99,11 @@ export default function NovoVeiculoPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Novo Veículo</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Cadastre um novo veículo no sistema.
-            </p>
-          </div>
-
-          <Link
-            href='/veiculos'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Novo Veículo'
+          subtitle='Cadastre uma novo veículo.'
+          backHref='/veiculos'
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6'>
           <form

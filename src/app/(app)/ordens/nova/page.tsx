@@ -8,8 +8,8 @@ import { useRouter } from 'next/navigation';
 import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+
+import { PageHeader } from '@/components/PageHeader';
 
 const orderSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -82,6 +82,7 @@ export default function NovaOrdemPage() {
         setClients(clientRes.data);
         setVehicles(vehicleRes.data);
       } catch (error) {
+        console.error('Erro ao buscar dados:', error);
         toast({
           title: 'Erro ao carregar dados',
           variant: 'destructive',
@@ -115,6 +116,7 @@ export default function NovaOrdemPage() {
       toast({ title: 'Ordem criada com sucesso!', variant: 'success' });
       router.push('/ordens');
     } catch (error) {
+      console.error('Erro ao criar ordem:', error);
       toast({ title: 'Erro ao criar ordem', variant: 'destructive' });
     }
   }
@@ -124,21 +126,11 @@ export default function NovaOrdemPage() {
       <Aside />
 
       <main className='flex-1 p-6 space-y-6'>
-        <header className='flex items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold font-roboto'>Nova Ordem</h1>
-            <p className='text-LIGHT_500 mt-1'>
-              Crie uma nova ordem de serviço.
-            </p>
-          </div>
-
-          <Link
-            href='/ordens'
-            className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center gap-2'
-          >
-            <ArrowLeft size={16} /> Voltar
-          </Link>
-        </header>
+        <PageHeader
+          title='Nova ordem de serviço'
+          subtitle='Cadastre uma nova ordem de serviço.'
+          backHref='/ordens'
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6'>
           <form

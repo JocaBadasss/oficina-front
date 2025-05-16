@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { login } from '@/services/authService';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,10 +36,12 @@ export default function LoginPage() {
       <div className='hidden md:flex md:w-1/2 items-center justify-center bg-secondary'>
         <div className='text-center'>
           <div className='flex items-center justify-center mb-4'>
-            <img
+            <Image
               src='/gearIcon.svg'
               alt='Ícone de engrenagem'
               className='w-12 h-12'
+              width={48}
+              height={48}
             />
 
             <h1 className='text-3xl font-bold text-primary '> OFICINA</h1>
@@ -55,10 +58,12 @@ export default function LoginPage() {
         <div className='w-full max-w-sm p-8 '>
           <div className='flex items-center justify-center flex-col'>
             <div className='flex items-center justify-center mb-4 md:hidden gap-2'>
-              <img
+              <Image
                 src='/gearIcon.svg'
                 alt='Ícone de engrenagem'
                 className='w-12 h-12'
+                width={48}
+                height={48}
               />
 
               <h1 className='text-3xl font-bold text-primary '> OFICINA</h1>

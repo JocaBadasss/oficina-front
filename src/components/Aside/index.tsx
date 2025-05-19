@@ -14,6 +14,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 const navItems = [
   { href: '/painel', icon: Home, label: 'Painel' },
@@ -24,6 +25,7 @@ const navItems = [
 ];
 
 export function Aside() {
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -109,31 +111,37 @@ export function Aside() {
 
           {/* Botão de mais opções */}
           <li className='relative'>
-            <div className='group relative'>
-              <button className='flex flex-col items-center text-xs gap-1 px-2 py-1 transition text-LIGHT_500 hover:text-TINTS_CARROT_100'>
+            <div className='relative'>
+              <button
+                onClick={() => setOpen((prev) => !prev)}
+                className='flex flex-col items-center text-xs gap-1 px-2 py-1 transition text-LIGHT_500 hover:text-TINTS_CARROT_100'
+              >
                 <MoreHorizontal size={20} />
                 Mais
               </button>
-              <div className='absolute bottom-12 left-[-24px] transform -translate-x-1/2 ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-hover:translate-y-0 translate-y-2 transition-all z-50 w-40'>
-                <Link
-                  href='/agendamentos'
-                  className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
-                >
-                  <CalendarClock size={16} /> Agendamentos
-                </Link>
-                <Link
-                  href='/veiculos'
-                  className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
-                >
-                  <Truck size={16} /> Veículos
-                </Link>
-                <Link
-                  href='/configuracoes'
-                  className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
-                >
-                  <Settings size={16} /> Configurações
-                </Link>
-              </div>
+
+              {open && (
+                <div className='absolute bottom-12 left-[250%] ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden z-50 w-40'>
+                  <Link
+                    href='/agendamentos'
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
+                  >
+                    <CalendarClock size={16} /> Agendamentos
+                  </Link>
+                  <Link
+                    href='/veiculos'
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
+                  >
+                    <Truck size={16} /> Veículos
+                  </Link>
+                  <Link
+                    href='/configuracoes'
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
+                  >
+                    <Settings size={16} /> Configurações
+                  </Link>
+                </div>
+              )}
             </div>
           </li>
         </ul>

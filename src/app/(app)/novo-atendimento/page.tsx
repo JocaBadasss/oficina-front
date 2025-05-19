@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { api } from '@/services/api';
-import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { mask } from 'remask';
@@ -25,6 +24,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { fullSchema, NovoAtendimentoFormData } from './schemas/novoAtendimento';
 import { AxiosError } from 'axios';
 import { ChevronsDown, Plus } from 'lucide-react';
+import { AppLayout } from '@/components/AppLayout';
 
 interface Client {
   id: string;
@@ -183,9 +183,7 @@ export default function NovoAtendimentoPage() {
   }, [selectedVehicleId, setValue]);
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-6 space-y-6 overflox-x-hidden'>
         <PageHeader
           title='Novo Atendimento'
@@ -682,6 +680,6 @@ export default function NovoAtendimentoPage() {
           </button>
         </form>
       </main>
-    </div>
+    </AppLayout>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Aside } from '@/components/Aside';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,6 +10,7 @@ import { api } from '@/services/api';
 import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -71,9 +71,7 @@ export default function NovoClientePage() {
   }
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Novo cliente'
@@ -212,6 +210,6 @@ export default function NovoClientePage() {
           </form>
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

@@ -1,9 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Aside } from '@/components/Aside';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,6 +9,7 @@ import { api } from '@/services/api';
 import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -93,9 +91,7 @@ export default function EditarClientePage() {
   }
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Editar Cliente'
@@ -232,6 +228,6 @@ export default function EditarClientePage() {
           </form>
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

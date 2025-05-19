@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Aside } from '@/components/Aside';
 import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 interface Order {
   id: string;
@@ -69,8 +69,8 @@ export default function DetalhesOrdemPage() {
   }, [id]);
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
+    <AppLayout>
+
 
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
@@ -207,6 +207,6 @@ export default function DetalhesOrdemPage() {
           )}
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { api } from '@/services/api';
-import { Aside } from '@/components/Aside';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 interface Appointment {
   id: string;
@@ -51,8 +51,7 @@ export default function DetalhesAgendamentoPage() {
   }, [id]);
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
+    <AppLayout>
 
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
@@ -129,6 +128,6 @@ export default function DetalhesAgendamentoPage() {
           )}
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

@@ -3,10 +3,11 @@ import { toast } from '@/components/ui/use-toast';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3333', // ajuste pra URL real se for o caso
+  baseURL: process.env.NEXT_PUBLIC_API_URL, // ajuste pra URL real se for o caso
   withCredentials: true, // essencial pra enviar cookies
 });
 
+let isRefreshing = false;
 // Interceptor para tentar refresh automático no 401
 api.interceptors.response.use(
   (response) => response,
@@ -18,22 +19,24 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      if (isRefreshing) return Promise.reject(error);
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
         await api.get('/sessions/refresh');
-        return api(originalRequest); // repete request original com novo token
-      } catch (error) {
-        console.error('Erro ao atualizar token:', error);
-        toast({
-          title: 'Sessão expirada',
-          description: 'Faça login novamente.',
-          variant: 'destructive',
-        });
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 1000);
+        isRefreshing = false;
+        return api(originalRequest); // tenta de novo a requisição original
+      } catch (err) {
+        isRefreshing = false;
+        toast({ title: 'Sessão expirada', variant: 'destructive' }); //colocar o toast
+
+        // 🔥 AQUI: impede que axios continue
+        window.location.href = '/login';
+        return Promise.reject(err); // ESSENCIAL PRA PARAR
       }
 
-      return Promise.reject(error);
     }
   }
 );

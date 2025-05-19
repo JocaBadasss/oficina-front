@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { Aside } from '@/components/Aside';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
 
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 const orderSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -122,9 +122,7 @@ export default function NovaOrdemPage() {
   }
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Nova ordem de serviço'
@@ -406,6 +404,6 @@ export default function NovaOrdemPage() {
           </form>
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

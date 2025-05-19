@@ -53,14 +53,7 @@ export function PageHeader({
         </div>
       ) : (
         <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
-          {backHref && (
-            <Link
-              href={backHref}
-              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center justify-center gap-2'
-            >
-              <ArrowLeft size={16} /> Voltar
-            </Link>
-          )}
+          {!isDetails && rightSlot}
           {isDetails && showEdit && editHref && (
             <Link
               href={editHref}
@@ -69,7 +62,14 @@ export function PageHeader({
               <Pencil size={16} /> Editar
             </Link>
           )}
-          {!isDetails && rightSlot}
+          {backHref && (
+            <Link
+              href={backHref}
+              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center justify-center gap-2'
+            >
+              <ArrowLeft size={16} /> Voltar
+            </Link>
+          )}
         </div>
       )}
     </header>

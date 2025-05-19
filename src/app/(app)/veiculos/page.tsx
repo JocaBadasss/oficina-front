@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Car, User, ArrowRight, Plus, Search, SquareStack } from 'lucide-react';
-import { Aside } from '@/components/Aside';
 import { api } from '@/services/api';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ResponsiveContainer, LineChart, Line } from 'recharts';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
+import { useRouter } from 'next/navigation';
 
 interface Vehicle {
   id: string;
@@ -46,6 +47,8 @@ export default function VeiculosPage() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+
   useEffect(() => {
     async function fetchVehicles() {
       try {
@@ -70,9 +73,7 @@ export default function VeiculosPage() {
   });
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Veículos'
@@ -121,65 +122,60 @@ export default function VeiculosPage() {
                     {filtered.map((vehicle) => (
                       <li
                         key={vehicle.id}
-                        className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4'
+                        className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4 hover:cursor-pointer'
+                        onClick={() => router.push(`/veiculos/${vehicle.id}`)}
                       >
-                        <Link
-                          href={`/veiculos/${vehicle.id}`}
-                          className='block space-y-4'
-                        >
-                          {/* Placa */}
-                          <div className='flex items-start gap-3'>
-                            <Car
-                              size={20}
-                              className='text-TINTS_CARROT_100 mt-0.5'
-                            />
-                            <div className='flex-1'>
-                              <p className='text-sm text-LIGHT_500'>Placa</p>
-                              <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
-                                {vehicle.plate}
-                              </p>
-                            </div>
+                        {/* Placa */}
+                        <div className='flex items-start gap-3'>
+                          <Car
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1'>
+                            <p className='text-sm text-LIGHT_500'>Placa</p>
+                            <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
+                              {vehicle.plate}
+                            </p>
                           </div>
+                        </div>
 
-                          {/* Modelo */}
-                          <div className='flex items-start gap-3'>
-                            <SquareStack
-                              size={20}
-                              className='text-TINTS_CARROT_100 mt-0.5'
-                            />
-                            <div className='flex-1'>
-                              <p className='text-sm text-LIGHT_500'>Modelo</p>
-                              <p className='text-base font-semibold text-LIGHT_100'>
-                                {vehicle.model} ({vehicle.brand}) -{' '}
-                                {vehicle.year}
-                              </p>
-                            </div>
+                        {/* Modelo */}
+                        <div className='flex items-start gap-3'>
+                          <SquareStack
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1'>
+                            <p className='text-sm text-LIGHT_500'>Modelo</p>
+                            <p className='text-base font-semibold text-LIGHT_100'>
+                              {vehicle.model} ({vehicle.brand}) - {vehicle.year}
+                            </p>
                           </div>
+                        </div>
 
-                          {/* Cliente */}
-                          <div className='flex items-start gap-3'>
-                            <User
-                              size={20}
-                              className='text-TINTS_CARROT_100 mt-0.5'
-                            />
-                            <div className='flex-1'>
-                              <p className='text-sm text-LIGHT_500'>Cliente</p>
-                              <a
-                                href={`/clientes/${vehicle.clientId}`}
-                                className='text-sm font-medium text-TINTS_CARROT_100 hover:underline'
-                              >
-                                {vehicle.client?.name}
-                              </a>
-                            </div>
+                        {/* Cliente */}
+                        <div className='flex items-start gap-3'>
+                          <User
+                            size={20}
+                            className='text-TINTS_CARROT_100 mt-0.5'
+                          />
+                          <div className='flex-1'>
+                            <p className='text-sm text-LIGHT_500'>Cliente</p>
+                            <a
+                              href={`/clientes/${vehicle.clientId}`}
+                              className='text-sm font-medium text-TINTS_CARROT_100 hover:underline'
+                            >
+                              {vehicle.client?.name}
+                            </a>
                           </div>
+                        </div>
 
-                          {/* Link final */}
-                          <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
-                            <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
-                              Ver detalhes <ArrowRight size={14} />
-                            </span>
-                          </div>
-                        </Link>
+                        {/* Link final */}
+                        <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
+                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
+                            Ver detalhes <ArrowRight size={14} />
+                          </span>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -223,6 +219,6 @@ export default function VeiculosPage() {
           </div>
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

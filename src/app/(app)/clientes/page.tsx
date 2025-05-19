@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { mask } from 'remask';
 import { Plus, Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Aside } from '@/components/Aside';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { api } from '@/services/api';
 import Link from 'next/link';
 import { User, Phone, Calendar, ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 interface Client {
   id: string;
@@ -53,9 +53,7 @@ export default function ClientesPage() {
   ];
 
   return (
-    <div className='flex flex-col md:flex-row min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
-
+    <AppLayout>
       <main className='flex-1 p-4 sm:p-6 space-y-6 w-full'>
         <PageHeader
           title='Clientes'
@@ -210,6 +208,6 @@ export default function ClientesPage() {
           </div>
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

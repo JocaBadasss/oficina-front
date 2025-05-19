@@ -10,10 +10,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
-import { Aside } from '@/components/Aside';
 import { mask } from 'remask';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
+import { AppLayout } from '@/components/AppLayout';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -145,8 +145,7 @@ export default function NovoAgendamentoPage() {
   }
 
   return (
-    <div className='flex min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
+    <AppLayout>
 
       <main className='flex-1 p-6 space-y-6'>
         <h1 className='text-3xl font-bold font-roboto'>Novo Agendamento</h1>
@@ -409,6 +408,6 @@ export default function NovoAgendamentoPage() {
           )}
         </form>
       </main>
-    </div>
+    </AppLayout>
   );
 }

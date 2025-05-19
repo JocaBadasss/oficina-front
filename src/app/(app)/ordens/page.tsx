@@ -1,9 +1,7 @@
-// código recebido colado aqui
-
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Aside } from '@/components/Aside';
+
 import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, Search } from 'lucide-react';
@@ -12,6 +10,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Car, User, Calendar, ClipboardList, ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
+import { AppLayout } from '@/components/AppLayout';
 
 interface Order {
   id: string;
@@ -63,8 +62,7 @@ export default function OrdensPage() {
   });
 
   return (
-    <div className='flex flex-col md:flex-row min-h-screen bg-DARK_400 text-LIGHT_100 font-poppins'>
-      <Aside />
+    <AppLayout>
 
       <main className='flex-1 p-4 sm:p-6 space-y-6'>
         <PageHeader
@@ -198,6 +196,6 @@ export default function OrdensPage() {
           )}
         </section>
       </main>
-    </div>
+    </AppLayout>
   );
 }

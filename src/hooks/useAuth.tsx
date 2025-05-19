@@ -7,7 +7,7 @@ import {
   useState,
   ReactNode,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { logout } from '@/services/authService';
 import { useToast } from '@/components/ui/use-toast';
@@ -33,27 +33,13 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [hasFetchedUser, setHasFetchedUser] = useState(false);
+
+  const pathname = usePathname();
+
   const router = useRouter();
   const { toast } = useToast();
-
-  async function loadUser(isMounted: boolean) {
-    try {
-      const response = await api.get<User>('/users/me');
-      if (isMounted) setUser(response.data);
-    } catch (err) {
-      console.error('Erro ao carregar usuário:', err);
-      if (isMounted) {
-        toast({
-          title: 'Sessão expirada',
-          description: 'Faça login novamente para continuar.',
-          variant: 'destructive',
-        });
-        setTimeout(() => {
-          router.push('/login');
-        }, 1000);
-      }
-    }
-  }
 
   function signOut() {
     logout().finally(() => {
@@ -73,12 +59,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     let isMounted = true;
 
-    loadUser(isMounted);
+    async function loadUser() {
+      if (isLoggingOut || hasFetchedUser) return;
+      if (pathname === '/login') return; // 👈 Ponto crucial
+
+      try {
+        const response = await api.get<User>('/users/me');
+        if (isMounted) {
+          setUser(response.data);
+          setHasFetchedUser(true);
+        }
+      } catch (err) {
+        console.log(err);
+        if (isMounted) {
+          setIsLoggingOut(true);
+          setTimeout(() => router.push('/login'), 1000);
+        }
+      }
+    }
+
+    loadUser();
 
     return () => {
       isMounted = false;
     };
-  }, [loadUser]);
+  }, [isLoggingOut, hasFetchedUser, router, pathname]);
 
   return (
     <AuthContext.Provider value={{ user, signOut }}>

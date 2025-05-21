@@ -9,13 +9,26 @@ import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { smartFormatPlate } from '@/utils/helpers/vehicles';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
   plate: z
     .string()
-    .min(8, 'Placa inválida')
-    .regex(/^[A-Z]{3}-\d{4}$/, 'Formato da placa inválido'),
+    .min(7, 'Placa inválida')
+    .refine(
+      (val) => {
+        const raw = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        return (
+          /^[A-Z]{3}[0-9]{4}$/.test(raw) || // Antiga sem hífen
+          /^[A-Z]{3}-[0-9]{4}$/.test(val) || // Antiga com hífen (visual)
+          /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(raw) // Mercosul
+        );
+      },
+      {
+        message: 'Formato de placa inválido',
+      }
+    ),
   brand: z.string().min(1, 'Marca é obrigatória'),
   model: z.string().min(1, 'Modelo é obrigatório'),
   year: z
@@ -61,13 +74,7 @@ export default function NovoVeiculoPage() {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'plate' && value.plate) {
-        const raw = value.plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        let formatted = raw;
-        if (raw.length > 3) {
-          formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}`;
-        }
-
-        // Só atualiza se for diferente
+        const formatted = smartFormatPlate(value.plate);
         if (formatted !== value.plate) {
           setValue('plate', formatted);
         }
@@ -86,6 +93,7 @@ export default function NovoVeiculoPage() {
       });
       router.push('/veiculos');
     } catch (error) {
+      console.log(error);
       console.error('Erro ao criar veículo:', error);
       toast({
         title: 'Erro ao criar veículo',
@@ -148,7 +156,7 @@ export default function NovoVeiculoPage() {
                 type='text'
                 id='plate'
                 {...register('plate')}
-                placeholder='ABC-1234'
+                placeholder='ABC-1234 ou BRA0A12'
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
               />
               {errors.plate && (

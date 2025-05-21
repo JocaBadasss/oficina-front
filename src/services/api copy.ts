@@ -20,20 +20,23 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       if (isRefreshing) return Promise.reject(error);
+
+      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
         await api.get('/sessions/refresh');
         isRefreshing = false;
-        return api(originalRequest);
+        return api(originalRequest); // tenta de novo a requisição original
       } catch (err) {
         isRefreshing = false;
-        toast({ title: 'Sessão expirada', variant: 'destructive' });
-        window.location.href = '/login';
-        return Promise.reject(err);
-      }
-    }
+        toast({ title: 'Sessão expirada', variant: 'destructive' }); //colocar o toast
 
-    return Promise.reject(error);
+        // 🔥 AQUI: impede que axios continue
+        window.location.href = '/login';
+        return Promise.reject(err); // ESSENCIAL PRA PARAR
+      }
+
+    }
   }
 );

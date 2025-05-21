@@ -6,10 +6,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/services/api';
-import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatCpfCnpjInput, formatPhoneInput } from '@/utils/helpers/clients';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -46,15 +46,12 @@ export default function EditarClientePage() {
     async function fetchClient() {
       try {
         const response = await api.get(`/clients/${params.id}`);
-        const { name, email, phone, address, cpf, cnpj } = response.data;
+        const { name, email, phone, address, cpfOrCnpj } = response.data;
         setValue('name', name);
         setValue('email', email);
-        setValue('phone', mask(phone, ['(99) 99999-9999']));
+        setValue('phone', formatPhoneInput(phone));
         setValue('address', address);
-        setValue(
-          'cpfOrCnpj',
-          mask(cpf || cnpj, ['999.999.999-99', '99.999.999/9999-99'])
-        );
+        setValue('cpfOrCnpj', formatCpfCnpjInput(cpfOrCnpj));
       } catch (error) {
         console.error('Erro ao buscar cliente:', error);
         toast({
@@ -73,8 +70,7 @@ export default function EditarClientePage() {
         email: data.email,
         phone: data.phone.replace(/\D/g, ''),
         address: data.address,
-        cpf: data.cpfOrCnpj?.length === 11 ? data.cpfOrCnpj : undefined,
-        cnpj: data.cpfOrCnpj?.length === 14 ? data.cpfOrCnpj : undefined,
+        cpfOrCnpj: data.cpfOrCnpj,
       });
       toast({
         title: 'Cliente atualizado com sucesso!',
@@ -158,7 +154,7 @@ export default function EditarClientePage() {
                 id='phone'
                 {...register('phone')}
                 onChange={(e) =>
-                  setValue('phone', mask(e.target.value, ['(99) 99999-9999']))
+                  setValue('phone', formatPhoneInput(e.target.value))
                 }
                 value={watch('phone') || ''}
                 placeholder='(00) 00000-0000'
@@ -182,14 +178,9 @@ export default function EditarClientePage() {
                 type='text'
                 id='cpfOrCnpj'
                 {...register('cpfOrCnpj')}
-                onChange={(e) => {
-                  const raw = e.target.value.replace(/\D/g, '');
-                  const newValue =
-                    raw.length <= 11
-                      ? mask(raw, ['999.999.999-99'])
-                      : mask(raw, ['99.999.999/9999-99']);
-                  setValue('cpfOrCnpj', newValue);
-                }}
+                onChange={(e) =>
+                  setValue('cpfOrCnpj', formatCpfCnpjInput(e.target.value))
+                }
                 value={watch('cpfOrCnpj') || ''}
                 placeholder='000.000.000-00 ou 00.000.000/0001-00'
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'

@@ -9,6 +9,7 @@ import { ResponsiveContainer, LineChart, Line } from 'recharts';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { useRouter } from 'next/navigation';
+import { formatPlate, formatVehicleInfo } from '@/utils/helpers/vehicles';
 
 interface Vehicle {
   id: string;
@@ -134,7 +135,7 @@ export default function VeiculosPage() {
                           <div className='flex-1'>
                             <p className='text-sm text-LIGHT_500'>Placa</p>
                             <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
-                              {vehicle.plate}
+                              {formatPlate(vehicle.plate)}
                             </p>
                           </div>
                         </div>
@@ -148,7 +149,11 @@ export default function VeiculosPage() {
                           <div className='flex-1'>
                             <p className='text-sm text-LIGHT_500'>Modelo</p>
                             <p className='text-base font-semibold text-LIGHT_100'>
-                              {vehicle.model} ({vehicle.brand}) - {vehicle.year}
+                              {formatVehicleInfo(
+                                vehicle.model,
+                                vehicle.brand,
+                                vehicle.year
+                              )}
                             </p>
                           </div>
                         </div>

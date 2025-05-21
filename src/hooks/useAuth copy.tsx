@@ -23,8 +23,6 @@ interface User {
 interface AuthContextType {
   user: User | null;
   signOut: () => void;
-  isLoggingOut: boolean;
-  isAuthenticated: boolean;
 }
 
 interface AuthProviderProps {
@@ -36,21 +34,25 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [hasFetchedUser, setHasFetchedUser] = useState(false);
 
   const pathname = usePathname();
+
   const router = useRouter();
   const { toast } = useToast();
 
   function signOut() {
-    setIsLoggingOut(true);
     logout().finally(() => {
       setUser(null);
+      router.push('/login');
       toast({
         title: 'Sessão encerrada',
         description: 'Você foi desconectado.',
         variant: 'destructive',
       });
-      router.push('/login');
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
     });
   }
 
@@ -58,23 +60,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     let isMounted = true;
 
     async function loadUser() {
-      if (isLoggingOut || user) return;
-      if (pathname === '/login') return;
+      if (isLoggingOut || hasFetchedUser) return;
+      if (pathname === '/login') return; // 👈 Ponto crucial
 
       try {
         const response = await api.get<User>('/users/me');
         if (isMounted) {
           setUser(response.data);
+          setHasFetchedUser(true);
         }
       } catch (err) {
         console.log(err);
         if (isMounted) {
-          toast({
-            title: 'Sessão expirada',
-            description: 'Faça login novamente.',
-            variant: 'destructive',
-          });
-          signOut();
+          setIsLoggingOut(true);
+          setTimeout(() => router.push('/login'), 1000);
         }
       }
     }
@@ -84,17 +83,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => {
       isMounted = false;
     };
-  }, [isLoggingOut, user, router, pathname, signOut, toast]);
+  }, [isLoggingOut, hasFetchedUser, router, pathname]);
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        signOut,
-        isLoggingOut,
-        isAuthenticated: !!user,
-      }}
-    >
+    <AuthContext.Provider value={{ user, signOut }}>
       {children}
     </AuthContext.Provider>
   );

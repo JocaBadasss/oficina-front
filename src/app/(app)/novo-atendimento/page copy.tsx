@@ -108,56 +108,56 @@ export default function NovoAtendimentoPage() {
   }, [selectedClient, toast]);
 
   const onSubmit = async (data: NovoAtendimentoFormData) => {
+    console.log(data);
     try {
-      // 🚗 Dados da ordem de serviço — sempre enviados
-      const serviceData = {
+      let clientId = selectedClient?.id;
+
+      if (createNewClient) {
+        const rawDoc = data.cpfOrCnpj!.replace(/\D/g, '');
+
+        const clientRes = await api.post('/clients', {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          cpfOrCnpj: rawDoc,
+        });
+
+        clientId = clientRes.data.id;
+      }
+
+      let vehicleId = selectedVehicleId;
+
+      if (!selectedVehicleId) {
+        const vehicleRes = await api.post('/vehicles', {
+          clientId,
+          plate: data.plate,
+          brand: data.brand,
+          model: data.model,
+          year: data.year,
+        });
+        vehicleId = vehicleRes.data.id;
+      }
+
+      const orderRes = await api.post('/service-orders', {
+        vehicleId,
+        km: data.km,
+        fuelLevel: data.fuelLevel,
+        adblueLevel: data.adblueLevel,
+        tireStatus: data.tireStatus,
+        mirrorStatus: data.mirrorStatus,
+        paintingStatus: data.paintingStatus,
         complaints: data.complaints,
-        notes: data.notes || undefined,
-        km: data.km || undefined,
-        fuelLevel: data.fuelLevel || undefined,
-        adblueLevel: data.adblueLevel || undefined,
-        tireStatus: data.tireStatus || undefined,
-        mirrorStatus: data.mirrorStatus || undefined,
-        paintingStatus: data.paintingStatus || undefined,
-      };
-
-      // 👤 Dados do cliente — depende do fluxo
-      const clientData = createNewClient
-        ? {
-            cpfOrCnpj: data.cpfOrCnpj?.replace(/\D/g, ''),
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            address: data.address || undefined,
-          }
-        : selectedClient
-        ? { clientId: selectedClient.id }
-        : {};
-
-      // 🚘 Dados do veículo — depende do fluxo
-      const vehicleData = selectedVehicleId
-        ? { vehicleId: selectedVehicleId }
-        : {
-            plate: data.plate?.replace('-', '').toUpperCase(),
-            brand: data.brand || undefined,
-            model: data.model || undefined,
-            year: data.year || undefined,
-          };
-
-      // 🧱 Junta tudo no payload final
-      const payload = {
-        ...serviceData,
-        ...clientData,
-        ...vehicleData,
-      };
-
-      const res = await api.post('/service-orders/full', payload);
+        notes: data.notes,
+      });
 
       toast({ title: 'Atendimento criado com sucesso!' });
-      router.push(`/ordens/${res.data.orderId}`);
+      router.push(`/ordens/${orderRes.data.id}`);
       reset();
     } catch (err) {
       const error = err as AxiosError<{ message?: string | string[] }>;
+
+      console.error('Erro ao finalizar atendimento:', error);
 
       const rawMessage = error?.response?.data?.message;
 

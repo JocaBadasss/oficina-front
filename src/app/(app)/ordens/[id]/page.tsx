@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatModelBrand } from '@/utils/helpers/vehicles';
 
 interface Order {
   id: string;
@@ -70,8 +71,6 @@ export default function DetalhesOrdemPage() {
 
   return (
     <AppLayout>
-
-
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Ordem de Serviço'
@@ -110,7 +109,7 @@ export default function DetalhesOrdemPage() {
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>Veículo</h2>
                   <p className='text-lg font-medium text-LIGHT_100'>
-                    {order.vehicle.model} ({order.vehicle.brand})
+                    {formatModelBrand(order.vehicle.model, order.vehicle.brand)}
                   </p>
                 </div>
                 <div>

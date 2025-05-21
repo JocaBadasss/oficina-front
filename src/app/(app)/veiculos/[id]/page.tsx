@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatPlate } from '@/utils/helpers/vehicles';
 
 interface Vehicle {
   id: string;
@@ -75,25 +76,25 @@ export default function DetalhesVeiculoPage() {
                 <div>
                   <h2 className='text-sm text-LIGHT_500 uppercase'>Placa</h2>
                   <p className='text-lg font-semibold text-TINTS_CAKE_200'>
-                    {vehicle.plate}
+                    {formatPlate(vehicle.plate)}
                   </p>
                 </div>
                 <div>
                   <h2 className='text-sm text-LIGHT_500 uppercase'>Ano</h2>
                   <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.year}
+                    {vehicle.year || "-"}
                   </p>
                 </div>
                 <div>
                   <h2 className='text-sm text-LIGHT_500 uppercase'>Marca</h2>
                   <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.brand}
+                    {vehicle.brand || "-"}
                   </p>
                 </div>
                 <div>
                   <h2 className='text-sm text-LIGHT_500 uppercase'>Modelo</h2>
                   <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.model}
+                    {vehicle.model || "-"}
                   </p>
                 </div>
                 <div>

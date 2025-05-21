@@ -7,10 +7,10 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
-import { mask } from 'remask';
 import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatCpfCnpjInput, formatPhoneInput } from '@/utils/helpers/clients';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -51,8 +51,7 @@ export default function NovoClientePage() {
         email: data.email,
         phone: data.phone.replace(/\D/g, ''),
         address: data.address,
-        cpf: data.cpfOrCnpj?.length === 11 ? data.cpfOrCnpj : undefined,
-        cnpj: data.cpfOrCnpj?.length === 14 ? data.cpfOrCnpj : undefined,
+        cpfOrCnpj: data.cpfOrCnpj,
       });
       toast({
         title: 'Cliente cadastrado com sucesso!',
@@ -138,7 +137,7 @@ export default function NovoClientePage() {
                 id='phone'
                 {...register('phone')}
                 onChange={(e) =>
-                  setValue('phone', mask(e.target.value, ['(99) 99999-9999']))
+                  setValue('phone', formatPhoneInput(e.target.value))
                 }
                 value={watch('phone') || ''}
                 placeholder='(00) 00000-0000'
@@ -163,12 +162,7 @@ export default function NovoClientePage() {
                 id='cpfOrCnpj'
                 {...register('cpfOrCnpj')}
                 onChange={(e) => {
-                  const raw = e.target.value.replace(/\D/g, '');
-                  const newValue =
-                    raw.length <= 11
-                      ? mask(raw, ['999.999.999-99'])
-                      : mask(raw, ['99.999.999/9999-99']);
-                  setValue('cpfOrCnpj', newValue);
+                  setValue('cpfOrCnpj', formatCpfCnpjInput(e.target.value));
                 }}
                 value={watch('cpfOrCnpj') || ''}
                 placeholder='000.000.000-00 ou 00.000.000/0001-00'

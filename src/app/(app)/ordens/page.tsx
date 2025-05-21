@@ -11,6 +11,7 @@ import { ptBR } from 'date-fns/locale';
 import { Car, User, Calendar, ClipboardList, ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatVehicleLine } from '@/utils/helpers/vehicles';
 
 interface Order {
   id: string;
@@ -63,7 +64,6 @@ export default function OrdensPage() {
 
   return (
     <AppLayout>
-
       <main className='flex-1 p-4 sm:p-6 space-y-6'>
         <PageHeader
           title='Ordens de Serviço'
@@ -149,8 +149,11 @@ export default function OrdensPage() {
                       <div className='flex-1 min-w-0'>
                         <p className='text-sm text-LIGHT_500'>Veículo</p>
                         <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
-                          {order.vehicle.plate} — {order.vehicle.model} (
-                          {order.vehicle.brand})
+                          {formatVehicleLine({
+                            plate: order.vehicle.plate,
+                            model: order.vehicle.model,
+                            brand: order.vehicle.brand,
+                          })}
                         </p>
                       </div>
                     </div>

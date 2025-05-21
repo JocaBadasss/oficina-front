@@ -10,6 +10,8 @@ import { api } from '@/services/api';
 
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
+import { formatVehicleLine } from '@/utils/helpers/vehicles';
 
 const orderSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -64,6 +66,8 @@ export default function NovaOrdemPage() {
     resolver: zodResolver(orderSchema),
   });
 
+  const kmValue = watch('km')?.toString() ?? '';
+
   const [clients, setClients] = useState<Client[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
@@ -110,6 +114,8 @@ export default function NovaOrdemPage() {
       complaints: data.complaints,
       notes: data.notes,
     };
+
+    console.log(payload);
 
     try {
       await api.post('/service-orders', payload);
@@ -182,7 +188,11 @@ export default function NovaOrdemPage() {
                     key={vehicle.id}
                     value={vehicle.id}
                   >
-                    {vehicle.plate} - {vehicle.model} ({vehicle.brand})
+                    {formatVehicleLine({
+                      plate: vehicle.plate,
+                      model: vehicle.model,
+                      brand: vehicle.brand,
+                    })}
                   </option>
                 ))}
               </select>
@@ -346,11 +356,17 @@ export default function NovaOrdemPage() {
                 KM Atual
               </label>
               <input
-                type='number'
+                type='text'
+                inputMode='numeric'
                 id='km'
-                {...register('km', { valueAsNumber: true })}
+                value={formatKmForDisplay(kmValue)}
+                onChange={(e) => {
+                  const raw = parseKmInput(e.target.value);
+                  setValue('km', raw, { shouldValidate: true });
+                }}
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
               />
+
               {errors.km && (
                 <span className='text-red-500 text-xs'>
                   {errors.km.message}

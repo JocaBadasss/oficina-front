@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,7 +14,6 @@ import { mask } from 'remask';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
 import { AppLayout } from '@/components/AppLayout';
-import { AxiosError } from 'axios';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -34,17 +33,6 @@ const schema = z.object({
   time: z.string().min(1, 'Escolha um horário'),
   notes: z.string().optional(),
 });
-
-interface ValidationErrorResponse {
-  statusCode: number;
-  code: string;
-  message:
-    | string
-    | {
-        code: string;
-        message: string[];
-      };
-}
 
 type FormData = z.infer<typeof schema>;
 
@@ -117,7 +105,7 @@ export default function NovoAgendamentoPage() {
       const payload = {
         name: data.name,
         phone: data.phone.replace(/\D/g, ''),
-        cpfOrCnpj: data.cpf.replace(/\D/g, ''),
+        cpf: data.cpf.replace(/\D/g, ''),
         plate: data.plate,
         brand: data.brand,
         model: data.model,
@@ -131,22 +119,10 @@ export default function NovoAgendamentoPage() {
       setShowSuccess(true);
       setTimeout(() => router.push('/agendamentos'), 2000);
     } catch (err) {
-      const axiosError = err as AxiosError;
-      const errorData = axiosError.response?.data as ValidationErrorResponse;
-
-      let errorMessage = 'Erro ao criar agendamento';
-
-      if (typeof errorData?.message === 'string') {
-        errorMessage = errorData.message;
-      } else if (Array.isArray(errorData?.message?.message)) {
-        errorMessage = errorData.message.message.join(', ');
-      }
-
-      toast({
-        title: 'Erro ao criar agendamento',
-        description: errorMessage,
-        variant: 'destructive',
-      });
+      console.log(err);
+      toast({ title: 'Erro ao criar agendamento', variant: 'destructive' });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -195,6 +171,34 @@ export default function NovoAgendamentoPage() {
             onSubmit={handleSubmit(onSubmit)}
             className='space-y-6'
           >
+            <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+              <h2 className='text-xl font-semibold text-LIGHT_200'>
+                Escolha a data
+              </h2>
+              <div className='flex justify-center items-center'>
+                <Calendar
+                  mode='single'
+                  selected={date}
+                  onSelect={setDate}
+                  locale={ptBR}
+                  modifiersClassNames={{
+                    weekend: 'bg-TINTS_TOMATO_200',
+                  }}
+                  modifiers={{
+                    weekend: (day) => {
+                      const dayIndex = day.getDay(); // 0 = Domingo, 6 = Sábado
+                      return dayIndex === 0 || dayIndex === 6;
+                    },
+                  }}
+                  disabled={(date) => {
+                    const d = date.getDay();
+                    return d === 0 || d === 6; // Domingo ou Sábado
+                  }}
+                  className='max-w-sm flex justify-center self-center w-full rounded-md border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-md'
+                />
+              </div>
+            </section>
+
             {date && (
               <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
                 <h2 className='text-xl font-semibold text-LIGHT_200'>

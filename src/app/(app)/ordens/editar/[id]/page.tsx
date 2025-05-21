@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 
 const orderSchema = z.object({
   fuelLevel: z.string().min(1, 'Nível de combustível é obrigatório'),
@@ -48,12 +49,16 @@ export default function EditarOrdemPage() {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({ resolver: zodResolver(orderSchema) });
 
   const router = useRouter();
   const { toast } = useToast();
   const { id } = useParams();
+
+  const kmValue = watch('km')?.toString() ?? '';
 
   const [loading, setLoading] = useState(true);
 
@@ -171,9 +176,14 @@ export default function EditarOrdemPage() {
                 KM Atual
               </label>
               <input
-                type='number'
+                type='text'
+                inputMode='numeric'
                 id='km'
-                {...register('km', { valueAsNumber: true })}
+                value={formatKmForDisplay(kmValue)}
+                onChange={(e) => {
+                  const raw = parseKmInput(e.target.value);
+                  setValue('km', raw, { shouldValidate: true });
+                }}
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
               />
               {errors.km && (

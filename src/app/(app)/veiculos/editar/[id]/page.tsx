@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useRouter, useParams } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { smartFormatPlate } from '@/utils/helpers/vehicles';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -64,7 +65,7 @@ export default function EditarVeiculoPage() {
         setVehicle(data);
         reset({
           clientId: data.clientId,
-          plate: data.plate,
+          plate: smartFormatPlate(data.plate),
           brand: data.brand,
           model: data.model,
           year: data.year,
@@ -80,9 +81,7 @@ export default function EditarVeiculoPage() {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'plate' && value.plate) {
-        const raw = value.plate.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        const formatted =
-          raw.length > 3 ? `${raw.slice(0, 3)}-${raw.slice(3, 7)}` : raw;
+        const formatted = smartFormatPlate(value.plate);
         if (formatted !== value.plate) {
           setValue('plate', formatted);
         }
@@ -143,7 +142,7 @@ export default function EditarVeiculoPage() {
                 type='text'
                 id='plate'
                 {...register('plate')}
-                placeholder='ABC-1234'
+                placeholder='ABC-1234 ou BRA0A12'
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
               />
               {errors.plate && (

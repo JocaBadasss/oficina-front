@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { formatCpfOrCnpj } from '@/utils/helpers/clients';
 
 interface ServiceOrder {
   id: string;
@@ -26,13 +27,9 @@ interface Client {
   name: string;
   phone: string;
   email: string;
-  cpf?: string;
+  cpfOrCnpj?: string;
   address?: string;
   createdAt?: string;
-}
-
-function formatCPF(cpf: string): string {
-  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
 function formatPhone(phone: string): string {
@@ -52,6 +49,8 @@ export default function DetalhesClientePage() {
           api.get<Client>(`/clients/${params.id}`),
           api.get<ServiceOrder[]>(`/clients/${params.id}/orders`),
         ]);
+
+        console.log(clientRes.data);
 
         const sortedOrders = ordersRes.data.sort(
           (a, b) =>
@@ -117,11 +116,13 @@ export default function DetalhesClientePage() {
                     {client.email}
                   </p>
                 </div>
-                {client.cpf && (
+                {client.cpfOrCnpj && (
                   <div>
-                    <h2 className='text-xs text-LIGHT_500 uppercase'>CPF</h2>
+                    <h2 className='text-xs text-LIGHT_500 uppercase'>
+                      CPF ou CNPJ
+                    </h2>
                     <p className='text-lg font-semibold  text-LIGHT_100'>
-                      {formatCPF(client.cpf)}
+                      {formatCpfOrCnpj(client.cpfOrCnpj)}
                     </p>
                   </div>
                 )}

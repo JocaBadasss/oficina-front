@@ -28,6 +28,7 @@ export default function ClientesPage() {
       try {
         const response = await api.get<Client[]>('/clients');
         setClients(response.data);
+        
       } catch (error) {
         console.error('Erro ao buscar clientes:', error);
       } finally {

@@ -15,12 +15,29 @@ import { Loader2, CheckCircle2 } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
 import { AppLayout } from '@/components/AppLayout';
 import { AxiosError } from 'axios';
+import { PageHeader } from '@/components/PageHeader';
+import { smartFormatPlate } from '@/utils/helpers/vehicles';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
   phone: z.string().min(10, 'Telefone inválido'),
   cpf: z.string().min(11, 'CPF inválido'),
-  plate: z.string().min(7, 'Placa é obrigatória'),
+  plate: z
+    .string()
+    .min(7, 'Placa inválida')
+    .refine(
+      (val) => {
+        const raw = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        return (
+          /^[A-Z]{3}[0-9]{4}$/.test(raw) || // Antiga sem hífen
+          /^[A-Z]{3}-[0-9]{4}$/.test(val) || // Antiga com hífen (visual)
+          /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(raw) // Mercosul
+        );
+      },
+      {
+        message: 'Formato de placa inválido',
+      }
+    ),
   brand: z.string().optional(),
   model: z.string().optional(),
   year: z
@@ -74,10 +91,21 @@ export default function NovoAgendamentoPage() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode: 'onChange',
   });
 
   const selectedTime = watch('time');
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'plate' && value.plate) {
+        const formatted = smartFormatPlate(value.plate);
+        if (formatted !== value.plate) {
+          setValue('plate', formatted);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   useEffect(() => {
     if (!date) return;
@@ -167,10 +195,10 @@ export default function NovoAgendamentoPage() {
   return (
     <AppLayout>
       <main className='flex-1 p-6 space-y-6'>
-        <h1 className='text-3xl font-bold font-roboto'>Novo Agendamento</h1>
-        <p className='text-LIGHT_500'>
-          Escolha a data e horário disponíveis e preencha os dados.
-        </p>
+        <PageHeader
+          title='Novo agendamento'
+          backHref='/agendamentos'
+        />
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
           <h2 className='text-xl font-semibold text-LIGHT_200'>
@@ -324,16 +352,6 @@ export default function NovoAgendamentoPage() {
                       type='text'
                       placeholder='ABC-1234'
                       {...register('plate')}
-                      onChange={(e) => {
-                        const raw = e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z0-9]/g, '');
-                        let formatted = raw;
-                        if (raw.length > 3)
-                          formatted = `${raw.slice(0, 3)}-${raw.slice(3, 7)}`;
-                        setValue('plate', formatted);
-                      }}
-                      value={watch('plate') || ''}
                       className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
                     />
                     {errors.plate && (

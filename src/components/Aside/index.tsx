@@ -19,8 +19,8 @@ import { useState } from 'react';
 const navItems = [
   { href: '/painel', icon: Home, label: 'Painel' },
   { href: '/clientes', icon: Users, label: 'Clientes' },
-  { href: '/ordens', icon: Wrench, label: 'Ordens' },
   { href: '/veiculos', icon: Truck, label: 'Veículos' },
+  { href: '/ordens', icon: Wrench, label: 'Ordens' },
   { href: '/agendamentos', icon: CalendarClock, label: 'Agendamentos' },
 ];
 

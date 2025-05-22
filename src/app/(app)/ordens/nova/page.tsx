@@ -12,6 +12,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 import { formatVehicleLine } from '@/utils/helpers/vehicles';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 const orderSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -20,7 +21,9 @@ const orderSchema = z.object({
   adblueLevel: z.string().min(1, 'Nível de Arla é obrigatório'),
   km: z
     .number({ invalid_type_error: 'KM deve ser um número' })
-    .min(0, 'KM inválido'),
+    .min(0, 'KM inválido')
+    .int()
+    .max(5_000_000, 'KM muito alto — confere esse valor aí!'),
   tireStatus: z.string().min(1, 'Estado dos pneus é obrigatório'),
   mirrorStatus: z.string().min(1, 'Espelhos é obrigatório'),
   paintingStatus: z.string().min(1, 'Pintura é obrigatória'),
@@ -71,10 +74,16 @@ export default function NovaOrdemPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const router = useRouter();
   const { toast } = useToast();
 
   const selectedClientId = watch('clientId');
+
+  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setSelectedFiles(files);
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -104,6 +113,7 @@ export default function NovaOrdemPage() {
 
   async function onSubmit(data: OrderFormData) {
     const payload = {
+      clientId: data.clientId,
       vehicleId: data.vehicleId,
       fuelLevel: data.fuelLevel,
       adblueLevel: data.adblueLevel,
@@ -117,13 +127,27 @@ export default function NovaOrdemPage() {
 
     console.log(payload);
 
+    const formData = new FormData();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
+
+    selectedFiles.forEach((file) => {
+      formData.append('files', file);
+    });
+
     try {
-      await api.post('/service-orders', payload);
+      await api.post('/service-orders/complete', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       toast({ title: 'Ordem criada com sucesso!', variant: 'success' });
       router.push('/ordens');
     } catch (error) {
-      console.error('Erro ao criar ordem:', error);
-      toast({ title: 'Erro ao criar ordem', variant: 'destructive' });
+      handleAxiosError(error, 'Erro ao criar ordem');
     }
   }
 
@@ -407,6 +431,33 @@ export default function NovaOrdemPage() {
                 placeholder='Informações adicionais...'
                 className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none min-h-[80px]'
               />
+            </div>
+
+            <div className='md:col-span-2 flex flex-col gap-2'>
+              <label
+                htmlFor='photos'
+                className='text-sm text-LIGHT_500'
+              >
+                Imagens (opcional)
+              </label>
+              <input
+                id='photos'
+                type='file'
+                multiple
+                accept='image/*'
+                onChange={handleFiles}
+                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+              />
+              <div className='flex flex-wrap gap-2'>
+                {selectedFiles.map((file, idx) => (
+                  <span
+                    key={idx}
+                    className='text-xs text-LIGHT_400 bg-DARK_900 rounded px-2 py-1'
+                  >
+                    {file.name}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className='md:col-span-2'>

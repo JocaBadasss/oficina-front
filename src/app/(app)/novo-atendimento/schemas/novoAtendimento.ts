@@ -22,8 +22,20 @@ export const baseSchema = z.object({
   address: z.string().optional(),
   plate: z
     .string()
-    .regex(/^[A-Z]{3}-\d{4}$/, 'Formato da placa inválido')
-    .optional(),
+    .min(7, 'Placa inválida')
+    .refine(
+      (val) => {
+        const raw = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        return (
+          /^[A-Z]{3}[0-9]{4}$/.test(raw) || // Antiga sem hífen
+          /^[A-Z]{3}-[0-9]{4}$/.test(val) || // Antiga com hífen (visual)
+          /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(raw) // Mercosul
+        );
+      },
+      {
+        message: 'Formato de placa inválido',
+      }
+    ),
   brand: z.string().optional(),
   model: z.string().optional(),
   year: z.preprocess(

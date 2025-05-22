@@ -15,8 +15,20 @@ const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
   plate: z
     .string()
-    .min(8, 'Placa inválida')
-    .regex(/^[A-Z]{3}-\d{4}$/, 'Formato da placa inválido'),
+    .min(7, 'Placa inválida')
+    .refine(
+      (val) => {
+        const raw = val.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        return (
+          /^[A-Z]{3}[0-9]{4}$/.test(raw) || // Antiga sem hífen
+          /^[A-Z]{3}-[0-9]{4}$/.test(val) || // Antiga com hífen (visual)
+          /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/.test(raw) // Mercosul
+        );
+      },
+      {
+        message: 'Formato de placa inválido',
+      }
+    ),
   brand: z.string().min(1, 'Marca é obrigatória'),
   model: z.string().min(1, 'Modelo é obrigatório'),
   year: z

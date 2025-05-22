@@ -22,9 +22,9 @@ import {
 } from '@/components/ui/popover';
 import { PageHeader } from '@/components/PageHeader';
 import { fullSchema, NovoAtendimentoFormData } from './schemas/novoAtendimento';
+import { AxiosError } from 'axios';
 import { ChevronsDown, Plus } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
-import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 interface Client {
   id: string;
@@ -53,12 +53,6 @@ export default function NovoAtendimentoPage() {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string>('');
   const [createNewClient, setCreateNewClient] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
-  function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles(files);
-  }
 
   const {
     register,
@@ -85,10 +79,6 @@ export default function NovoAtendimentoPage() {
 
   const { toast } = useToast();
   const router = useRouter();
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   useEffect(() => {
     async function fetchClients() {
@@ -119,57 +109,67 @@ export default function NovoAtendimentoPage() {
 
   const onSubmit = async (data: NovoAtendimentoFormData) => {
     try {
-      const formData = new FormData();
+      // 🚗 Dados da ordem de serviço — sempre enviados
+      const serviceData = {
+        complaints: data.complaints,
+        notes: data.notes || undefined,
+        km: data.km || undefined,
+        fuelLevel: data.fuelLevel || undefined,
+        adblueLevel: data.adblueLevel || undefined,
+        tireStatus: data.tireStatus || undefined,
+        mirrorStatus: data.mirrorStatus || undefined,
+        paintingStatus: data.paintingStatus || undefined,
+      };
 
-      // 👤 Cliente
-      if (createNewClient) {
-        formData.append('name', data.name || '');
-        formData.append('email', data.email || '');
-        formData.append('phone', data.phone!.replace(/\D/g, '') || '');
-        formData.append('cpfOrCnpj', data.cpfOrCnpj!.replace(/\D/g, '') || '');
-        if (data.address) formData.append('address', data.address);
-      } else if (selectedClient) {
-        formData.append('clientId', selectedClient.id);
-      }
+      // 👤 Dados do cliente — depende do fluxo
+      const clientData = createNewClient
+        ? {
+            cpfOrCnpj: data.cpfOrCnpj?.replace(/\D/g, ''),
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address || undefined,
+          }
+        : selectedClient
+        ? { clientId: selectedClient.id }
+        : {};
 
-      // 🚘 Veículo
-      if (selectedVehicleId) {
-        formData.append('vehicleId', selectedVehicleId);
-      } else {
-        formData.append('plate', data.plate || '');
-        if (data.brand) formData.append('brand', data.brand);
-        if (data.model) formData.append('model', data.model);
-        if (data.year !== undefined) formData.append('year', String(data.year));
-      }
+      // 🚘 Dados do veículo — depende do fluxo
+      const vehicleData = selectedVehicleId
+        ? { vehicleId: selectedVehicleId }
+        : {
+            plate: data.plate?.replace('-', '').toUpperCase(),
+            brand: data.brand || undefined,
+            model: data.model || undefined,
+            year: data.year || undefined,
+          };
 
-      // 🛠 Ordem de serviço
-      formData.append('complaints', data.complaints);
-      if (data.notes) formData.append('notes', data.notes);
-      if (data.km !== undefined) formData.append('km', String(data.km));
-      if (data.fuelLevel) formData.append('fuelLevel', data.fuelLevel);
-      if (data.adblueLevel) formData.append('adblueLevel', data.adblueLevel);
-      if (data.tireStatus) formData.append('tireStatus', data.tireStatus);
-      if (data.mirrorStatus) formData.append('mirrorStatus', data.mirrorStatus);
-      if (data.paintingStatus)
-        formData.append('paintingStatus', data.paintingStatus);
+      // 🧱 Junta tudo no payload final
+      const payload = {
+        ...serviceData,
+        ...clientData,
+        ...vehicleData,
+      };
 
-      // 📎 Fotos
-      selectedFiles.forEach((file) => {
-        formData.append('files', file);
-      });
-
-      const res = await api.post('/service-orders/complete', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const res = await api.post('/service-orders/full', payload);
 
       toast({ title: 'Atendimento criado com sucesso!' });
       router.push(`/ordens/${res.data.orderId}`);
       reset();
-      setSelectedFiles([]);
     } catch (err) {
-      handleAxiosError(err, 'Erro ao criar atendimento');
+      const error = err as AxiosError<{ message?: string | string[] }>;
+
+      const rawMessage = error?.response?.data?.message;
+
+      const backendMessage = Array.isArray(rawMessage)
+        ? rawMessage.join('\n')
+        : rawMessage || 'Tente novamente.';
+
+      toast({
+        title: 'Erro ao finalizar atendimento',
+        description: backendMessage,
+        variant: 'destructive',
+      });
     }
   };
 
@@ -668,33 +668,6 @@ export default function NovoAtendimentoPage() {
                   <option value='AMASSADA'>Amassada</option>
                   <option value='REPARADA'>Reparada</option>
                 </select>
-              </div>
-
-              <div className='md:col-span-2 flex flex-col gap-2'>
-                <label
-                  htmlFor='photos'
-                  className='text-sm text-LIGHT_500'
-                >
-                  Imagens (opcional)
-                </label>
-                <input
-                  id='photos'
-                  type='file'
-                  multiple
-                  accept='image/*'
-                  onChange={handleFiles}
-                  className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
-                />
-                <div className='flex flex-wrap gap-2'>
-                  {selectedFiles.map((file, idx) => (
-                    <span
-                      key={idx}
-                      className='text-xs text-LIGHT_400 bg-DARK_900 rounded px-2 py-1'
-                    >
-                      {file.name}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </section>

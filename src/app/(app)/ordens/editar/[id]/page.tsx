@@ -11,6 +11,8 @@ import { api } from '@/services/api';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
+import Image from 'next/image';
 
 const orderSchema = z.object({
   fuelLevel: z.string().min(1, 'Nível de combustível é obrigatório'),
@@ -43,8 +45,34 @@ const statusOptions = [
   { label: 'Finalizado', value: 'FINALIZADO' },
 ];
 
+// tipo que o backend retorna em GET /photos/:order
+interface PhotoDTO {
+  id: string;
+  filename: string; // ← adiciona aqui
+  url: string;
+}
+
+interface ServiceOrderWithPhotos {
+  fuelLevel: string;
+  adblueLevel: string;
+  km: number;
+  tireStatus: string;
+  mirrorStatus: string;
+  paintingStatus: string;
+  complaints: string;
+  notes?: string;
+  status: string;
+  // … outros campos que você faz reset()
+  photos: PhotoDTO[];
+}
+
 type FormData = z.infer<typeof orderSchema>;
 export default function EditarOrdemPage() {
+  const [existingPhotos, setExistingPhotos] = useState<PhotoDTO[]>([]);
+  const [removePhotoIds, setRemovePhotoIds] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -63,28 +91,63 @@ export default function EditarOrdemPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchOrder() {
+    async function fetchOrderAndPhotos() {
       try {
-        const response = await api.get(`/service-orders/${id}`);
-        reset(response.data);
-      } catch (error) {
-        console.error('Erro ao buscar ordem:', error);
+        // agora lê tudo num GET só
+        const { data: order } = await api.get<ServiceOrderWithPhotos>(
+          `/service-orders/${id}`
+        );
+        reset(order); // preenche o form
+        setExistingPhotos(order.photos); // guarda as fotos
+      } catch (err) {
+        console.error(err);
         toast({ title: 'Erro ao carregar ordem', variant: 'destructive' });
       } finally {
         setLoading(false);
       }
     }
-    fetchOrder();
+    fetchOrderAndPhotos();
   }, [id, reset, toast]);
 
   async function onSubmit(data: FormData) {
+    setIsSubmitting(true);
     try {
-      await api.patch(`/service-orders/${id}`, data);
+      const formData = new FormData();
+
+      // 1) Campos da ordem
+      Object.entries({
+        fuelLevel: data.fuelLevel,
+        adblueLevel: data.adblueLevel,
+        km: data.km,
+        tireStatus: data.tireStatus,
+        mirrorStatus: data.mirrorStatus,
+        paintingStatus: data.paintingStatus,
+        complaints: data.complaints,
+        notes: data.notes || undefined,
+        status: data.status,
+      }).forEach(([key, val]) => {
+        if (val != null && val !== '') formData.append(key, String(val));
+      });
+
+      // 2) IDs para remover
+      removePhotoIds.forEach((photoId) =>
+        formData.append('removePhotoIds', photoId)
+      );
+
+      // 3) Novos arquivos
+      selectedFiles.forEach((file) => formData.append('files', file));
+
+      // 4) Chamada multipart
+      await api.patch(`/service-orders/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
       toast({ title: 'Ordem atualizada com sucesso!', variant: 'success' });
       router.push('/ordens');
-    } catch (error) {
-      console.error('Erro ao atualizar ordem:', error);
-      toast({ title: 'Erro ao atualizar ordem', variant: 'destructive' });
+    } catch (err) {
+      handleAxiosError(err, 'Erro ao atualizar ordem');
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -343,9 +406,75 @@ export default function EditarOrdemPage() {
                 </span>
               )}
             </div>
+            <div className='md:col-span-2 flex flex-col gap-2'>
+              <label
+                htmlFor='newPhotos'
+                className='text-sm text-LIGHT_500'
+              >
+                Adicionar Fotos
+              </label>
+              <input
+                id='newPhotos'
+                type='file'
+                multiple
+                accept='image/*'
+                onChange={(e) =>
+                  setSelectedFiles(
+                    e.target.files ? Array.from(e.target.files) : []
+                  )
+                }
+                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
+              />
+              <div className='flex flex-wrap gap-2'>
+                {selectedFiles.map((f, i) => (
+                  <span
+                    key={i}
+                    className='text-xs text-LIGHT_400 bg-DARK_900 rounded px-2 py-1'
+                  >
+                    {f.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className='md:col-span-2 flex flex-wrap gap-2 bg-DARK_700 rounded-lg p-4'>
+              {existingPhotos.length > 0 ? (
+                existingPhotos.map((photo) => (
+                  <div
+                    key={photo.id}
+                    className='relative w-24 h-24'
+                  >
+                    <Image
+                      key={photo.id}
+                      src={photo.url}
+                      alt={photo.filename}
+                      width={96}
+                      height={96}
+                      className='object-cover rounded'
+                    />
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setRemovePhotoIds((ids) => [...ids, photo.id]);
+                        setExistingPhotos((ps) =>
+                          ps.filter((p) => p.id !== photo.id)
+                        );
+                      }}
+                      className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-white text-xs'
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className='text-sm text-LIGHT_500'>
+                  Nenhuma foto cadastrada.
+                </p>
+              )}
+            </div>
 
             <div className='md:col-span-2'>
               <button
+                disabled={isSubmitting}
                 type='submit'
                 className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
               >

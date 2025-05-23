@@ -9,7 +9,14 @@ import { format } from 'date-fns';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatModelBrand } from '@/utils/helpers/vehicles';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
+import Image from 'next/image';
 
+interface PhotoDTO {
+  id: string;
+  filename: string;
+  url: string;
+}
 interface Order {
   id: string;
   complaints: string;
@@ -34,6 +41,7 @@ interface Order {
       name: string;
     };
   };
+  photos: PhotoDTO[];
 }
 
 const statusLabels: Record<string, string> = {
@@ -61,7 +69,7 @@ export default function DetalhesOrdemPage() {
         const response = await api.get(`/service-orders/${id}`);
         setOrder(response.data);
       } catch (error) {
-        console.error('Erro ao carregar ordem de serviço:', error);
+        handleAxiosError(error);
       } finally {
         setLoading(false);
       }
@@ -202,6 +210,36 @@ export default function DetalhesOrdemPage() {
                   </p>
                 </div>
               )}
+
+              <hr className='border-DARK_900' />
+
+              <div className='space-y-2'>
+                <h2 className='text-sm font-bold text-LIGHT_500 uppercase'>
+                  Fotos
+                </h2>
+
+                {order.photos.length > 0 ? (
+                  <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2'>
+                    {order.photos.map((photo) => (
+                      <div
+                        key={photo.id}
+                        className='relative w-full pb-[75%]'
+                      >
+                        <Image
+                          src={photo.url}
+                          alt={photo.filename}
+                          fill
+                          className='object-cover rounded'
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className='text-sm text-LIGHT_500 italic'>
+                    Ainda não há fotos nesta ordem.
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </section>

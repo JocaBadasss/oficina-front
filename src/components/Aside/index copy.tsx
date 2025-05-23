@@ -18,16 +18,16 @@ import { useState } from 'react';
 
 const navItems = [
   { href: '/painel', icon: Home, label: 'Painel', isNewOrder: false },
+  { href: '/clientes', icon: Users, label: 'Clientes', isNewOrder: false },
+  { href: '/veiculos', icon: Truck, label: 'Veículos', isNewOrder: false },
+  { href: '/ordens', icon: Wrench, label: 'Ordens', isNewOrder: false },
+  { href: '/agendamentos', icon: CalendarClock, label: 'Agendamentos' },
   {
     href: '/novo-atendimento',
     icon: UserPlus,
     label: 'Novo Atendimento',
     isNewOrder: true,
   },
-  { href: '/clientes', icon: Users, label: 'Clientes', isNewOrder: false },
-  { href: '/veiculos', icon: Truck, label: 'Veículos', isNewOrder: false },
-  { href: '/ordens', icon: Wrench, label: 'Ordens', isNewOrder: false },
-  { href: '/agendamentos', icon: CalendarClock, label: 'Agendamentos' },
 ];
 
 export function Aside() {
@@ -49,6 +49,14 @@ export function Aside() {
         </div>
         <nav className='flex flex-col justify-between h-full text-LIGHT_100'>
           <div className='flex flex-col gap-4'>
+            <Link
+              href='/novo-atendimento'
+              className={`hover:text-TINTS_CARROT_100 flex gap-2  text-TINTS_CAKE_200 items-center ${
+                pathname === '/novo-atendimento' ? 'text-TINTS_CARROT_100' : ''
+              }`}
+            >
+              <UserPlus size={16} /> Novo atendimento
+            </Link>
             {navItems.map(({ href, icon: Icon, label, isNewOrder }) => (
               <Link
                 key={href}

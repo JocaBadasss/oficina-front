@@ -25,6 +25,7 @@ import { fullSchema, NovoAtendimentoFormData } from './schemas/novoAtendimento';
 import { ChevronsDown, Plus } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
+import { smartFormatPlate } from '@/utils/helpers/vehicles';
 
 interface Client {
   id: string;
@@ -54,6 +55,7 @@ export default function NovoAtendimentoPage() {
   const [createNewClient, setCreateNewClient] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files ? Array.from(e.target.files) : [];
@@ -87,8 +89,17 @@ export default function NovoAtendimentoPage() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+    const subscription = watch((value, { name }) => {
+      if (name === 'plate' && value.plate) {
+        const formatted = smartFormatPlate(value.plate);
+        if (formatted !== value.plate) {
+          setValue('plate', formatted);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   useEffect(() => {
     async function fetchClients() {
@@ -118,6 +129,8 @@ export default function NovoAtendimentoPage() {
   }, [selectedClient, toast]);
 
   const onSubmit = async (data: NovoAtendimentoFormData) => {
+    setIsSubmitting(true);
+
     try {
       const formData = new FormData();
 
@@ -166,12 +179,20 @@ export default function NovoAtendimentoPage() {
 
       toast({ title: 'Atendimento criado com sucesso!' });
       router.push(`/ordens/${res.data.orderId}`);
+      setCreateNewClient(false);
+      setSelectedVehicleId('');
       reset();
       setSelectedFiles([]);
     } catch (err) {
       handleAxiosError(err, 'Erro ao criar atendimento');
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   useEffect(() => {
     setValue('createNewClient', createNewClient);
@@ -183,7 +204,7 @@ export default function NovoAtendimentoPage() {
 
   return (
     <AppLayout>
-      <main className='flex-1 p-6 space-y-6 overflox-x-hidden'>
+      <main className='flex-1 p-6 space-y-6 overflow-x-hidden'>
         <PageHeader
           title='Novo Atendimento'
           subtitle='Cadastre cliente, veículo e ordem de serviço em um só lugar.'
@@ -449,7 +470,7 @@ export default function NovoAtendimentoPage() {
                       setValue('plate', formatted);
                     }}
                     value={watch('plate') || ''}
-                    placeholder='ABC-1234'
+                    placeholder='ABC-1234 ou ABC1AB1'
                     className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
                   />
                   {errors.plate && (
@@ -699,6 +720,7 @@ export default function NovoAtendimentoPage() {
             </div>
           </section>
           <button
+            disabled={isSubmitting}
             type='submit'
             className='w-full bg-TINTS_CARROT_100 text-LIGHT_100 font-bold py-3 px-6 rounded-md hover:bg-[#d98b3e] transition-colors'
           >

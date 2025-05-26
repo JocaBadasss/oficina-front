@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -11,6 +11,12 @@ import { AppLayout } from '@/components/AppLayout';
 import { formatModelBrand } from '@/utils/helpers/vehicles';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import Image from 'next/image';
+import Lightbox from 'yet-another-react-lightbox';
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen';
+import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
+import { FinalizarAtendimentoModal } from '@/components/FinalizeOrderModal';
 
 interface PhotoDTO {
   id: string;
@@ -41,6 +47,7 @@ interface Order {
       name: string;
     };
   };
+  report?: { description: string };
   photos: PhotoDTO[];
 }
 
@@ -62,6 +69,9 @@ export default function DetalhesOrdemPage() {
   const { id } = useParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchOrder() {
@@ -151,7 +161,7 @@ export default function DetalhesOrdemPage() {
                 </div>
                 <div>
                   <h2 className='text-xs text-LIGHT_500 uppercase'>
-                    Nível de Arla
+                    Nível de Adblue
                   </h2>
                   <p className='text-sm font-bold text-LIGHT_300'>
                     {order.adblueLevel || '-'}
@@ -213,32 +223,72 @@ export default function DetalhesOrdemPage() {
 
               <hr className='border-DARK_900' />
 
+              {order.status === 'FINALIZADO' && order.report?.description && (
+                <div className='bg-TINTS_MINT_900  rounded-md '>
+                  <h2 className='text-xs font-semibold uppercase text-TINTS_MINT_100'>
+                    Conclusão
+                  </h2>
+                  <p className=' text-sm text-LIGHT_100 whitespace-pre-line'>
+                    {order.report.description}
+                  </p>
+                </div>
+              )}
+
+              <hr className='border-DARK_900' />
+
               <div className='space-y-2'>
                 <h2 className='text-sm font-bold text-LIGHT_500 uppercase'>
                   Fotos
                 </h2>
 
                 {order.photos.length > 0 ? (
-                  <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2'>
-                    {order.photos.map((photo) => (
-                      <div
-                        key={photo.id}
-                        className='relative w-full pb-[75%]'
-                      >
-                        <Image
-                          src={photo.url}
-                          alt={photo.filename}
-                          fill
-                          className='object-cover rounded'
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <>
+                    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2'>
+                      {order.photos.map((photo, idx) => (
+                        <div
+                          key={photo.id}
+                          className='relative w-24 h-10 pb-[75%] rounded overflow-hidden cursor-pointer group'
+                          onClick={() => setLightboxIndex(idx)}
+                        >
+                          <Image
+                            src={photo.url}
+                            alt={photo.filename}
+                            fill
+                            className='object-cover'
+                          />
+                          {/* Overlay “Clique para ampliar” */}
+                          <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-medium'>
+                            Clique para ampliar
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Lightbox */}
+                    <Lightbox
+                      open={lightboxIndex !== null}
+                      close={() => setLightboxIndex(null)}
+                      slides={order.photos.map((photo) => ({ src: photo.url }))}
+                      index={lightboxIndex ?? 0}
+                      plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                      carousel={{ finite: true }}
+                    />
+                  </>
                 ) : (
                   <p className='text-sm text-LIGHT_500 italic'>
                     Ainda não há fotos nesta ordem.
                   </p>
                 )}
+              </div>
+
+              {/* === BOTÃO FINALIZAR ATENDIMENTO === */}
+              <div className='pt-4 border-t border-DARK_900 flex justify-center'>
+                <FinalizarAtendimentoModal
+                  orderId={order.id}
+                  onSuccess={() => {
+                    router.refresh();
+                  }}
+                />
               </div>
             </div>
           )}

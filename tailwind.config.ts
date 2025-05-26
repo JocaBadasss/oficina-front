@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
+        background: '#001119',
         foreground: 'hsl(var(--foreground))',
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -38,7 +38,7 @@ module.exports = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
-        border: 'hsl(var(--border))',
+        border: '#0D1D25',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {

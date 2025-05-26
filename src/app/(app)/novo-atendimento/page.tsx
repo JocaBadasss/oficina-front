@@ -470,7 +470,7 @@ export default function NovoAtendimentoPage() {
                       setValue('plate', formatted);
                     }}
                     value={watch('plate') || ''}
-                    placeholder='ABC-1234 ou ABC1AB1'
+                    placeholder='ABC-0123 ou ABC0B23'
                     className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
                   />
                   {errors.plate && (

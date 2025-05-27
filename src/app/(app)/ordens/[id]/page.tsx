@@ -17,6 +17,21 @@ import Slideshow from 'yet-another-react-lightbox/plugins/slideshow';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { FinalizarAtendimentoModal } from '@/components/FinalizeOrderModal';
+import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import 'yet-another-react-lightbox/styles.css';
+import {
+  AlertCircle,
+  Notebook,
+  CheckCircle,
+  Clock,
+  User,
+  Car,
+  Tag,
+  Camera,
+  Link2,
+} from 'lucide-react';
+import { EditConclusaoModal } from '@/components/EditConclusionModal';
+import { useToast } from '@/components/ui/use-toast';
 
 interface PhotoDTO {
   id: string;
@@ -70,6 +85,7 @@ export default function DetalhesOrdemPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -98,6 +114,40 @@ export default function DetalhesOrdemPage() {
           showEdit
           isDetails
         />
+        {order && (
+          <div className='flex justify-between items-center mb-4 px-4 text-sm text-LIGHT_500'>
+            {/* Timestamps */}
+            <div className='flex flex-wrap gap-6'>
+              <span>
+                Criada em:{' '}
+                {format(new Date(order.createdAt), "dd/MM/yyyy 'às' HH:mm")}
+              </span>
+              {order.updatedAt !== order.createdAt && (
+                <span>
+                  Atualizada em:{' '}
+                  {format(new Date(order.updatedAt), "dd/MM/yyyy 'às' HH:mm")}
+                </span>
+              )}
+            </div>
+
+            {/* Botão de copiar link */}
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/acompanhamento/${order.id}`;
+                navigator.clipboard.writeText(url);
+                toast({
+                  title: 'Link copiado',
+                  description:
+                    'URL pública copiada para a área de transferência',
+                });
+              }}
+              className='flex items-center space-x-1 hover:text-LIGHT_100'
+            >
+              <Link2 className='w-4 h-4 text-LIGHT_500' />
+              <span className='text-LIGHT_500'>Copiar link</span>
+            </button>
+          </div>
+        )}
 
         <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
           {loading || !order ? (
@@ -109,91 +159,129 @@ export default function DetalhesOrdemPage() {
             </div>
           ) : (
             <div className='space-y-6'>
-              <div className='text-sm text-LIGHT_500'>
-                Criada em:{' '}
-                {format(new Date(order.createdAt), 'dd/MM/yyyy HH:mm')}
-                <br />
-                Atualizada em:{' '}
-                {format(new Date(order.updatedAt), 'dd/MM/yyyy HH:mm')}
-              </div>
-
-              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Placa</h2>
-                  <p className='text-lg font-semibold text-TINTS_CAKE_200'>
+              {/* === Primário (Placa, Veículo, Cliente, Status) === */}
+              {/* == LINHA 1: DADOS PRINCIPAIS == */}
+              <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
+                {/* Placa */}
+                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                  <div className='flex items-center gap-2'>
+                    <Tag className='w-5 h-5 text-TINTS_CAKE_200' />
+                    <span className='text-xs uppercase text-LIGHT_500'>
+                      Placa
+                    </span>
+                  </div>
+                  <span className='mt-1 text-lg font-semibold text-TINTS_CAKE_200'>
                     {order.vehicle.plate}
-                  </p>
+                  </span>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Veículo</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
+
+                {/* Veículo */}
+                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                  <div className='flex items-center gap-2'>
+                    <Car className='w-5 h-5 text-TINTS_CAKE_200' />
+                    <span className='text-xs uppercase text-LIGHT_500'>
+                      Veículo
+                    </span>
+                  </div>
+                  <span className='mt-1 text-lg font-medium text-LIGHT_100'>
                     {formatModelBrand(order.vehicle.model, order.vehicle.brand)}
-                  </p>
+                  </span>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Cliente</h2>
+
+                {/* Cliente */}
+                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                  <div className='flex items-center gap-2'>
+                    <User className='w-5 h-5 text-TINTS_CAKE_200' />
+                    <span className='text-xs uppercase text-LIGHT_500'>
+                      Cliente
+                    </span>
+                  </div>
                   <Link
                     href={`/clientes/${order.vehicle.client.id}`}
-                    className='text-lg font-medium text-TINTS_CARROT_100 hover:underline'
+                    className='mt-1 text-lg font-medium text-TINTS_CARROT_100 hover:underline'
                   >
                     {order.vehicle.client.name}
                   </Link>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Status</h2>
-                  <p
-                    className={`text-xs font-semibold px-2 py-1 rounded w-fit ${
+
+                {/* Status */}
+                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                  <div className='flex items-center gap-2'>
+                    <Clock className='w-5 h-5 text-TINTS_CAKE_200' />
+                    <span className='text-xs uppercase text-LIGHT_500'>
+                      Status
+                    </span>
+                  </div>
+                  <span
+                    className={`mt-1 inline-flex items-center px-2 py-1 text-xs rounded ${
                       order.status === 'FINALIZADO'
                         ? 'bg-TINTS_MINT_100 text-DARK_100'
                         : 'bg-TINTS_CARROT_100 text-DARK_100'
                     }`}
                   >
                     {statusLabels[order.status] || order.status}
-                  </p>
+                  </span>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>
-                    Nível de Combustível
-                  </h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+              </div>
+
+              {/* == LINHA 2: DADOS SECUNDÁRIOS == */}
+              <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-4'>
+                {/* Combustível */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>
+                    Combustível
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {fuelLabels[order.fuelLevel] || '-'}
                   </p>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>
-                    Nível de Adblue
-                  </h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+
+                {/* AdBlue */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>
+                    AdBlue
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {order.adblueLevel || '-'}
                   </p>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>
-                    Quilometragem
-                  </h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+
+                {/* Km */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>Km</span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {typeof order.km === 'number'
                       ? `${order.km.toLocaleString()} km`
                       : '—'}
                   </p>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>
-                    Estado dos Pneus
-                  </h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+
+                {/* Pneus */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>
+                    Pneus
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {order.tireStatus || '-'}
                   </p>
                 </div>
-                <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Espelhos</h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+
+                {/* Espelhos */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>
+                    Espelhos
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {order.mirrorStatus || '-'}
                   </p>
                 </div>
-                <div className='sm:col-span-2 lg:col-span-3'>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Pintura</h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
+
+                {/* Pintura */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-LIGHT_500'>
+                    Pintura
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
                     {order.paintingStatus || '-'}
                   </p>
                 </div>
@@ -201,95 +289,105 @@ export default function DetalhesOrdemPage() {
 
               <hr className='border-DARK_900' />
 
-              <div>
-                <h2 className='text-sm font-bold text-LIGHT_500 uppercase mb-1'>
-                  Reclamações
-                </h2>
-                <p className='text-sm font-bold text-LIGHT_300'>
-                  {order.complaints || '-'}
-                </p>
-              </div>
-
-              {order.notes && (
-                <div>
-                  <h2 className='text-sm font-bold text-LIGHT_500 uppercase mb-1'>
-                    Observações
-                  </h2>
-                  <p className='text-sm font-bold text-LIGHT_300'>
-                    {order.notes}
+              <section className='grid grid-cols-1 gap-6 mt-4'>
+                {/* Reclamações */}
+                <div className='bg-DARK_800 rounded-2xl shadow p-6'>
+                  <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-TINTS_CAKE_200'>
+                    <AlertCircle className='w-4 h-4' />
+                    Reclamações
+                  </h3>
+                  <p className='mt-2 text-sm leading-relaxed text-LIGHT_100'>
+                    {order.complaints || '-'}
                   </p>
                 </div>
-              )}
 
-              <hr className='border-DARK_900' />
+                {/* Observações (se houver) */}
+                {order.notes && (
+                  <div className='bg-DARK_800 rounded-2xl shadow p-6'>
+                    <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-TINTS_CAKE_200'>
+                      <Notebook className='w-4 h-4' />
+                      Observações
+                    </h3>
+                    <p className='mt-2 text-sm leading-relaxed text-LIGHT_100'>
+                      {order.notes}
+                    </p>
+                  </div>
+                )}
 
-              {order.status === 'FINALIZADO' && order.report?.description && (
-                <div className='bg-TINTS_MINT_900  rounded-md '>
-                  <h2 className='text-xs font-semibold uppercase text-TINTS_MINT_100'>
-                    Conclusão
-                  </h2>
-                  <p className=' text-sm text-LIGHT_100 whitespace-pre-line'>
-                    {order.report.description}
-                  </p>
-                </div>
-              )}
-
-              <hr className='border-DARK_900' />
-
-              <div className='space-y-2'>
-                <h2 className='text-sm font-bold text-LIGHT_500 uppercase'>
-                  Fotos
-                </h2>
-
-                {order.photos.length > 0 ? (
-                  <>
-                    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2'>
-                      {order.photos.map((photo, idx) => (
-                        <div
-                          key={photo.id}
-                          className='relative w-24 h-10 pb-[75%] rounded overflow-hidden cursor-pointer group'
-                          onClick={() => setLightboxIndex(idx)}
-                        >
-                          <Image
-                            src={photo.url}
-                            alt={photo.filename}
-                            fill
-                            className='object-cover'
-                          />
-                          {/* Overlay “Clique para ampliar” */}
-                          <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-medium'>
-                            Clique para ampliar
-                          </div>
+                <div className='bg-DARK_800 rounded-2xl shadow p-4'>
+                  <h3 className='flex items-center gap-2  text-xs font-semibold uppercase text-TINTS_CAKE_200 mb-2'>
+                    <Camera className='w-4 h-4' />
+                    Fotos
+                  </h3>
+                  <div className='flex overflow-x-auto gap-2 py-1'>
+                    {order.photos.map((photo, idx) => (
+                      <div
+                        key={photo.id}
+                        className='relative w-16 h-16 flex-shrink-0 rounded overflow-hidden cursor-pointer group'
+                        onClick={() => setLightboxIndex(idx)}
+                      >
+                        <Image
+                          src={photo.url}
+                          alt={photo.filename}
+                          fill
+                          className='object-cover'
+                        />
+                        <div className='absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]'>
+                          ver
                         </div>
-                      ))}
+                      </div>
+                    ))}
+                  </div>
+                  <Lightbox
+                    open={lightboxIndex !== null}
+                    close={() => setLightboxIndex(null)}
+                    slides={order.photos.map((photo) => ({ src: photo.url }))}
+                    index={lightboxIndex ?? 0}
+                    plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+                    carousel={{ finite: true }}
+                  />
+                </div>
+
+                {/* Conclusão (se FINALIZADO) */}
+                {order.status === 'FINALIZADO' && order.report?.description && (
+                  <div className='bg-DARK_800 rounded-2xl shadow p-6 flex items-center justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2'>
+                        <CheckCircle className='w-4 h-4 text-TINTS_MINT_100' />
+                        <span className='text-xs font-semibold uppercase text-TINTS_MINT_100'>
+                          Conclusão
+                        </span>
+                      </div>
+                      <p className='mt-2 text-sm leading-relaxed text-LIGHT_100 whitespace-pre-line'>
+                        {order.report.description}
+                      </p>
                     </div>
 
-                    {/* Lightbox */}
-                    <Lightbox
-                      open={lightboxIndex !== null}
-                      close={() => setLightboxIndex(null)}
-                      slides={order.photos.map((photo) => ({ src: photo.url }))}
-                      index={lightboxIndex ?? 0}
-                      plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-                      carousel={{ finite: true }}
+                    <EditConclusaoModal
+                      orderId={order.id}
+                      initialDescription={order.report.description}
+                      onSuccess={(newDesc) => {
+                        // Atualiza o state local para refletir a mudança sem refetch completo
+                        setOrder(
+                          (o) => o && { ...o, report: { description: newDesc } }
+                        );
+                      }}
                     />
-                  </>
-                ) : (
-                  <p className='text-sm text-LIGHT_500 italic'>
-                    Ainda não há fotos nesta ordem.
-                  </p>
+                  </div>
                 )}
-              </div>
+              </section>
 
               {/* === BOTÃO FINALIZAR ATENDIMENTO === */}
-              <div className='pt-4 border-t border-DARK_900 flex justify-center'>
-                <FinalizarAtendimentoModal
-                  orderId={order.id}
-                  onSuccess={() => {
-                    router.refresh();
-                  }}
-                />
-              </div>
+              {order.status !== 'FINALIZADO' && (
+                <div className='pt-4 border-t border-DARK_900 flex justify-center'>
+                  <FinalizarAtendimentoModal
+                    orderId={order.id}
+                    onSuccess={() => {
+                      router.refresh();
+                    }}
+                  />
+                </div>
+              )}
             </div>
           )}
         </section>

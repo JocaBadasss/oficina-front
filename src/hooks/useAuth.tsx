@@ -1,13 +1,15 @@
+// src/hooks/useAuth.tsx
 'use client';
 
-import {
+import React, {
   createContext,
   useContext,
   useEffect,
   useState,
+  useCallback,
   ReactNode,
 } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { api } from '@/services/api';
 import { logout } from '@/services/authService';
 import { useToast } from '@/components/ui/use-toast';
@@ -22,77 +24,91 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  signOut: () => void;
-  isLoggingOut: boolean;
+  isLoading: boolean;
+  hasFetchedUser: boolean; // <— novo
   isAuthenticated: boolean;
-}
-
-interface AuthProviderProps {
-  children: ReactNode;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasFetchedUser, setHasFetchedUser] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
 
-  function signOut() {
-    setIsLoggingOut(true);
-    logout().finally(() => {
+  const signOut = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      await logout();
       setUser(null);
-      toast({
-        title: 'Sessão encerrada',
-        description: 'Você foi desconectado.',
-        variant: 'destructive',
-      });
-      router.push('/login');
-    });
-  }
+      toast({ title: 'Sessão encerrada', variant: 'destructive' });
+      router.replace('/login');
+    } finally {
+      setIsLoading(false);
+      setHasFetchedUser(false);
+    }
+  }, [router, toast]);
+
+  useEffect(() => {
+    const onExpire = () => {
+      console.log(
+        '[AuthProvider] sessionExpired event RECEBIDO → chamando signOut'
+      );
+      signOut();
+    };
+    window.addEventListener('sessionExpired', onExpire);
+    return () => window.removeEventListener('sessionExpired', onExpire);
+  }, [signOut]);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadUser() {
-      if (isLoggingOut || user) return;
-      if (pathname === '/login') return;
-
-      try {
-        const response = await api.get<User>('/users/me');
-        if (isMounted) {
-          setUser(response.data);
-        }
-      } catch (err) {
-        console.log(err);
-        if (isMounted) {
-          toast({
-            title: 'Sessão expirada',
-            description: 'Faça login novamente.',
-            variant: 'destructive',
-          });
-          signOut();
-        }
-      }
+    // 1) Se estivermos em /login, não tentamos buscar user
+    if (pathname === '/login') {
+      setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
+      setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
+      return; // saímos do efeito
     }
 
-    loadUser();
+    // 2) Para todas as outras rotas, resetamos nosso estado
+    setHasFetchedUser(false); // indica que ainda NÃO tentamos buscar
+    setIsLoading(true); // entramos no modo “carregando”
 
+    // 3) Fazemos a chamada real à API
+    api
+      .get<User>('/users/me')
+      .then((res) => {
+        if (isMounted) setUser(res.data); // se completou, armazenamos o user
+      })
+      .catch(() => {
+        if (isMounted) {
+          setUser(null); // se falhou, limpamos o user
+          signOut(); // e executamos o logout (redirect + toast)
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false); // encerramos o “loading”
+        setHasFetchedUser(true); // sinalizamos que já tentamos o fetch
+      });
+
+    // 4) Cleanup para evitar setState após componente desmontar
     return () => {
       isMounted = false;
     };
-  }, [isLoggingOut, user, router, pathname, signOut, toast]);
+  }, [pathname, signOut]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        signOut,
-        isLoggingOut,
+        isLoading,
+        hasFetchedUser,
         isAuthenticated: !!user,
+        signOut,
       }}
     >
       {children}

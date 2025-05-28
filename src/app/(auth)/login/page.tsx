@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { login } from '@/services/authService';
 import Image from 'next/image';
+import { toast } from '@/components/ui/use-toast';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,11 +21,16 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // 1) Faz o login e recebe os cookies
       await login({ email, password });
-      router.push('/painel'); // Redireciona pro painel depois do login!
-    } catch (error) {
-      console.error('Erro no login', error);
-      alert('Erro no login. Verifique seus dados!');
+
+      // 2) REFRESHA o App Router inteiro, reiniciando o AuthProvider
+      router.refresh();
+
+      // 3) Aí sim, vai pro painel
+      window.location.href = '/painel';
+    } catch {
+      toast({ title: 'Erro ao logar', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

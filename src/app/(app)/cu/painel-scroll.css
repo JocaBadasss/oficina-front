@@ -1,0 +1,26 @@
+/* painel-scroll.css */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1d25; /* DARK_900 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #7c7c8a; /* LIGHT_500 */
+  border-radius: 12px; /* Agora sim arredonda de verdade */
+  border: 2px solid #0d1d25; /* Combina com a track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #c4c4cc; /* LIGHT_400 */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #7c7c8a #0d1d25;
+}

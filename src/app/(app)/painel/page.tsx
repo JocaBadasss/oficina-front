@@ -1,22 +1,33 @@
-// Página revisada do Painel com melhorias de responsividade e legibilidade no mobile
 'use client';
-import './painel-scroll.css';
+
+import React from 'react';
+import Link from 'next/link';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import Link from 'next/link';
-import { Skeleton } from '@/components/ui/skeleton';
-import { CalendarDays, FileText } from 'lucide-react';
-import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
-
-const statusLabels: Record<string, string> = {
-  AGUARDANDO: 'Aguardando',
-  EM_ANDAMENTO: 'Em andamento',
-  FINALIZADO: 'Finalizado',
-};
+import { PageHeader } from '@/components/PageHeader';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { CalendarDays, FileText, Users } from 'lucide-react';
+import { useMediaQuery } from 'usehooks-ts'; // 👈 topo do arquivo
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { format } from 'date-fns';
+import { formatPlate } from '@/utils/helpers/vehicles';
+import { ptBR } from 'date-fns/locale';
 
 export default function PainelPage() {
   const {
@@ -25,177 +36,301 @@ export default function PainelPage() {
     totalAppointmentsToday,
     totalOpenOrders,
     loading,
+    totalClients,
+    stats,
+    monthlyStats,
   } = useDashboardData();
-
   const { user, signOut } = useAuth();
   const router = useRouter();
 
+  const mockStatsData = [
+    { name: 'Agend.', value: 0 },
+    { name: 'Ordens', value: 0 },
+    { name: 'Clientes', value: 0 },
+  ];
+
+  const COLORS = ['#F4B400', '#8884d8'];
+
+  const isMobile = useMediaQuery('(max-width: 639px)'); // até sm
+
+  const cards = [
+    {
+      label: 'Agendamentos Hoje',
+      value: totalAppointmentsToday,
+      Icon: CalendarDays,
+      href: '/agendamentos',
+    },
+    {
+      label: 'Ordens Abertas',
+      value: totalOpenOrders,
+      Icon: FileText,
+      href: '/ordens',
+    },
+    {
+      label: 'Clientes Cadastrados',
+      value: totalClients,
+      Icon: Users,
+      href: '/clientes',
+    },
+  ];
+
+  // Atualiza mockStatsData
+  mockStatsData[0].value = totalAppointmentsToday;
+  mockStatsData[1].value = totalOpenOrders;
+  mockStatsData[2].value = totalClients;
+
+  const chartPieData = [
+    { name: 'Abertas', value: stats.open },
+    { name: 'Finalizadas', value: stats.closed },
+  ];
+
+  const getBadgeClass = (status: string) => {
+    switch (status) {
+      case 'FINALIZADO':
+        return 'bg-TINTS_MINT_100 text-DARK_100';
+      case 'EM_ANDAMENTO':
+        return 'bg-TINTS_CARROT_100 text-DARK_100';
+      default: // PENDENTE ou AGUARDANDO
+        return 'bg-TINTS_CARROT_100/30 text-TINTS_CARROT_100';
+    }
+  };
+
   return (
     <AppLayout>
-      <PageHeader
-        title='Painel'
-        subtitle='Confiança e qualidade no serviço.'
-        userName={user?.name}
-        onLogout={() => {
-          signOut();
-          router.push('/login');
-        }}
-      />
-      <main className='flex-1 p-4 md:p-6 space-y-8'>
-        <h1 className='text-2xl md:text-3xl font-bold font-roboto'>
-          Visão Geral
-        </h1>
+      <main className='flex-1 p-6 space-y-6'>
+        <PageHeader
+          title='Painel'
+          subtitle='Visão geral das operações'
+          userName={user?.name}
+          onLogout={() => {
+            signOut();
+            router.push('/login');
+          }}
+        />
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6'>
-          {loading ? (
-            <Skeleton className='h-28 rounded-lg w-full' />
-          ) : (
-            <Link
-              href='/agendamentos'
-              className='bg-DARK_700 border border-DARK_900 text-LIGHT_100 rounded-lg p-4 md:p-6 shadow-md hover:bg-DARK_800 transition cursor-pointer'
-            >
-              <div className='flex items-center justify-between'>
-                <div className='text-left'>
-                  <h2 className='text-2xl md:text-4xl font-bold'>
-                    {totalAppointmentsToday}
-                  </h2>
-                  <p className='text-sm md:text-lg text-LIGHT_500 font-medium mt-1'>
-                    Agendamentos Hoje
-                  </p>
-                </div>
-                <CalendarDays className='w-6 h-6 md:w-8 md:h-8 text-TINTS_CARROT_100' />
-              </div>
-            </Link>
-          )}
-
-          {loading ? (
-            <Skeleton className='h-28 rounded-lg w-full' />
-          ) : (
-            <Link
-              href='/ordens'
-              className='bg-DARK_700 border border-DARK_900 text-LIGHT_100 rounded-lg p-4 md:p-6 shadow-md hover:bg-DARK_800 transition cursor-pointer'
-            >
-              <div className='flex items-center justify-between'>
-                <div className='text-left'>
-                  <h2 className='text-2xl md:text-4xl font-bold'>
-                    {totalOpenOrders}
-                  </h2>
-                  <p className='text-sm md:text-lg text-LIGHT_500 font-medium mt-1'>
-                    Ordens Abertas
-                  </p>
-                </div>
-                <FileText className='w-6 h-6 md:w-8 md:h-8 text-TINTS_CARROT_100' />
-              </div>
-            </Link>
-          )}
-        </div>
-
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
-          {/* Agendamentos */}
-          <div>
-            <h3 className='text-xl md:text-2xl font-semibold mb-2'>
-              Agendamentos
-            </h3>
-            <div className='bg-DARK_700 p-3 rounded-lg min-h-[140px] max-h-[calc(100vh-320px)] overflow-y-auto scrollbar-thin scrollbar-thumb-TINTS_CARROT_100 scrollbar-track-DARK_900 rounded-md'>
-              {loading ? (
-                <div className='p-3 space-y-3'>
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                </div>
-              ) : appointments.length === 0 ? (
-                <p className='text-center text-LIGHT_500'>
-                  Nenhum agendamento pendente.
-                </p>
-              ) : (
-                <ul className='space-y-2 text-sm p-3 divide-LIGHT_700 divide-y'>
-                  {appointments.map((appt) => (
-                    <li key={appt.id}>
-                      <Link
-                        href={`/agendamentos/${appt.id}`}
-                        className='flex flex-col sm:flex-row justify-between gap-1 sm:gap-0 py-2 mt-[6px] hover:bg-DARK_800 px-2 rounded transition cursor-pointer'
-                      >
-                        <span className='text-xs sm:text-sm'>
-                          {format(
-                            new Date(appt.date),
-                            "d 'de' MMMM 'de' yyyy",
-                            { locale: ptBR }
-                          )}
-                        </span>
-                        <strong className='text-sm truncate text-right sm:text-left'>
-                          {appt.vehicle.client.name}
-                        </strong>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* Ordens */}
-          <div>
-            <h3 className='text-xl md:text-2xl font-semibold mb-2'>
-              Ordens de Serviço
-            </h3>
-            <div className='bg-DARK_700 rounded-lg min-h-[140px] max-h-[calc(100vh-320px)] overflow-y-auto scrollbar-thin scrollbar-thumb-TINTS_CARROT_100 scrollbar-track-DARK_900 rounded-md p-3'>
-              {loading ? (
-                <div className='p-3 space-y-3'>
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                </div>
-              ) : openOrders.length === 0 ? (
-                <p className='text-center text-LIGHT_500'>
-                  Nenhuma ordem de serviço aberta.
-                </p>
-              ) : (
-                <ul className='space-y-2 text-sm p-3 divide-LIGHT_700 divide-y text-TINTS_CAKE_200'>
-                  {openOrders.map((order) => (
-                    <li key={order.id}>
-                      <Link
-                        href={`/ordens/${order.id}`}
-                        className='block py-2 mt-[6px] hover:bg-DARK_800 px-2 rounded transition cursor-pointer'
-                      >
-                        <div className='flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center'>
-                          <div className='text-sm sm:text-base'>
-                            <strong className='block text-LIGHT_100 truncate'>
-                              {order.vehicle.brand} {order.vehicle.model}{' '}
-                              {order.vehicle.year}
-                            </strong>
-                            <span className='text-xs sm:text-sm text-LIGHT_500'>
-                              {order.vehicle.plate}
-                            </span>
-                          </div>
-                          <span
-                            className={`px-2 py-1 text-xs mt-1 sm:mt-0 text-center rounded font-bold \
-                                ${
-                                  order.status === 'AGUARDANDO'
-                                    ? 'bg-LIGHT_500/10 text-LIGHT_500 border border-LIGHT_500/30'
-                                    : ''
-                                } \
-                                ${
-                                  order.status === 'EM_ANDAMENTO'
-                                    ? 'bg-TINTS_CARROT_100/10 text-TINTS_CARROT_100 border border-TINTS_CARROT_100/30'
-                                    : ''
-                                } \
-                                ${
-                                  order.status === 'FINALIZADO'
-                                    ? 'bg-TINTS_MINT_100/10 text-TINTS_MINT_100 border border-TINTS_MINT_100/30'
-                                    : ''
-                                }`}
-                          >
-                            {statusLabels[order.status] || order.status}
-                          </span>
+        <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 h-full'>
+          {/* Cards e Listagens */}
+          <div className='xl:col-span-2 space-y-6 h-full'>
+            {/* Cards de Estatísticas */}
+            <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+              {cards.map(({ label, value, Icon, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  className='h-full'
+                >
+                  <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm hover:bg-DARK_800 transition cursor-pointer h-full'>
+                    <div className='flex items-center space-x-4 h-full'>
+                      <Icon className='w-6 h-6 text-TINTS_CARROT_100' />
+                      <div className='flex flex-col justify-center flex-1'>
+                        <div className='text-2xl font-bold text-LIGHT_100'>
+                          {value}
                         </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                        <div className='text-sm text-LIGHT_300 truncate'>
+                          {label}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            {/* Listagens */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {/* Próximos Agendamentos */}
+              <Card className='bg-DARK_700 rounded-xl overflow-hidden'>
+                <div className='bg-DARK_800 p-4 border-b border-DARK_600'>
+                  <h3 className='text-lg font-semibold text-LIGHT_100'>
+                    Próximos Agendamentos
+                  </h3>
+                </div>
+                <ScrollArea className='h-60 bg-DARK_700'>
+                  {loading ? (
+                    <div className='p-4 space-y-2'>
+                      <Skeleton className='h-4 w-full' />
+                      <Skeleton className='h-4 w-full' />
+                      <Skeleton className='h-4 w-full' />
+                    </div>
+                  ) : (
+                    <ul className='divide-y divide-DARK_600'>
+                      {appointments.map((appt) => (
+                        <li key={appt.id}>
+                          <Link
+                            href={`/agendamentos/${appt.id}`}
+                            className='flex justify-between items-center p-4 hover:bg-DARK_800 transition'
+                          >
+                            <div>
+                              <div className='text-sm font-medium text-LIGHT_100'>
+                                {format(
+                                  new Date(appt.date),
+                                  "dd/MM/yyyy '•' HH:mm"
+                                )}
+                              </div>
+                              <div className='text-sm text-LIGHT_300'>
+                                {appt.vehicle.client.name}
+                              </div>
+                            </div>
+                            <Badge
+                              className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${getBadgeClass(
+                                appt.status
+                              )}`}
+                            >
+                              {appt.status === 'FINALIZADO'
+                                ? 'Finalizado'
+                                : appt.status === 'EM_ANDAMENTO'
+                                ? 'Em andamento'
+                                : 'Aguardando'}
+                            </Badge>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </ScrollArea>
+              </Card>
+
+              {/* Ordens em Andamento */}
+              <Card className='bg-DARK_700 rounded-xl overflow-hidden'>
+                <div className='bg-DARK_800 p-4 border-b border-DARK_600'>
+                  <h3 className='text-lg font-semibold text-LIGHT_100'>
+                    Ordens em Andamento
+                  </h3>
+                </div>
+                <ScrollArea className='h-60 bg-DARK_700'>
+                  {loading ? (
+                    <div className='p-4 space-y-2'>
+                      <Skeleton className='h-4 w-full' />
+                      <Skeleton className='h-4 w-full' />
+                      <Skeleton className='h-4 w-full' />
+                    </div>
+                  ) : (
+                    <ul className='divide-y divide-DARK_600'>
+                      {openOrders.map((order) => (
+                        <li key={order.id}>
+                          <Link
+                            href={`/ordens/${order.id}`}
+                            className='flex justify-between items-center p-4 hover:bg-DARK_800 transition'
+                          >
+                            <div className='truncate'>
+                              <div className='text-sm font-medium text-LIGHT_100 truncate'>
+                                {order.vehicle.brand} {order.vehicle.model}
+                              </div>
+                              <div className='text-sm text-LIGHT_300'>
+                                {formatPlate(order.vehicle.plate)}
+                              </div>
+                            </div>
+                            <Badge
+                              className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${getBadgeClass(
+                                order.status
+                              )}`}
+                            >
+                              {order.status === 'FINALIZADO'
+                                ? 'Finalizado'
+                                : order.status === 'EM_ANDAMENTO'
+                                ? 'Em andamento'
+                                : 'Aguardando'}
+                            </Badge>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </ScrollArea>
+              </Card>
             </div>
           </div>
-        </div>
+
+          {/* Gráficos */}
+          <div className='space-y-6 h-full flex flex-col justify-between'>
+            {/* Pizza */}
+            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between sm:min-h-[220px]'>
+              <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
+                Ordens Abertas vs Finalizadas
+              </h3>
+              <ResponsiveContainer
+                width='100%'
+                height='100%'
+              >
+                <PieChart>
+                  <Pie
+                    data={chartPieData}
+                    dataKey='value'
+                    nameKey='name'
+                    cx='50%'
+                    cy='50%'
+                    outerRadius={isMobile ? 40 : 50} // 🔥 menor no mobile
+                    label
+                  >
+                    {chartPieData.map((_, index: number) => (
+                      <Cell
+                        key={index}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#00111a',
+                      borderRadius: 4,
+                    }}
+                    labelStyle={{ color: '#FFFFFF' }}
+                    itemStyle={{ color: '#FFFFFF' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Card>
+
+            {/* Linha */}
+            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between'>
+              <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
+                Evolução Mensal de Ordens
+              </h3>
+              <ResponsiveContainer
+                width='100%'
+                height='100%'
+              >
+                <LineChart
+                  data={monthlyStats.map((item) => ({
+                    name: format(new Date(item.month + '-01'), 'MMM/yyyy', {
+                      locale: ptBR,
+                    }),
+                    total: item.total,
+                  }))}
+                >
+                  <CartesianGrid
+                    strokeDasharray='3 3'
+                    stroke='#0D161B'
+                  />
+                  <XAxis
+                    dataKey='name'
+                    stroke='#FFFFFF'
+                    fontSize={12}
+                  />
+                  <YAxis
+                    stroke='#FFFFFF'
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#00111a',
+                      borderRadius: 4,
+                    }}
+                    labelStyle={{ color: '#FFFFFF' }}
+                    itemStyle={{ color: '#FFFFFF' }}
+                  />
+                  <Line
+                    type='monotone'
+                    dataKey='total'
+                    stroke='#F4B400'
+                    strokeWidth={2}
+                    dot
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+        </section>
       </main>
     </AppLayout>
   );

@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { login } from '@/services/authService';
 import Image from 'next/image';
@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
 
 export default function LoginPage() {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

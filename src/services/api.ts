@@ -28,9 +28,9 @@ function processQueue(error: AxiosError | null) {
 }
 
 /** Logs de requisição/response apenas em desenvolvimento */
-if (process.env.NODE_ENV !== 'production') {
+if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
   api.interceptors.request.use((req) => {
-    console.log(`[API] → ${req.method?.toUpperCase()} ${req.url}`);
+    console.log(`[DEV API] → ${req.method?.toUpperCase()} ${req.url}`);
     return req;
   });
   api.interceptors.response.use(

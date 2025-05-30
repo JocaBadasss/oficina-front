@@ -1,10 +1,11 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
-    domains: ['localhost', '127.0.0.1'],
+    domains:
+      process.env.NODE_ENV === 'production'
+        ? ['oficina-demo.fly.dev']
+        : ['localhost', '127.0.0.1'],
   },
-  /* config options here */
+
 };
 
 export default nextConfig;

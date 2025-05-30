@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { login } from '@/services/authService';
 import Image from 'next/image';
 import { toast } from '@/components/ui/use-toast';
+import { api } from '@/services/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,18 +17,39 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  //ORIGINAL AQUI ORIGINAL AQUI ORIGINAL AQUI
+  // async function handleSubmit(e: React.FormEvent) {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     // 1) Faz o login e recebe os cookies
+  //     await login({ email, password });
+
+  //     // 2) REFRESHA o App Router inteiro, reiniciando o AuthProvider
+  //     router.refresh();
+
+  //     // 3) Aí sim, vai pro painel
+  //     window.location.href = '/painel';
+  //   } catch {
+  //     toast({ title: 'Erro ao logar', variant: 'destructive' });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // 1) Faz o login e recebe os cookies
+      // 1. Faz login e salva os tokens no localStorage
       await login({ email, password });
 
-      // 2) REFRESHA o App Router inteiro, reiniciando o AuthProvider
-      router.refresh();
+      // 2. Garante que o AuthProvider já vai estar com o token
+      await api.get('/users/me'); // ← ESSENCIAL
 
-      // 3) Aí sim, vai pro painel
+      // 3. Só depois disso redireciona
       window.location.href = '/painel';
     } catch {
       toast({ title: 'Erro ao logar', variant: 'destructive' });

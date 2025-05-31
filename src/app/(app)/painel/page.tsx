@@ -112,7 +112,7 @@ export default function PainelPage() {
           {/* Cards e Listagens */}
           <div className='xl:col-span-2 space-y-6 h-full'>
             {/* Cards de Estatísticas */}
-            <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full'>
               {cards.map(({ label, value, Icon, href }) => (
                 <Link
                   key={label}
@@ -120,10 +120,10 @@ export default function PainelPage() {
                   className='h-full'
                 >
                   <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm hover:bg-DARK_800 transition cursor-pointer h-full'>
-                    <div className='flex items-center space-x-4 h-full'>
+                    <div className='flex items-center gap-4 h-full'>
                       <Icon className='w-6 h-6 text-TINTS_CARROT_100' />
                       <div className='flex flex-col justify-center flex-1'>
-                        <div className='text-2xl font-bold text-LIGHT_100'>
+                        <div className='text-2xl lg:text-2xl md:text-xl font-bold text-LIGHT_100'>
                           {value}
                         </div>
                         <div className='text-sm text-LIGHT_300 truncate'>
@@ -153,14 +153,14 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                     </div>
                   ) : (
-                    <ul className='divide-y divide-DARK_600'>
+                    <ul className='divide-y divide-DARK_600 space-y-2'>
                       {appointments.map((appt) => (
                         <li key={appt.id}>
                           <Link
                             href={`/agendamentos/${appt.id}`}
                             className='flex justify-between items-center p-4 hover:bg-DARK_800 transition'
                           >
-                            <div>
+                            <div className='flex flex-col gap-y-1'>
                               <div className='text-sm font-medium text-LIGHT_100'>
                                 {format(
                                   new Date(appt.date),
@@ -205,7 +205,7 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                     </div>
                   ) : (
-                    <ul className='divide-y divide-DARK_600'>
+                    <ul className='divide-y divide-DARK_600 space-y-2'>
                       {openOrders.map((order) => (
                         <li key={order.id}>
                           <Link
@@ -244,90 +244,98 @@ export default function PainelPage() {
           {/* Gráficos */}
           <div className='space-y-6 h-full flex flex-col justify-between'>
             {/* Pizza */}
-            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between sm:min-h-[220px]'>
+            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between '>
               <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
                 Ordens Abertas vs Finalizadas
               </h3>
-              <ResponsiveContainer
-                width='100%'
-                height='100%'
-              >
-                <PieChart>
-                  <Pie
-                    data={chartPieData}
-                    dataKey='value'
-                    nameKey='name'
-                    cx='50%'
-                    cy='50%'
-                    outerRadius={isMobile ? 40 : 50} // 🔥 menor no mobile
-                    label
-                  >
-                    {chartPieData.map((_, index: number) => (
-                      <Cell
-                        key={index}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#00111a',
-                      borderRadius: 4,
-                    }}
-                    labelStyle={{ color: '#FFFFFF' }}
-                    itemStyle={{ color: '#FFFFFF' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>
+                {' '}
+                {/* ✅ Altura Fixa no Mobile */}
+                <ResponsiveContainer
+                  width='100%'
+                  height='100%'
+                >
+                  <PieChart>
+                    <Pie
+                      data={chartPieData}
+                      dataKey='value'
+                      nameKey='name'
+                      cx='50%'
+                      cy='50%'
+                      outerRadius={isMobile ? 40 : 50}
+                      label
+                    >
+                      {chartPieData.map((_, index: number) => (
+                        <Cell
+                          key={index}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#00111a',
+                        borderRadius: 4,
+                      }}
+                      labelStyle={{ color: '#FFFFFF' }}
+                      itemStyle={{ color: '#FFFFFF' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </Card>
 
             {/* Linha */}
-            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between'>
+            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between  '>
               <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
                 Evolução Mensal de Ordens
               </h3>
-              <ResponsiveContainer
-                width='100%'
-                height='100%'
-              >
-                <LineChart
-                  data={monthlyStats.map((item) => ({
-                    name: format(new Date(item.month + '-01'), 'MMM/yyyy', {
-                      locale: ptBR,
-                    }),
-                    total: item.total,
-                  }))}
+              <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>
+                {' '}
+                {/* ✅ Altura Fixa no Mobile */}
+                <ResponsiveContainer
+                  width='100%'
+                  height='100%'
                 >
-                  <CartesianGrid
-                    strokeDasharray='3 3'
-                    stroke='#0D161B'
-                  />
-                  <XAxis
-                    dataKey='name'
-                    stroke='#FFFFFF'
-                    fontSize={12}
-                  />
-                  <YAxis
-                    stroke='#FFFFFF'
-                    fontSize={12}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#00111a',
-                      borderRadius: 4,
-                    }}
-                    labelStyle={{ color: '#FFFFFF' }}
-                    itemStyle={{ color: '#FFFFFF' }}
-                  />
-                  <Line
-                    type='monotone'
-                    dataKey='total'
-                    stroke='#F4B400'
-                    strokeWidth={2}
-                    dot
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+                  <LineChart
+                    data={monthlyStats.map((item) => ({
+                      name: format(new Date(item.month + '-01'), 'MMM/yyyy', {
+                        locale: ptBR,
+                      }),
+                      total: item.total,
+                    }))}
+                  >
+                    <CartesianGrid
+                      strokeDasharray='3 3'
+                      stroke='#0D161B'
+                    />
+                    <XAxis
+                      dataKey='name'
+                      stroke='#FFFFFF'
+                      fontSize={12}
+                    />
+                    <YAxis
+                      stroke='#FFFFFF'
+                      fontSize={12}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#00111a',
+                        borderRadius: 4,
+                      }}
+                      labelStyle={{ color: '#FFFFFF' }}
+                      itemStyle={{ color: '#FFFFFF' }}
+                    />
+                    <Line
+                      type='monotone'
+                      dataKey='total'
+                      stroke='#F4B400'
+                      strokeWidth={2}
+                      dot
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </Card>
           </div>
         </section>

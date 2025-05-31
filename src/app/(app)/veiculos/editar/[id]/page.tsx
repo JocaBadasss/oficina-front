@@ -10,6 +10,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -65,6 +66,8 @@ export default function EditarVeiculoPage() {
   });
 
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { toast } = useToast();
   const router = useRouter();
   const params = useParams();
@@ -72,6 +75,7 @@ export default function EditarVeiculoPage() {
   useEffect(() => {
     async function fetchVehicle() {
       try {
+        setIsSubmitting(true);
         const response = await api.get(`/vehicles/${params.id}`);
         const data = response.data;
         setVehicle(data);
@@ -85,6 +89,8 @@ export default function EditarVeiculoPage() {
       } catch (error) {
         console.error('Erro ao carregar veículo:', error);
         toast({ title: 'Erro ao carregar veículo', variant: 'destructive' });
+      } finally {
+        setIsSubmitting(false);
       }
     }
     fetchVehicle();
@@ -228,12 +234,12 @@ export default function EditarVeiculoPage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
+              <LoadingButton
                 type='submit'
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
+                isLoading={isSubmitting}
               >
-                Salvar Alterações
-              </button>
+                Salvar alterações
+              </LoadingButton>
             </div>
           </form>
         </section>

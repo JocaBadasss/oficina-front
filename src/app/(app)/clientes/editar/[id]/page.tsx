@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatCpfCnpjInput, formatPhoneInput } from '@/utils/helpers/clients';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -31,7 +32,7 @@ export default function EditarClientePage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -45,6 +46,7 @@ export default function EditarClientePage() {
   useEffect(() => {
     async function fetchClient() {
       try {
+        setIsSubmitting(true);
         const response = await api.get(`/clients/${params.id}`);
         const { name, email, phone, address, cpfOrCnpj } = response.data;
         setValue('name', name);
@@ -58,6 +60,8 @@ export default function EditarClientePage() {
           title: 'Erro ao carregar cliente.',
           variant: 'destructive',
         });
+      } finally {
+        setIsSubmitting(false);
       }
     }
     fetchClient();
@@ -209,12 +213,12 @@ export default function EditarClientePage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
+              <LoadingButton
                 type='submit'
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
+                isLoading={isSubmitting}
               >
-                Salvar Alterações
-              </button>
+                Salvar alterações
+              </LoadingButton>
             </div>
           </form>
         </section>

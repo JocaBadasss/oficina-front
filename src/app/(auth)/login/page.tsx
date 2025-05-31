@@ -38,28 +38,41 @@ export default function LoginPage() {
   //   }
   // }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      // 1. Faz login e salva os tokens no localStorage
-      await login({ email, password });
-
-      // 2. Garante que o AuthProvider já vai estar com o token
-      await api.get('/users/me'); // ← ESSENCIAL
-
-      // 3. Só depois disso redireciona
-      window.location.href = '/painel';
-    } catch {
-      toast({ title: 'Erro ao logar', variant: 'destructive' });
-    } finally {
-      setLoading(false);
+  async function waitForUser(retries = 5, delay = 1000): Promise<void> {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await api.get('/users/me');
+        return; // sucesso
+      } catch (error) {
+        console.log(`Tentativa ${attempt} de /users/me falhou...`);
+        if (attempt === retries) throw error;
+        await new Promise((res) => setTimeout(res, delay));
+      }
     }
   }
 
+  try {
+    // 1. Faz login e salva os tokens
+    await login({ email, password });
+
+    // 2. Espera o backend acordar e o /me responder
+    await waitForUser();
+
+    // 3. Redireciona quando tudo estiver OK
+    window.location.href = '/painel';
+  } catch {
+    toast({ title: 'Erro ao logar', variant: 'destructive' });
+  } finally {
+    setLoading(false);
+  }
+}
+
   return (
-    <div className='flex flex-col min-h-screen md:flex-row'>
+    <div className='flex flex-col md:flex-row h-screen overflow-hidden'>
       {/* Lado Esquerdo (Desktop) */}
       <div className='hidden md:flex md:w-1/2 items-center justify-center bg-secondary'>
         <div className='text-center'>
@@ -82,8 +95,8 @@ export default function LoginPage() {
       </div>
 
       {/* Lado Direito (Formulário) */}
-      <div className='flex flex-1 items-center justify-center bg-background'>
-        <div className='w-full max-w-sm p-8 '>
+      <div className='flex-1 flex items-center justify-center bg-background h-full'>
+        <div className='w-full max-w-sm px-6 py-8 sm:px-8'>
           <div className='flex items-center justify-center flex-col'>
             <div className='flex items-center justify-center mb-4 md:hidden gap-2'>
               <Image

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +10,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatCpfCnpjInput, formatPhoneInput } from '@/utils/helpers/clients';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -192,14 +192,12 @@ export default function NovoClientePage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
+              <LoadingButton
                 type='submit'
-                disabled={isSubmitting}
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto flex items-center justify-center gap-2'
+                isLoading={isSubmitting}
               >
-                {isSubmitting && <Loader2 className='h-4 w-4 animate-spin' />}{' '}
                 Salvar Cliente
-              </button>
+              </LoadingButton>
             </div>
           </form>
         </section>

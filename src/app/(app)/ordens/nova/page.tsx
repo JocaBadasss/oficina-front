@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,20 @@ import { AppLayout } from '@/components/AppLayout';
 import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 import { formatVehicleLine } from '@/utils/helpers/vehicles';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { ChevronsDown } from 'lucide-react';
+import {
+  CommandEmpty,
+  CommandGroup,
+  Command,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const orderSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -64,6 +78,7 @@ export default function NovaOrdemPage() {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm<OrderFormData>({
     resolver: zodResolver(orderSchema),
@@ -75,6 +90,9 @@ export default function NovaOrdemPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -138,6 +156,7 @@ export default function NovaOrdemPage() {
     });
 
     try {
+      setIsSubmitting(true);
       await api.post('/service-orders/complete', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -148,6 +167,8 @@ export default function NovaOrdemPage() {
       router.push('/ordens');
     } catch (error) {
       handleAxiosError(error, 'Erro ao criar ordem');
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -172,21 +193,58 @@ export default function NovaOrdemPage() {
               >
                 Cliente
               </label>
-              <select
-                id='clientId'
-                {...register('clientId')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
-              >
-                <option value=''>Selecione um cliente</option>
-                {clients.map((client) => (
-                  <option
-                    key={client.id}
-                    value={client.id}
+              <Controller
+                name='clientId'
+                control={control}
+                render={({ field }) => (
+                  <Popover
+                    open={isPopoverOpen}
+                    onOpenChange={setIsPopoverOpen}
                   >
-                    {client.name}
-                  </option>
-                ))}
-              </select>
+                    <PopoverTrigger asChild>
+                      <button
+                        type='button'
+                        className='w-full bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-left text-LIGHT_100 flex items-center justify-between'
+                        onClick={() => setIsPopoverOpen(true)}
+                      >
+                        {clients.find((c) => c.id === field.value)?.name ||
+                          'Selecione um cliente'}
+                        <ChevronsDown className='ml-2 h-4 w-4 opacity-50' />
+                      </button>
+                    </PopoverTrigger>
+
+                    <PopoverContent
+                      className='p-0 mt-1 z-50 w-[var(--radix-popover-trigger-width)] border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-lg rounded-none'
+                      align='start'
+                      sideOffset={4}
+                    >
+                      <Command className='bg-DARK_800'>
+                        <CommandInput
+                          placeholder='Buscar cliente...'
+                          className='h-9 bg-DARK_800'
+                        />
+                        <CommandEmpty>Nenhum cliente encontrado.</CommandEmpty>
+
+                        <CommandGroup className='bg-DARK_800'>
+                          {clients.map((client) => (
+                            <CommandItem
+                              key={client.id}
+                              value={client.name}
+                              className='px-4 py-2 text-sm text-LIGHT_100 bg-DARK_800 hover:bg-DARK_700 cursor-pointer'
+                              onSelect={() => {
+                                field.onChange(client.id);
+                                setIsPopoverOpen(false);
+                              }}
+                            >
+                              {client.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
               {errors.clientId && (
                 <span className='text-red-500 text-xs'>
                   {errors.clientId.message}
@@ -461,12 +519,12 @@ export default function NovaOrdemPage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
+              <LoadingButton
                 type='submit'
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
+                isLoading={isSubmitting}
               >
                 Criar Ordem
-              </button>
+              </LoadingButton>
             </div>
           </form>
         </section>

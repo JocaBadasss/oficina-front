@@ -26,6 +26,7 @@ import { ChevronsDown, Plus } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
+import { LoadingButton } from '@/components/LoadingButton';
 
 interface Client {
   id: string;
@@ -129,9 +130,9 @@ export default function NovoAtendimentoPage() {
   }, [selectedClient, toast]);
 
   const onSubmit = async (data: NovoAtendimentoFormData) => {
-    setIsSubmitting(true);
-
     try {
+      setIsSubmitting(true);
+
       const formData = new FormData();
 
       // 👤 Cliente
@@ -719,13 +720,12 @@ export default function NovoAtendimentoPage() {
               </div>
             </div>
           </section>
-          <button
-            disabled={isSubmitting}
+          <LoadingButton
             type='submit'
-            className='w-full bg-TINTS_CARROT_100 text-LIGHT_100 font-bold py-3 px-6 rounded-md hover:bg-[#d98b3e] transition-colors'
+            isLoading={isSubmitting}
           >
-            Finalizar Atendimento
-          </button>
+            Finalizar atendimento
+          </LoadingButton>
         </form>
       </main>
     </AppLayout>

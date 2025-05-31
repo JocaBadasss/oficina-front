@@ -13,6 +13,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import Image from 'next/image';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const orderSchema = z.object({
   fuelLevel: z.string().min(1, 'Nível de combustível é obrigatório'),
@@ -473,13 +474,12 @@ export default function EditarOrdemPage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
-                disabled={isSubmitting}
+              <LoadingButton
                 type='submit'
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
+                isLoading={isSubmitting}
               >
-                Salvar Alterações
-              </button>
+                Salvar alterações
+              </LoadingButton>
             </div>
           </form>
         </section>

@@ -55,10 +55,12 @@ export default function OrdensPage() {
   }, []);
 
   const filteredOrders = orders.filter((order) => {
+    const searchLower = search.toLowerCase();
+
     return (
-      order.vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
-      order.vehicle.model.toLowerCase().includes(search.toLowerCase()) ||
-      order.vehicle.client.name.toLowerCase().includes(search.toLowerCase())
+      order.vehicle.plate?.toLowerCase().includes(searchLower) ||
+      order.vehicle.model?.toLowerCase().includes(searchLower) ||
+      order.vehicle.client.name?.toLowerCase().includes(searchLower)
     );
   });
 

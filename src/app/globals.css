@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* isso evita rolagem */
+  background-color: #0d0d0d; /* ou o fundo padrão do seu app */
+}
+
 @layer base {
   :root {
     --background: #0d1d25; /* Azul marinho escuro (#0f172a) */

@@ -11,12 +11,13 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
 import { mask } from 'remask';
-import { Loader2, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
 import { AppLayout } from '@/components/AppLayout';
 import { AxiosError } from 'axios';
 import { PageHeader } from '@/components/PageHeader';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -425,16 +426,12 @@ export default function NovoAgendamentoPage() {
                   </div>
                 </div>
 
-                <Button
+                <LoadingButton
                   type='submit'
-                  disabled={isSubmitting}
-                  className='mt-4'
+                  isLoading={isSubmitting}
                 >
-                  {isSubmitting && (
-                    <Loader2 className='h-4 w-4 animate-spin mr-2' />
-                  )}{' '}
                   Agendar
-                </Button>
+                </LoadingButton>
               </section>
             )}
           </form>

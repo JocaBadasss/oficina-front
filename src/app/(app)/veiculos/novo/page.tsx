@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/services/api';
@@ -10,6 +10,20 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { ChevronsDown } from 'lucide-react';
+import {
+  CommandEmpty,
+  CommandGroup,
+  Command,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command';
+import { LoadingButton } from '@/components/LoadingButton';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -44,7 +58,7 @@ export default function NovoVeiculoPage() {
     register,
     handleSubmit,
     formState: { errors },
-
+    control,
     setValue,
     watch,
   } = useForm<VehicleFormData>({
@@ -52,12 +66,17 @@ export default function NovoVeiculoPage() {
   });
 
   const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     async function fetchClients() {
       try {
+        setIsSubmitting(true);
+
         const response = await api.get('/clients');
         setClients(response.data);
       } catch (error) {
@@ -66,6 +85,8 @@ export default function NovoVeiculoPage() {
           title: 'Erro ao carregar clientes',
           variant: 'destructive',
         });
+      } finally {
+        setIsSubmitting(false);
       }
     }
     fetchClients();
@@ -123,21 +144,58 @@ export default function NovoVeiculoPage() {
               >
                 Cliente
               </label>
-              <select
-                id='clientId'
-                {...register('clientId')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
-              >
-                <option value=''>Selecione um cliente</option>
-                {clients.map((client) => (
-                  <option
-                    key={client.id}
-                    value={client.id}
+              <Controller
+                name='clientId'
+                control={control}
+                render={({ field }) => (
+                  <Popover
+                    open={isPopoverOpen}
+                    onOpenChange={setIsPopoverOpen}
                   >
-                    {client.name}
-                  </option>
-                ))}
-              </select>
+                    <PopoverTrigger asChild>
+                      <button
+                        type='button'
+                        className='w-full bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-left text-LIGHT_100 flex items-center justify-between'
+                        onClick={() => setIsPopoverOpen(true)}
+                      >
+                        {clients.find((c) => c.id === field.value)?.name ||
+                          'Selecione um cliente'}
+                        <ChevronsDown className='ml-2 h-4 w-4 opacity-50' />
+                      </button>
+                    </PopoverTrigger>
+
+                    <PopoverContent
+                      className='p-0 mt-1 z-50 w-[var(--radix-popover-trigger-width)] border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-lg rounded-none'
+                      align='start'
+                      sideOffset={4}
+                    >
+                      <Command className='bg-DARK_800'>
+                        <CommandInput
+                          placeholder='Buscar cliente...'
+                          className='h-9 bg-DARK_800'
+                        />
+                        <CommandEmpty>Nenhum cliente encontrado.</CommandEmpty>
+
+                        <CommandGroup className='bg-DARK_800'>
+                          {clients.map((client) => (
+                            <CommandItem
+                              key={client.id}
+                              value={client.name}
+                              className='px-4 py-2 text-sm text-LIGHT_100 bg-DARK_800 hover:bg-DARK_700 cursor-pointer'
+                              onSelect={() => {
+                                field.onChange(client.id);
+                                setIsPopoverOpen(false);
+                              }}
+                            >
+                              {client.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
               {errors.clientId && (
                 <span className='text-red-500 text-xs'>
                   {errors.clientId.message}
@@ -230,12 +288,12 @@ export default function NovoVeiculoPage() {
             </div>
 
             <div className='md:col-span-2'>
-              <button
+              <LoadingButton
                 type='submit'
-                className='bg-TINTS_CARROT_100 text-LIGHT_200 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition w-full md:w-auto'
+                isLoading={isSubmitting}
               >
                 Salvar Veículo
-              </button>
+              </LoadingButton>
             </div>
           </form>
         </section>

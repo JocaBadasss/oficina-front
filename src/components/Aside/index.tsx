@@ -121,7 +121,7 @@ export function Aside() {
               </button>
 
               {open && (
-                <div className='absolute bottom-12 left-[250%] ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden z-50 w-40'>
+                <div className='absolute bottom-12 right-0 ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden z-50 w-40'>
                   <Link
                     href='/agendamentos'
                     className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'

@@ -24,6 +24,7 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { LoadingButton } from '@/components/LoadingButton';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 const vehicleSchema = z.object({
   clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
@@ -80,11 +81,7 @@ export default function NovoVeiculoPage() {
         const response = await api.get('/clients');
         setClients(response.data);
       } catch (error) {
-        console.error('Erro ao buscar clientes:', error);
-        toast({
-          title: 'Erro ao carregar clientes',
-          variant: 'destructive',
-        });
+        handleAxiosError(error);
       } finally {
         setIsSubmitting(false);
       }

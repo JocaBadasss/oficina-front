@@ -31,7 +31,6 @@ import {
   Link2,
 } from 'lucide-react';
 import { EditConclusaoModal } from '@/components/EditConclusionModal';
-import { useToast } from '@/components/ui/use-toast';
 
 interface PhotoDTO {
   id: string;
@@ -85,7 +84,6 @@ export default function DetalhesOrdemPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const { toast } = useToast();
 
   const router = useRouter();
 
@@ -131,21 +129,15 @@ export default function DetalhesOrdemPage() {
             </div>
 
             {/* Botão de copiar link */}
-            <button
-              onClick={() => {
-                const url = `${window.location.origin}/acompanhamento/${order.id}`;
-                navigator.clipboard.writeText(url);
-                toast({
-                  title: 'Link copiado',
-                  description:
-                    'URL pública copiada para a área de transferência',
-                });
-              }}
+            <a
+              href={`/acompanhamento/${order.id}`}
+              target='_blank'
+              rel='noopener noreferrer'
               className='flex items-center space-x-1 hover:text-LIGHT_100'
             >
               <Link2 className='w-4 h-4 text-LIGHT_500' />
-              <span className='text-LIGHT_500'>Copiar link</span>
-            </button>
+              <span className='text-LIGHT_500'>Ver acompanhamento</span>
+            </a>
           </div>
         )}
 

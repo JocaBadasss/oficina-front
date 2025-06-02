@@ -42,10 +42,11 @@ export const baseSchema = z.object({
     (val) => (val ? Number(val) : undefined),
     z.number().optional()
   ) as z.ZodType<number | undefined>,
-  km: z.preprocess(
-    (val) => (val ? Number(val) : undefined),
-    z.number().optional()
-  ) as z.ZodType<number | undefined>,
+  km: z
+    .number({ invalid_type_error: 'KM deve ser um número' })
+    .min(0, 'KM inválido')
+    .int()
+    .max(5_000_000, 'KM muito alto — confere esse valor aí!'),
   fuelLevel: z.string().optional(),
   adblueLevel: z.string().optional(),
   tireStatus: z.string().optional(),

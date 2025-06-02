@@ -27,6 +27,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
 import { LoadingButton } from '@/components/LoadingButton';
+import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 
 interface Client {
   id: string;
@@ -129,6 +130,8 @@ export default function NovoAtendimentoPage() {
     fetchVehicles();
   }, [selectedClient, toast]);
 
+  const kmValue = watch('km')?.toString() ?? '';
+
   const onSubmit = async (data: NovoAtendimentoFormData) => {
     try {
       setIsSubmitting(true);
@@ -172,7 +175,7 @@ export default function NovoAtendimentoPage() {
         formData.append('files', file);
       });
 
-      console.log(formData  );
+      console.log(formData);
 
       const res = await api.post('/service-orders/complete', formData, {
         headers: {
@@ -586,11 +589,21 @@ export default function NovoAtendimentoPage() {
                   KM Atual
                 </label>
                 <input
-                  type='number'
+                  type='text'
+                  inputMode='numeric'
                   id='km'
-                  {...register('km', { valueAsNumber: true })}
+                  value={formatKmForDisplay(kmValue)}
+                  onChange={(e) => {
+                    const raw = parseKmInput(e.target.value);
+                    setValue('km', raw, { shouldValidate: true });
+                  }}
                   className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
                 />
+                {errors.km && (
+                  <span className='text-red-500 text-xs'>
+                    {errors.km.message}
+                  </span>
+                )}
               </div>
 
               <div className='flex flex-col gap-1'>

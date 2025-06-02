@@ -38,7 +38,10 @@ export function Aside() {
     <>
       {/* Desktop Aside */}
       <aside className='hidden md:fixed  md:inset-y-0 md:flex md:w-64 md:flex-col bg-DARK_700 p-6 space-y-6 pb-12 z-50'>
-        <div className='text-2xl font-bold text-TINTS_CARROT_100 flex items-center gap-2'>
+        <Link
+          href='/painel'
+          className='text-2xl font-bold text-TINTS_CARROT_100 flex items-center gap-2 hover:opacity-90'
+        >
           <Image
             src='/gearIcon.svg'
             alt='Ícone de engrenagem'
@@ -46,7 +49,7 @@ export function Aside() {
             height={32}
           />
           <span>OFICINA</span>
-        </div>
+        </Link>
         <nav className='flex flex-col justify-between h-full text-LIGHT_100'>
           <div className='flex flex-col gap-4'>
             {navItems.map(({ href, icon: Icon, label, isNewOrder }) => (
@@ -63,14 +66,24 @@ export function Aside() {
               </Link>
             ))}
           </div>
-          <Link
+          {/* QUANDO FOR USAR CONFIGS DESCOMENTAR */}
+          {/* <Link
             href='/#'
             className={`hover:text-TINTS_CARROT_100 flex gap-2 items-center ${
               pathname === '/configuracoes' ? 'text-TINTS_CARROT_100' : ''
             }`}
           >
             <Wrench size={16} /> Configurações
-          </Link>
+          </Link> */}
+          {/* QUANDO FOR USAR CONFIGS DESCOMENTAR */}
+
+          <button
+            type='button'
+            className='hover:text-TINTS_CARROT_100 flex gap-2 items-center text-LIGHT_100 cursor-default hover:cursor-pointer'
+            onClick={() => {}}
+          >
+            <Wrench size={16} /> Configurações
+          </button>
         </nav>
       </aside>
 
@@ -134,12 +147,21 @@ export function Aside() {
                   >
                     <Truck size={16} /> Veículos
                   </Link>
-                  <Link
+                  {/* QUANDO FOR USAR CONFIGS DESCOMENTAR */}
+                  {/* <Link
                     href='/#'
                     className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
                   >
                     <Settings size={16} /> Configurações
-                  </Link>
+                  </Link> */}
+                  {/* QUANDO FOR USAR CONFIGS DESCOMENTAR */}
+                  <button
+                    type='button'
+                    onClick={() => {}}
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition hover:cursor-pointer text-left w-full'
+                  >
+                    <Settings size={16} /> Configurações
+                  </button>
                 </div>
               )}
             </div>

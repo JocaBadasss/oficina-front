@@ -9,10 +9,11 @@ import React, {
   useCallback,
   ReactNode,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 // import { api } from '@/services/api';
 import { logout } from '@/services/authService';
 import { useToast } from '@/components/ui/use-toast';
+import { api } from '@/services/api';
 
 interface User {
   id: string;
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [hasFetchedUser, setHasFetchedUser] = useState(false);
   const router = useRouter();
 
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const { toast } = useToast();
 
   const signOut = useCallback(async () => {
@@ -67,49 +68,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [signOut]);
 
   //DESCOMENTA
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   // 1) Se estivermos em /login, não tentamos buscar user
-  //   if (pathname === '/login') {
-  //     setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
-  //     setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
-  //     return; // saímos do efeito
-  //   }
-
-  //   // 2) Para todas as outras rotas, resetamos nosso estado
-  //   setHasFetchedUser(false); // indica que ainda NÃO tentamos buscar
-  //   setIsLoading(true); // entramos no modo “carregando”
-
-  //   // 3) Fazemos a chamada real à API
-  //   api
-  //     .get<User>('/users/me')
-  //     .then((res) => {
-  //       if (isMounted) setUser(res.data); // se completou, armazenamos o user
-  //     })
-  //     .catch(() => {
-  //       if (isMounted) {
-  //         setUser(null); // se falhou, limpamos o user
-  //         signOut(); // e executamos o logout (redirect + toast)
-  //       }
-  //     })
-  //     .finally(() => {
-  //       if (isMounted) setIsLoading(false); // encerramos o “loading”
-  //       setHasFetchedUser(true); // sinalizamos que já tentamos o fetch
-  //     });
-
-  //   // 4) Cleanup para evitar setState após componente desmontar
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [pathname, signOut]);
-
   useEffect(() => {
-    setIsLoading(false);
-    setHasFetchedUser(true);
-  }, []);
-  const token =
-    typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    let isMounted = true;
+
+    // 1) Se estivermos em /login, não tentamos buscar user
+    if (pathname === '/login') {
+      setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
+      setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
+      return; // saímos do efeito
+    }
+
+    // 2) Para todas as outras rotas, resetamos nosso estado
+    setHasFetchedUser(false); // indica que ainda NÃO tentamos buscar
+    setIsLoading(true); // entramos no modo “carregando”
+
+    // 3) Fazemos a chamada real à API
+    api
+      .get<User>('/users/me')
+      .then((res) => {
+        if (isMounted) setUser(res.data); // se completou, armazenamos o user
+      })
+      .catch(() => {
+        if (isMounted) {
+          setUser(null); // se falhou, limpamos o user
+          signOut(); // e executamos o logout (redirect + toast)
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false); // encerramos o “loading”
+        setHasFetchedUser(true); // sinalizamos que já tentamos o fetch
+      });
+
+    // 4) Cleanup para evitar setState após componente desmontar
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname, signOut]);
+
+  // useEffect(() => {
+  //   setIsLoading(false);
+  //   setHasFetchedUser(true);
+  // }, []);
 
   return (
     <AuthContext.Provider
@@ -117,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         hasFetchedUser,
-        isAuthenticated: !!user || (!!hasFetchedUser && !!token),
+        isAuthenticated: !!user,
         signOut,
       }}
     >

@@ -435,7 +435,7 @@ export default function NovaOrdemPage() {
                 htmlFor='km'
                 className='text-sm text-LIGHT_500'
               >
-                KM Atual
+                Atual
               </label>
               <input
                 type='text'

@@ -152,6 +152,10 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                       <Skeleton className='h-4 w-full' />
                     </div>
+                  ) : appointments.length === 0 ? (
+                    <div className='p-6 text-center text-sm text-LIGHT_500'>
+                      Nenhum agendamento próximo.
+                    </div>
                   ) : (
                     <ul className='divide-y divide-DARK_600 space-y-2'>
                       {appointments.map((appt) => (
@@ -203,6 +207,10 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                       <Skeleton className='h-4 w-full' />
                       <Skeleton className='h-4 w-full' />
+                    </div>
+                  ) : openOrders.length === 0 ? (
+                    <div className='p-6 text-center text-sm text-LIGHT_500'>
+                      Nenhuma ordem em andamento.
                     </div>
                   ) : (
                     <ul className='divide-y divide-DARK_600 space-y-2'>

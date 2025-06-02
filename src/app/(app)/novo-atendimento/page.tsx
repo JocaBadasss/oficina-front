@@ -172,6 +172,8 @@ export default function NovoAtendimentoPage() {
         formData.append('files', file);
       });
 
+      console.log(formData  );
+
       const res = await api.post('/service-orders/complete', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

@@ -38,6 +38,7 @@ export async function login(data: LoginData) {
 
 export async function logout() {
   // ✅ Limpar localStorage
+   console.log('[logout] Chamado! Limpando tokens.');
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
 }

@@ -64,7 +64,7 @@ export function Aside() {
             ))}
           </div>
           <Link
-            href='/configuracoes'
+            href='/#'
             className={`hover:text-TINTS_CARROT_100 flex gap-2 items-center ${
               pathname === '/configuracoes' ? 'text-TINTS_CARROT_100' : ''
             }`}
@@ -78,7 +78,7 @@ export function Aside() {
       <nav className='fixed bottom-0 z-50 w-full bg-DARK_700 border-t border-DARK_600 md:hidden'>
         <ul className='flex justify-around items-center p-2 relative'>
           {/* Ícones principais no mobile: Painel, Clientes, Ordens */}
-          {[navItems[0], navItems[1], navItems[2]].map(
+          {[navItems[0], navItems[2], navItems[4]].map(
             ({ href, icon: Icon, label }) => {
               const isActive = pathname === href;
               return (
@@ -135,7 +135,7 @@ export function Aside() {
                     <Truck size={16} /> Veículos
                   </Link>
                   <Link
-                    href='/configuracoes'
+                    href='/#'
                     className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
                   >
                     <Settings size={16} /> Configurações

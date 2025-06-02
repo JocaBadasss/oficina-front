@@ -38,38 +38,38 @@ export default function LoginPage() {
   //   }
   // }
 
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setLoading(true);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-  async function waitForUser(retries = 5, delay = 1000): Promise<void> {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        await api.get('/users/me');
-        return; // sucesso
-      } catch (error) {
-        console.log(`Tentativa ${attempt} de /users/me falhou...`);
-        if (attempt === retries) throw error;
-        await new Promise((res) => setTimeout(res, delay));
+    async function waitForUser(retries = 5, delay = 1000): Promise<void> {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          await api.get('/users/me');
+          return; // sucesso
+        } catch (error) {
+          console.log(`Tentativa ${attempt} de /users/me falhou...`);
+          if (attempt === retries) throw error;
+          await new Promise((res) => setTimeout(res, delay));
+        }
       }
     }
+
+    try {
+      // 1. Faz login e salva os tokens
+      await login({ email, password });
+
+      // 2. Espera o backend acordar e o /me responder
+      await waitForUser();
+
+      // 3. Redireciona quando tudo estiver OK
+      window.location.href = '/painel';
+    } catch {
+      toast({ title: 'Erro ao logar', variant: 'destructive' });
+    } finally {
+      setLoading(false);
+    }
   }
-
-  try {
-    // 1. Faz login e salva os tokens
-    await login({ email, password });
-
-    // 2. Espera o backend acordar e o /me responder
-    await waitForUser();
-
-    // 3. Redireciona quando tudo estiver OK
-    window.location.href = '/painel';
-  } catch {
-    toast({ title: 'Erro ao logar', variant: 'destructive' });
-  } finally {
-    setLoading(false);
-  }
-}
 
   return (
     <div className='flex flex-col md:flex-row h-screen overflow-hidden'>

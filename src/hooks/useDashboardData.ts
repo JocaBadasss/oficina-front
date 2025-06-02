@@ -31,17 +31,12 @@ export function useDashboardData(): DashboardData {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get('/service-orders/stats')
-      .then((res) => {
-        console.log('Stats OK:', res.data);
-      })
-      .catch((err) => {
-        console.error(
-          'Erro na rota de stats:',
-          err.response?.data || err.message
-        );
-      });
+    api.get('/service-orders/stats').catch((err) => {
+      console.error(
+        'Erro na rota de stats:',
+        err.response?.data || err.message
+      );
+    });
   }, []);
 
   useEffect(() => {

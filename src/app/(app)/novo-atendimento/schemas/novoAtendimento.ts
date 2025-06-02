@@ -46,7 +46,8 @@ export const baseSchema = z.object({
     .number({ invalid_type_error: 'KM deve ser um número' })
     .min(0, 'KM inválido')
     .int()
-    .max(5_000_000, 'KM muito alto — confere esse valor aí!'),
+    .max(5_000_000, 'KM muito alto — confere esse valor aí!')
+    .optional(),
   fuelLevel: z.string().optional(),
   adblueLevel: z.string().optional(),
   tireStatus: z.string().optional(),

@@ -32,6 +32,12 @@ interface Client {
   createdAt?: string;
 }
 
+const statusLabels: Record<string, string> = {
+  AGUARDANDO: 'Aguardando',
+  EM_ANDAMENTO: 'Em andamento',
+  FINALIZADO: 'Finalizado',
+};
+
 function formatPhone(phone: string): string {
   return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
 }
@@ -175,7 +181,7 @@ export default function DetalhesClientePage() {
                                 : 'bg-TINTS_CARROT_100 text-DARK_100'
                             }`}
                           >
-                            {order.status}
+                            {statusLabels[order.status]}
                           </div>
                         </a>
                       </li>

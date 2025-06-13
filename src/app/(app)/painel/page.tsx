@@ -89,9 +89,9 @@ export default function PainelPage() {
       case 'FINALIZADO':
         return 'bg-TINTS_MINT_100 text-DARK_100';
       case 'EM_ANDAMENTO':
-        return 'bg-TINTS_CARROT_100 text-DARK_100';
+        return 'bg-highlight hover:bg-highlight text-brand-foreground';
       default: // PENDENTE ou AGUARDANDO
-        return 'bg-TINTS_CARROT_100/30 text-TINTS_CARROT_100';
+        return 'bg-highlight/30 hover:bg-highlight/30 text-highlight min-w-[6.25rem] text-center block';
     }
   };
 
@@ -119,14 +119,14 @@ export default function PainelPage() {
                   href={href}
                   className='h-full'
                 >
-                  <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm hover:bg-DARK_800 transition cursor-pointer h-full'>
+                  <Card className=' rounded-xl p-6 shadow-sm hover:bg-card-hover transition cursor-pointer h-full'>
                     <div className='flex items-center gap-4 h-full'>
-                      <Icon className='w-6 h-6 text-TINTS_CARROT_100' />
+                      <Icon className='w-6 h-6 text-highlight' />
                       <div className='flex flex-col justify-center flex-1'>
-                        <div className='text-2xl lg:text-2xl md:text-xl font-bold text-LIGHT_100'>
+                        <div className='text-2xl lg:text-2xl md:text-xl font-bold text-foreground'>
                           {value}
                         </div>
-                        <div className='text-sm text-LIGHT_300 truncate'>
+                        <div className='text-sm text-muted-foreground truncate'>
                           {label}
                         </div>
                       </div>
@@ -139,13 +139,13 @@ export default function PainelPage() {
             {/* Listagens */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               {/* Próximos Agendamentos */}
-              <Card className='bg-DARK_700 rounded-xl overflow-hidden'>
-                <div className='bg-DARK_800 p-4 border-b border-DARK_600'>
-                  <h3 className='text-lg font-semibold text-LIGHT_100'>
+              <Card className=' rounded-xl overflow-hidden'>
+                <div className='bg-background p-4 border-b border-border'>
+                  <h3 className='text-lg font-semibold text-foreground'>
                     Próximos Agendamentos
                   </h3>
                 </div>
-                <ScrollArea className='h-60 bg-DARK_700'>
+                <ScrollArea className='h-60 '>
                   {loading ? (
                     <div className='p-4 space-y-2'>
                       <Skeleton className='h-4 w-full' />
@@ -153,30 +153,30 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                     </div>
                   ) : appointments.length === 0 ? (
-                    <div className='p-6 text-center text-sm text-LIGHT_500'>
+                    <div className='p-6 text-center text-sm text-subtle-foreground'>
                       Nenhum agendamento próximo.
                     </div>
                   ) : (
-                    <ul className='divide-y divide-DARK_600 space-y-2'>
+                    <ul className='divide-y space-y-2'>
                       {appointments.map((appt) => (
                         <li key={appt.id}>
                           <Link
                             href={`/agendamentos/${appt.id}`}
-                            className='flex justify-between items-center p-4 hover:bg-DARK_800 transition'
+                            className='flex justify-between items-center p-4 my-2 hover:bg-hover  transition'
                           >
                             <div className='flex flex-col gap-y-1'>
-                              <div className='text-sm font-medium text-LIGHT_100'>
+                              <div className='text-sm font-medium text-muted-foreground '>
                                 {format(
                                   new Date(appt.date),
                                   "dd/MM/yyyy '•' HH:mm"
                                 )}
                               </div>
-                              <div className='text-sm text-LIGHT_300'>
+                              <div className='text-sm text-placeholder'>
                                 {appt.vehicle.client.name}
                               </div>
                             </div>
                             <Badge
-                              className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${getBadgeClass(
+                              className={`text-[0.625rem] font-semibold px-2 py-1  rounded uppercase whitespace-nowrap ${getBadgeClass(
                                 appt.status
                               )}`}
                             >
@@ -195,13 +195,13 @@ export default function PainelPage() {
               </Card>
 
               {/* Ordens em Andamento */}
-              <Card className='bg-DARK_700 rounded-xl overflow-hidden'>
-                <div className='bg-DARK_800 p-4 border-b border-DARK_600'>
-                  <h3 className='text-lg font-semibold text-LIGHT_100'>
+              <Card className=' rounded-xl overflow-hidden'>
+                <div className='bg-background p-4 border-b border-border'>
+                  <h3 className='text-lg font-semibold text-foreground'>
                     Ordens em Andamento
                   </h3>
                 </div>
-                <ScrollArea className='h-60 bg-DARK_700'>
+                <ScrollArea className='h-60'>
                   {loading ? (
                     <div className='p-4 space-y-2'>
                       <Skeleton className='h-4 w-full' />
@@ -209,27 +209,27 @@ export default function PainelPage() {
                       <Skeleton className='h-4 w-full' />
                     </div>
                   ) : openOrders.length === 0 ? (
-                    <div className='p-6 text-center text-sm text-LIGHT_500'>
+                    <div className='p-6 text-center text-sm text-subtle-foreground'>
                       Nenhuma ordem em andamento.
                     </div>
                   ) : (
-                    <ul className='divide-y divide-DARK_600 space-y-2'>
+                    <ul className='divide-y  space-y-2'>
                       {openOrders.map((order) => (
                         <li key={order.id}>
                           <Link
                             href={`/ordens/${order.id}`}
-                            className='flex justify-between items-center p-4 hover:bg-DARK_800 transition'
+                            className='flex justify-between items-center p-4 hover:bg-hover  my-2 transition '
                           >
-                            <div className='truncate'>
-                              <div className='text-sm font-medium text-LIGHT_100 truncate'>
+                            <div className='truncate flex flex-col gap-y-1'>
+                              <div className='text-sm font-medium truncate text-muted-foreground'>
                                 {order.vehicle.brand} {order.vehicle.model}
                               </div>
-                              <div className='text-sm text-LIGHT_300'>
+                              <div className='text-sm text-placeholder'>
                                 {formatPlate(order.vehicle.plate)}
                               </div>
                             </div>
                             <Badge
-                              className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${getBadgeClass(
+                              className={`text-[0.625rem]  font-semibold px-2 py-1 rounded uppercase whitespace-nowrap ${getBadgeClass(
                                 order.status
                               )}`}
                             >
@@ -252,8 +252,8 @@ export default function PainelPage() {
           {/* Gráficos */}
           <div className='space-y-6 h-full flex flex-col justify-between'>
             {/* Pizza */}
-            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between '>
-              <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
+            <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between '>
+              <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Ordens Abertas vs Finalizadas
               </h3>
               <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>
@@ -294,8 +294,8 @@ export default function PainelPage() {
             </Card>
 
             {/* Linha */}
-            <Card className='bg-DARK_700 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between  '>
-              <h3 className='text-base font-semibold text-LIGHT_100 mb-4 text-center'>
+            <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between  '>
+              <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Evolução Mensal de Ordens
               </h3>
               <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>

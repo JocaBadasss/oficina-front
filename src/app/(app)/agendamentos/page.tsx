@@ -66,16 +66,14 @@ export default function AgendamentosPage() {
 
   return (
     <AppLayout>
-
-
-      <main className='flex-1 p-4 sm:p-6 space-y-6 '>
+      <main className='flex-1 p-4 sm:p-6 space-y-6'>
         <PageHeader
           title='Agendamentos'
           subtitle='Gerencie os agendamentos cadastrados.'
           rightSlot={
             <Link
               href='/agendamentos/novo'
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Novo Agendamento
             </Link>
@@ -85,16 +83,16 @@ export default function AgendamentosPage() {
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-DARK_700 rounded-lg p-4 space-y-4'>
-              <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800'>
+            <div className='bg-muted rounded-lg p-4 space-y-4'>
+              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background'>
                 <Search
                   size={16}
-                  className='text-LIGHT_500'
+                  className='text-subtle-foreground'
                 />
                 <input
                   type='text'
                   placeholder='Buscar agendamento...'
-                  className='bg-transparent outline-none flex-1 text-sm text-LIGHT_100 placeholder:text-LIGHT_500'
+                  className='bg-transparent outline-none flex-1 text-sm text-foreground placeholder:text-placeholder'
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -107,13 +105,15 @@ export default function AgendamentosPage() {
                   <Skeleton className='h-6 w-full' />
                 </div>
               ) : filteredAppointments.length === 0 ? (
-                <p className='text-LIGHT_500'>Nenhum agendamento encontrado.</p>
+                <p className='text-subtle-foreground'>
+                  Nenhum agendamento encontrado.
+                </p>
               ) : (
                 <ul className='space-y-4'>
                   {filteredAppointments.map((appt) => (
                     <li
                       key={appt.id}
-                      className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4'
+                      className='bg-background rounded-xl border border-secondary p-4 shadow-sm hover:bg-hover transition flex flex-col gap-4'
                     >
                       <Link
                         href={`/agendamentos/${appt.id}`}
@@ -121,29 +121,27 @@ export default function AgendamentosPage() {
                       >
                         {/* Data e Status */}
                         <div className='flex justify-between items-center flex-wrap gap-2'>
-                          <div className='flex items-center gap-2 text-sm text-LIGHT_500'>
+                          <div className='flex items-center gap-2 text-sm text-subtle-foreground'>
                             <CalendarClock
                               size={16}
-                              className='text-TINTS_CARROT_100'
+                              className='text-tertiary'
                             />
                             {format(
                               new Date(appt.createdAt),
                               "dd 'de' MMMM 'de' yyyy",
-                              {
-                                locale: ptBR,
-                              }
+                              { locale: ptBR }
                             )}
                           </div>
 
                           <span
-                            className={`text-[10px] font-semibold px-3 py-1 rounded capitalize w-fit
-              ${
-                appt.status === 'CONFIRMADO'
-                  ? 'bg-TINTS_MINT_100 text-DARK_100'
-                  : appt.status === 'CANCELADO'
-                  ? 'bg-TINTS_TOMATO_200 text-LIGHT_100'
-                  : 'bg-TINTS_CARROT_100 text-DARK_100'
-              }`}
+                            className={`text-[0.625rem] font-semibold px-3 py-1 rounded capitalize w-fit
+                          ${
+                            appt.status === 'CONFIRMADO'
+                              ? 'bg-success text-success-foreground'
+                              : appt.status === 'CANCELADO'
+                              ? 'bg-destructive text-destructive-foreground'
+                              : 'bg-tertiary text-tertiary-foreground'
+                          }`}
                           >
                             {statusLabels[appt.status] || appt.status}
                           </span>
@@ -153,14 +151,16 @@ export default function AgendamentosPage() {
                         <div className='flex items-start gap-3'>
                           <Car
                             size={20}
-                            className='text-TINTS_CARROT_100 mt-0.5'
+                            className='text-tertiary mt-0.5'
                           />
                           <div className='flex-1 min-w-0'>
-                            <p className='text-sm text-LIGHT_500'>Veículo</p>
-                            <p className='text-base font-semibold text-TINTS_CAKE_200 truncate'>
+                            <p className='text-sm text-subtle-foreground'>
+                              Veículo
+                            </p>
+                            <p className='text-base font-semibold text-secondary-highlight truncate'>
                               {appt.vehicle.plate}
                             </p>
-                            <p className='text-sm text-LIGHT_100'>
+                            <p className='text-sm text-foreground'>
                               {appt.vehicle.model} ({appt.vehicle.brand})
                             </p>
                           </div>
@@ -170,11 +170,13 @@ export default function AgendamentosPage() {
                         <div className='flex items-start gap-3'>
                           <User
                             size={20}
-                            className='text-TINTS_CARROT_100 mt-0.5'
+                            className='text-tertiary mt-0.5'
                           />
                           <div className='flex-1'>
-                            <p className='text-sm text-LIGHT_500'>Cliente</p>
-                            <p className='text-sm text-LIGHT_100 truncate'>
+                            <p className='text-sm text-subtle-foreground'>
+                              Cliente
+                            </p>
+                            <p className='text-sm text-foreground truncate'>
                               {appt.vehicle.client.name}
                             </p>
                           </div>
@@ -185,13 +187,13 @@ export default function AgendamentosPage() {
                           <div className='flex items-start gap-3'>
                             <ClipboardList
                               size={20}
-                              className='text-TINTS_CARROT_100 mt-0.5'
+                              className='text-tertiary mt-0.5'
                             />
                             <div className='flex-1'>
-                              <p className='text-sm text-LIGHT_500'>
+                              <p className='text-sm text-subtle-foreground'>
                                 Observações
                               </p>
-                              <p className='text-sm text-LIGHT_300 leading-snug'>
+                              <p className='text-sm text-soft-foreground leading-snug'>
                                 {appt.notes}
                               </p>
                             </div>
@@ -199,8 +201,8 @@ export default function AgendamentosPage() {
                         )}
 
                         {/* Link final */}
-                        <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
-                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
+                        <div className='flex justify-end pt-3 border-t border-border mt-2'>
+                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-tertiary hover:underline'>
                             Ver detalhes <ArrowRight size={14} />
                           </span>
                         </div>
@@ -212,13 +214,14 @@ export default function AgendamentosPage() {
             </div>
           </div>
 
-          <div className='bg-DARK_700  rounded-lg p-4 sm:p-6  flex flex-col justify-center items-center gap-4 min-h-44 text-center '>
+          {/* Lateral – Agendamentos Pendentes */}
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-center items-center gap-4 min-h-44 text-center'>
             <CalendarClock
               size={32}
-              className='text-TINTS_CARROT_100'
+              className='text-tertiary'
             />
             <div className='w-full text-center'>
-              <h2 className='text-sm text-LIGHT_500 uppercase tracking-wide'>
+              <h2 className='text-sm text-subtle-foreground uppercase tracking-wide'>
                 Agendamentos Pendentes
               </h2>
               {loading ? (

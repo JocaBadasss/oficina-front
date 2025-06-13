@@ -128,7 +128,7 @@ export default function EditarVeiculoPage() {
           backHref={`/veiculos/${params.id}`}
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6'>
+        <section className='bg-muted rounded-lg p-6'>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='grid grid-cols-1 md:grid-cols-2 gap-6'
@@ -136,7 +136,7 @@ export default function EditarVeiculoPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='clientId'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Cliente
               </label>
@@ -145,14 +145,14 @@ export default function EditarVeiculoPage() {
                 id='clientId'
                 disabled
                 value={vehicle?.client?.name || ''}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none cursor-not-allowed'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none cursor-not-allowed'
               />
             </div>
 
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='plate'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Placa
               </label>
@@ -161,7 +161,7 @@ export default function EditarVeiculoPage() {
                 id='plate'
                 {...register('plate')}
                 placeholder='ABC-1234 ou BRA0A12'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none placeholder:text-placeholder'
               />
               {errors.plate && (
                 <span className='text-red-500 text-xs'>
@@ -173,7 +173,7 @@ export default function EditarVeiculoPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='brand'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Marca
               </label>
@@ -182,7 +182,7 @@ export default function EditarVeiculoPage() {
                 id='brand'
                 {...register('brand')}
                 placeholder='Ex: Volkswagen'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none placeholder:text-placeholder'
               />
               {errors.brand && (
                 <span className='text-red-500 text-xs'>
@@ -194,7 +194,7 @@ export default function EditarVeiculoPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='model'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Modelo
               </label>
@@ -203,7 +203,7 @@ export default function EditarVeiculoPage() {
                 id='model'
                 {...register('model')}
                 placeholder='Ex: Fusca'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none placeholder:text-placeholder'
               />
               {errors.model && (
                 <span className='text-red-500 text-xs'>
@@ -215,7 +215,7 @@ export default function EditarVeiculoPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='year'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Ano
               </label>
@@ -224,7 +224,7 @@ export default function EditarVeiculoPage() {
                 id='year'
                 {...register('year', { valueAsNumber: true })}
                 placeholder='Ex: 1989'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none placeholder:text-placeholder'
               />
               {errors.year && (
                 <span className='text-red-500 text-xs'>

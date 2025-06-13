@@ -201,8 +201,8 @@ export default function NovoAgendamentoPage() {
           backHref='/agendamentos'
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
-          <h2 className='text-xl font-semibold text-LIGHT_200'>
+        <section className='bg-muted rounded-lg p-6 space-y-4'>
+          <h2 className='text-xl font-semibold text-muted-foreground'>
             Escolha a data
           </h2>
           <div className='flex justify-center items-center'>
@@ -211,10 +211,10 @@ export default function NovoAgendamentoPage() {
               selected={date}
               onSelect={setDate}
               locale={ptBR}
-              modifiersClassNames={{ weekend: 'bg-TINTS_TOMATO_200' }}
+              modifiersClassNames={{ weekend: 'bg-destructive' }}
               modifiers={{ weekend: (day) => [0, 6].includes(day.getDay()) }}
               disabled={(d) => [0, 6].includes(d.getDay())}
-              className='max-w-sm flex justify-center self-center w-full rounded-md border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-md'
+              className='max-w-sm flex justify-center self-center w-full rounded-md shadow-md'
             />
           </div>
         </section>
@@ -225,14 +225,16 @@ export default function NovoAgendamentoPage() {
             className='space-y-6'
           >
             {date && (
-              <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
-                <h2 className='text-xl font-semibold text-LIGHT_200'>
+              <section className='bg-muted rounded-lg p-6 space-y-4'>
+                <h2 className='text-xl font-semibold text-muted-foreground'>
                   Horários disponíveis
                 </h2>
                 {loadingTimes ? (
-                  <p className='text-LIGHT_500'>Carregando horários...</p>
+                  <p className='text-subtle-foreground'>
+                    Carregando horários...
+                  </p>
                 ) : availableTimes.length === 0 ? (
-                  <p className='text-LIGHT_500'>
+                  <p className='text-subtle-foreground'>
                     Nenhum horário disponível para este dia.
                   </p>
                 ) : (
@@ -259,15 +261,16 @@ export default function NovoAgendamentoPage() {
             )}
 
             {selectedTime && (
-              <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
-                <h2 className='text-xl font-semibold text-LIGHT_200'>
+              <section className='bg-muted rounded-lg p-6 space-y-4'>
+                <h2 className='text-xl font-semibold text-muted-foreground'>
                   Seus dados
                 </h2>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  {/* Nome */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='name'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Nome
                     </label>
@@ -276,7 +279,7 @@ export default function NovoAgendamentoPage() {
                       type='text'
                       placeholder='Seu nome completo'
                       {...register('name')}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                     {errors.name && (
                       <span className='text-red-500 text-xs'>
@@ -285,10 +288,11 @@ export default function NovoAgendamentoPage() {
                     )}
                   </div>
 
+                  {/* Telefone */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='phone'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Telefone
                     </label>
@@ -304,7 +308,7 @@ export default function NovoAgendamentoPage() {
                         )
                       }
                       value={watch('phone') || ''}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                     {errors.phone && (
                       <span className='text-red-500 text-xs'>
@@ -313,10 +317,11 @@ export default function NovoAgendamentoPage() {
                     )}
                   </div>
 
+                  {/* CPF */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='cpf'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       CPF
                     </label>
@@ -332,7 +337,7 @@ export default function NovoAgendamentoPage() {
                         )
                       }
                       value={watch('cpf') || ''}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                     {errors.cpf && (
                       <span className='text-red-500 text-xs'>
@@ -341,10 +346,11 @@ export default function NovoAgendamentoPage() {
                     )}
                   </div>
 
+                  {/* Placa */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='plate'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Placa
                     </label>
@@ -353,7 +359,7 @@ export default function NovoAgendamentoPage() {
                       type='text'
                       placeholder='ABC-1234'
                       {...register('plate')}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                     {errors.plate && (
                       <span className='text-red-500 text-xs'>
@@ -362,10 +368,11 @@ export default function NovoAgendamentoPage() {
                     )}
                   </div>
 
+                  {/* Marca */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='brand'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Marca
                     </label>
@@ -374,14 +381,15 @@ export default function NovoAgendamentoPage() {
                       type='text'
                       placeholder='Volkswagen'
                       {...register('brand')}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                   </div>
 
+                  {/* Modelo */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='model'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Modelo
                     </label>
@@ -390,14 +398,15 @@ export default function NovoAgendamentoPage() {
                       type='text'
                       placeholder='Fusca'
                       {...register('model')}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                   </div>
 
+                  {/* Ano */}
                   <div className='flex flex-col gap-2'>
                     <label
                       htmlFor='year'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Ano
                     </label>
@@ -406,14 +415,15 @@ export default function NovoAgendamentoPage() {
                       type='number'
                       placeholder='2020'
                       {...register('year', { valueAsNumber: true })}
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
                     />
                   </div>
 
+                  {/* Observações */}
                   <div className='md:col-span-2 flex flex-col gap-2'>
                     <label
                       htmlFor='notes'
-                      className='text-sm text-LIGHT_500'
+                      className='text-sm text-subtle-foreground'
                     >
                       Observações
                     </label>
@@ -421,7 +431,7 @@ export default function NovoAgendamentoPage() {
                       id='notes'
                       {...register('notes')}
                       placeholder='Descreva o problema ou observação...'
-                      className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 min-h-[100px] outline-none placeholder:text-LIGHT_500'
+                      className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground min-h-[100px] outline-none placeholder:text-placeholder'
                     />
                   </div>
                 </div>

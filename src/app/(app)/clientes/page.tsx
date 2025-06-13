@@ -62,7 +62,7 @@ export default function ClientesPage() {
           rightSlot={
             <Link
               href='/clientes/novo'
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-TINTS_CARROT_100/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-highlight text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-highlight/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Adicionar Cliente
             </Link>
@@ -73,22 +73,22 @@ export default function ClientesPage() {
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           {/* Lista de Clientes */}
           <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-DARK_700 rounded-lg p-4 sm:p-6 space-y-4'>
-              <div className='flex items-center gap-2 border border-DARK_900 rounded-md px-3 py-2 bg-DARK_800 focus-within:ring-2 ring-TINTS_CARROT_100 transition'>
+            <div className='bg-muted rounded-lg p-4 sm:p-6 space-y-4'>
+              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background focus-within:ring-2 ring-highlight transition'>
                 <Search
                   size={16}
-                  className='text-LIGHT_500'
+                  className='text-subtle-foreground'
                 />
                 <input
                   type='text'
                   placeholder='Buscar cliente...'
-                  className='bg-transparent outline-none flex-1 text-sm text-LIGHT_100 placeholder:text-LIGHT_500'
+                  className='bg-transparent outline-none flex-1 text-sm text-foreground placeholder:text-placeholder'
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
 
-              <h2 className='text-lg sm:text-xl font-semibold'>
+              <h2 className='text-lg sm:text-xl font-semibold text-foreground'>
                 Lista de Clientes
               </h2>
 
@@ -99,7 +99,7 @@ export default function ClientesPage() {
                   <Skeleton className='h-6 w-full' />
                 </div>
               ) : filteredClients.length === 0 ? (
-                <p className='text-LIGHT_500 text-sm'>
+                <p className='text-subtle-foreground text-sm'>
                   Nenhum cliente encontrado.
                 </p>
               ) : (
@@ -107,7 +107,7 @@ export default function ClientesPage() {
                   {filteredClients.map((client) => (
                     <li
                       key={client.id}
-                      className='bg-DARK_800 rounded-xl border border-DARK_600 p-4 shadow-sm hover:bg-DARK_900 transition flex flex-col gap-4'
+                      className='bg-background rounded-xl border border-accent p-4 shadow-sm hover:bg-hover transition flex flex-col gap-4'
                     >
                       <Link
                         href={`/clientes/${client.id}`}
@@ -117,11 +117,13 @@ export default function ClientesPage() {
                         <div className='flex items-start gap-3'>
                           <User
                             size={20}
-                            className='text-TINTS_CARROT_100 mt-0.5'
+                            className='text-highlight mt-0.5'
                           />
                           <div className='flex-1 min-w-0'>
-                            <p className='text-sm text-LIGHT_500'>Nome</p>
-                            <p className='text-lg font-semibold text-TINTS_CAKE_200 truncate'>
+                            <p className='text-sm text-subtle-foreground'>
+                              Nome
+                            </p>
+                            <p className='text-lg font-semibold text-secondary-highlight truncate'>
                               {client.name}
                             </p>
                           </div>
@@ -131,11 +133,13 @@ export default function ClientesPage() {
                         <div className='flex items-start gap-3'>
                           <Phone
                             size={20}
-                            className='text-TINTS_CARROT_100 mt-0.5'
+                            className='text-highlight mt-0.5'
                           />
                           <div className='flex-1'>
-                            <p className='text-sm text-LIGHT_500'>Telefone</p>
-                            <p className='text-sm text-LIGHT_100 truncate'>
+                            <p className='text-sm text-subtle-foreground'>
+                              Telefone
+                            </p>
+                            <p className='text-sm text-foreground truncate'>
                               {mask(client.phone, '(99) 99999-9999')}
                             </p>
                           </div>
@@ -145,13 +149,13 @@ export default function ClientesPage() {
                         <div className='flex items-start gap-3'>
                           <Calendar
                             size={20}
-                            className='text-TINTS_CARROT_100 mt-0.5'
+                            className='text-highlight mt-0.5'
                           />
                           <div>
-                            <p className='text-sm text-LIGHT_500'>
+                            <p className='text-sm text-subtle-foreground'>
                               Cadastrado em
                             </p>
-                            <p className='text-sm text-LIGHT_300'>
+                            <p className='text-sm text-softForeground'>
                               {new Date(client.createdAt).toLocaleDateString(
                                 'pt-BR'
                               )}
@@ -160,8 +164,8 @@ export default function ClientesPage() {
                         </div>
 
                         {/* Link de ação */}
-                        <div className='flex justify-end pt-3 border-t border-DARK_900 mt-2'>
-                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-TINTS_CARROT_100 hover:underline'>
+                        <div className='flex justify-end pt-3 border-t border-border mt-2'>
+                          <span className='inline-flex items-center gap-1 text-sm font-semibold text-highlight hover:underline'>
                             Ver detalhes <ArrowRight size={14} />
                           </span>
                         </div>
@@ -174,9 +178,9 @@ export default function ClientesPage() {
           </div>
 
           {/* Total de Clientes com gráfico */}
-          <div className='bg-DARK_700 rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
             <div className='w-full text-center'>
-              <h2 className='text-sm text-LIGHT_500 uppercase tracking-wide'>
+              <h2 className='text-sm text-subtle-foreground uppercase tracking-wide'>
                 Clientes Cadastrados
               </h2>
               {loading ? (

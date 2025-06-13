@@ -52,7 +52,6 @@ export default function DetalhesAgendamentoPage() {
 
   return (
     <AppLayout>
-
       <main className='flex-1 p-6 space-y-6'>
         <PageHeader
           title='Agendamento'
@@ -61,7 +60,7 @@ export default function DetalhesAgendamentoPage() {
           isDetails
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+        <section className='bg-muted rounded-lg p-6 space-y-4 border border-border'>
           {loading || !appointment ? (
             <div className='space-y-2'>
               <Skeleton className='h-6 w-1/2' />
@@ -70,45 +69,52 @@ export default function DetalhesAgendamentoPage() {
             </div>
           ) : (
             <div className='space-y-6'>
-              <div className='text-sm text-LIGHT_500'>
-                Criado em: <br />
+              <div className='text-sm text-subtle-foreground'>
                 Agendado para:{' '}
-                {format(new Date(appointment.date), 'dd/MM/yyyy HH:mm', {
+                {format(new Date(appointment.date), "dd/MM/yyyy 'ás'  HH:mm", {
                   locale: ptBR,
                 })}
               </div>
 
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Cliente</h2>
-                  <p className='text-lg font-semibold text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Cliente
+                  </h2>
+                  <p className='text-lg font-semibold text-foreground'>
                     {appointment.vehicle.client.name}
                   </p>
                 </div>
 
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Placa</h2>
-                  <p className='text-lg font-semibold text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Placa
+                  </h2>
+                  <p className='text-lg font-semibold text-foreground'>
                     {appointment.vehicle.plate}
                   </p>
                 </div>
 
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Veículo</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Veículo
+                  </h2>
+                  <p className='text-lg font-medium text-foreground'>
                     {appointment.vehicle.model} ({appointment.vehicle.brand})
                   </p>
                 </div>
 
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Status</h2>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Status
+                  </h2>
                   <p
                     className={`text-xs font-semibold px-2 py-1 rounded w-fit ${
                       appointment.status === 'CONFIRMADO'
-                        ? 'bg-TINTS_MINT_100 text-DARK_100'
+                        ? 'bg-success text-success-foreground'
                         : appointment.status === 'CANCELADO'
-                        ? 'bg-TINTS_TOMATO_200 text-LIGHT_100'
-                        : 'bg-TINTS_CARROT_100 text-DARK_100'
+                        ? 'bg-destructive text-destructive-foreground'
+                        : 'bg-tertiary text-tertiary-foreground'
                     }`}
                   >
                     {statusLabels[appointment.status] || appointment.status}
@@ -118,10 +124,12 @@ export default function DetalhesAgendamentoPage() {
 
               {appointment.notes && (
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase mb-1'>
+                  <h2 className='text-sm text-subtle-foreground uppercase mb-1'>
                     Observações
                   </h2>
-                  <p className='text-sm text-LIGHT_300'>{appointment.notes}</p>
+                  <p className='text-sm text-soft-foreground'>
+                    {appointment.notes}
+                  </p>
                 </div>
               )}
             </div>

@@ -169,7 +169,7 @@ export default function EditarOrdemPage() {
           backHref={`/ordens/${id}`}
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6'>
+        <section className='bg-muted rounded-lg p-6'>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='grid grid-cols-1 md:grid-cols-2 gap-6'
@@ -177,14 +177,14 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='fuelLevel'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Nível de Combustível
               </label>
               <select
                 id='fuelLevel'
                 {...register('fuelLevel')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {fuelLevels.map(({ label, value }) => (
@@ -206,14 +206,14 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='adblueLevel'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Nível de Adblue
               </label>
               <select
                 id='adblueLevel'
                 {...register('adblueLevel')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {adblueLevels.map((level) => (
@@ -235,7 +235,7 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='km'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 KM Atual
               </label>
@@ -248,7 +248,7 @@ export default function EditarOrdemPage() {
                   const raw = parseKmInput(e.target.value);
                   setValue('km', raw, { shouldValidate: true });
                 }}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               />
               {errors.km && (
                 <span className='text-red-500 text-xs'>
@@ -260,14 +260,14 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='tireStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Estado dos Pneus
               </label>
               <select
                 id='tireStatus'
                 {...register('tireStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {tireStatuses.map((status) => (
@@ -289,14 +289,14 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='mirrorStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Espelhos
               </label>
               <select
                 id='mirrorStatus'
                 {...register('mirrorStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {mirrorStatuses.map((status) => (
@@ -318,14 +318,14 @@ export default function EditarOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='paintingStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Pintura
               </label>
               <select
                 id='paintingStatus'
                 {...register('paintingStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {paintingStatuses.map((status) => (
@@ -347,7 +347,7 @@ export default function EditarOrdemPage() {
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='complaints'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Reclamações
               </label>
@@ -355,7 +355,7 @@ export default function EditarOrdemPage() {
                 id='complaints'
                 {...register('complaints')}
                 placeholder='Descreva as reclamações do cliente...'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none min-h-[100px]'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none min-h-[100px]'
               />
               {errors.complaints && (
                 <span className='text-red-500 text-xs'>
@@ -367,7 +367,7 @@ export default function EditarOrdemPage() {
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='notes'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Observações (opcional)
               </label>
@@ -375,21 +375,21 @@ export default function EditarOrdemPage() {
                 id='notes'
                 {...register('notes')}
                 placeholder='Informações adicionais...'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none min-h-[80px]'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none min-h-[80px]'
               />
             </div>
 
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='status'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Status da Ordem
               </label>
               <select
                 id='status'
                 {...register('status')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm font-semibold text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm font-semibold text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {statusOptions.map(({ value, label }) => (
@@ -407,10 +407,11 @@ export default function EditarOrdemPage() {
                 </span>
               )}
             </div>
+
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='newPhotos'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Adicionar Fotos
               </label>
@@ -424,25 +425,26 @@ export default function EditarOrdemPage() {
                     e.target.files ? Array.from(e.target.files) : []
                   )
                 }
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
               />
               <div className='flex flex-wrap gap-2'>
                 {selectedFiles.map((f, i) => (
                   <span
                     key={i}
-                    className='text-xs text-LIGHT_400 bg-DARK_900 rounded px-2 py-1'
+                    className='text-xs text-subtle-foreground bg-accent rounded px-2 py-1'
                   >
                     {f.name}
                   </span>
                 ))}
               </div>
             </div>
-            <div className='md:col-span-2 flex flex-wrap gap-2 bg-DARK_700 rounded-lg p-4'>
+
+            <div className='md:col-span-2 flex flex-wrap gap-2 bg-muted rounded-lg p-4 border-border border'>
               {existingPhotos.length > 0 ? (
                 existingPhotos.map((photo) => (
                   <div
                     key={photo.id}
-                    className='relative w-24 h-24'
+                    className='relative '
                   >
                     <Image
                       key={photo.id}
@@ -460,14 +462,14 @@ export default function EditarOrdemPage() {
                           ps.filter((p) => p.id !== photo.id)
                         );
                       }}
-                      className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-white text-xs'
+                      className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-foreground text-xs'
                     >
                       ×
                     </button>
                   </div>
                 ))
               ) : (
-                <p className='text-sm text-LIGHT_500'>
+                <p className='text-sm text-placeholder'>
                   Nenhuma foto cadastrada.
                 </p>
               )}

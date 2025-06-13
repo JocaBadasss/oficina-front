@@ -99,7 +99,7 @@ export default function EditarClientePage() {
           backHref={`/clientes/${params.id}`}
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-6'>
+        <section className='bg-muted rounded-lg p-6 space-y-6'>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='grid grid-cols-1 md:grid-cols-2 gap-6'
@@ -107,7 +107,7 @@ export default function EditarClientePage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='name'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Nome
               </label>
@@ -116,7 +116,7 @@ export default function EditarClientePage() {
                 id='name'
                 {...register('name')}
                 placeholder='Ex: João da Silva'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
               />
               {errors.name && (
                 <span className='text-red-500 text-xs'>
@@ -128,7 +128,7 @@ export default function EditarClientePage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='email'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Email
               </label>
@@ -137,7 +137,7 @@ export default function EditarClientePage() {
                 id='email'
                 {...register('email')}
                 placeholder='exemplo@email.com'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
               />
               {errors.email && (
                 <span className='text-red-500 text-xs'>
@@ -149,7 +149,7 @@ export default function EditarClientePage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='phone'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Telefone
               </label>
@@ -162,7 +162,7 @@ export default function EditarClientePage() {
                 }
                 value={watch('phone') || ''}
                 placeholder='(00) 00000-0000'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
               />
               {errors.phone && (
                 <span className='text-red-500 text-xs'>
@@ -174,7 +174,7 @@ export default function EditarClientePage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='cpfOrCnpj'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 CPF ou CNPJ
               </label>
@@ -187,7 +187,7 @@ export default function EditarClientePage() {
                 }
                 value={watch('cpfOrCnpj') || ''}
                 placeholder='000.000.000-00 ou 00.000.000/0001-00'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
               />
               {errors.cpfOrCnpj && (
                 <span className='text-red-500 text-xs'>
@@ -199,7 +199,7 @@ export default function EditarClientePage() {
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='address'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-subtle-foreground'
               >
                 Endereço
               </label>
@@ -208,7 +208,7 @@ export default function EditarClientePage() {
                 id='address'
                 {...register('address')}
                 placeholder='Rua Exemplo, 123'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 placeholder:text-LIGHT_500 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground placeholder:text-placeholder outline-none'
               />
             </div>
 

@@ -29,7 +29,8 @@ interface Client {
   email: string;
   cpfOrCnpj?: string;
   address?: string;
-  createdAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const statusLabels: Record<string, string> = {
@@ -89,69 +90,79 @@ export default function DetalhesClientePage() {
           />
         )}
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-6'>
+        {client && (
+          <div className='flex justify-between items-center mb-4 px-4 text-sm text-subtle-foreground'>
+            <div className='flex flex-wrap gap-6'>
+              <span>
+                Criado em:{' '}
+                {format(new Date(client.createdAt), "dd/MM/yyyy 'às' HH:mm", {
+                  locale: ptBR,
+                })}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <section className='bg-muted rounded-lg p-6 space-y-6 border-border border'>
           {loading ? (
             <Skeleton className='h-60 w-full' />
           ) : client ? (
             <div className='space-y-6'>
-              {client.createdAt && (
-                <div className='text-sm text-LIGHT_500'>
-                  Criado em:{' '}
-                  {format(new Date(client.createdAt), 'dd/MM/yyyy HH:mm', {
-                    locale: ptBR,
-                  })}
-                </div>
-              )}
-
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Nome</h2>
-                  <p className='text-lg font-semibold text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Nome
+                  </h2>
+                  <p className='text-lg font-semibold text-foreground'>
                     {client.name}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>Telefone</h2>
-                  <p className='text-lg font-semibold  text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    Telefone
+                  </h2>
+                  <p className='text-lg font-semibold  text-foreground'>
                     {formatPhone(client.phone)}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-xs text-LIGHT_500 uppercase'>E-mail</h2>
-                  <p className='text-lg font-semibold  text-LIGHT_100'>
+                  <h2 className='text-xs text-subtle-foreground uppercase'>
+                    E-mail
+                  </h2>
+                  <p className='text-lg font-semibold  text-foreground'>
                     {client.email}
                   </p>
                 </div>
                 {client.cpfOrCnpj && (
                   <div>
-                    <h2 className='text-xs text-LIGHT_500 uppercase'>
+                    <h2 className='text-xs text-subtle-foreground uppercase'>
                       CPF ou CNPJ
                     </h2>
-                    <p className='text-lg font-semibold  text-LIGHT_100'>
+                    <p className='text-lg font-semibold  text-foreground'>
                       {formatCpfOrCnpj(client.cpfOrCnpj)}
                     </p>
                   </div>
                 )}
                 {client.address && (
                   <div>
-                    <h2 className='text-xs text-LIGHT_500 uppercase'>
+                    <h2 className='text-xs text-subtle-foreground uppercase'>
                       Endereço
                     </h2>
-                    <p className='text-lg font-semibold  text-LIGHT_100'>
+                    <p className='text-lg font-semibold  text-foreground'>
                       {client.address}
                     </p>
                   </div>
                 )}
               </div>
 
-              <hr className='border-DARK_900 my-4' />
+              <hr className='border-border my-4' />
 
               <div>
-                <h2 className='text-xs text-LIGHT_500 uppercase mb-4'>
+                <h2 className='text-xs text-subtle-foreground uppercase mb-4'>
                   Ordens de Serviço
                 </h2>
                 {orders.length === 0 ? (
-                  <p className='text-LIGHT_500 text-xs'>
+                  <p className='text-subtle-foreground text-xs'>
                     Nenhuma ordem de serviço encontrada.
                   </p>
                 ) : (
@@ -160,9 +171,9 @@ export default function DetalhesClientePage() {
                       <li key={order.id}>
                         <a
                           href={`/ordens/${order.id}`}
-                          className='text-base border border-DARK_600 rounded p-3 bg-DARK_700 w-full flex justify-between items-start gap-4 hover:bg-DARK_800 transition duration-200'
+                          className='text-base border border-border rounded p-3 bg-muted w-full flex justify-between items-start gap-4 hover:bg-hover transition duration-200'
                         >
-                          <div className='text-base text-LIGHT_100 font-semibold '>
+                          <div className='text-base text-foreground font-semibold '>
                             {format(
                               new Date(order.createdAt),
                               "dd 'de' MMMM 'de' yyyy",
@@ -171,14 +182,14 @@ export default function DetalhesClientePage() {
                               }
                             )}
                           </div>
-                          <div className='text-base text-LIGHT_500 text-center flex-1'>
+                          <div className='text-base text-softForeground text-center flex-1'>
                             {order.complaints}
                           </div>
                           <div
                             className={`text-xs font-semibold px-2 py-1 rounded whitespace-nowrap ${
                               order.status === 'FINALIZADO'
-                                ? 'bg-TINTS_MINT_100 text-DARK_100'
-                                : 'bg-TINTS_CARROT_100 text-DARK_100'
+                                ? 'bg-success text-tertiary-foreground'
+                                : 'bg-tertiary text-tertiary-foreground'
                             }`}
                           >
                             {statusLabels[order.status]}
@@ -191,7 +202,7 @@ export default function DetalhesClientePage() {
               </div>
             </div>
           ) : (
-            <p className='text-LIGHT_500'>Cliente não encontrado.</p>
+            <p className='text-subtle-foreground'>Cliente não encontrado.</p>
           )}
         </section>
       </main>

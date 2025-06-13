@@ -113,7 +113,7 @@ export default function DetalhesOrdemPage() {
           isDetails
         />
         {order && (
-          <div className='flex justify-between items-center mb-4 px-4 text-sm text-LIGHT_500'>
+          <div className='flex justify-between items-center mb-4 px-4 text-sm text-subtle-foreground'>
             {/* Timestamps */}
             <div className='flex flex-wrap gap-6'>
               <span>
@@ -133,15 +133,15 @@ export default function DetalhesOrdemPage() {
               href={`/acompanhamento/${order.id}`}
               target='_blank'
               rel='noopener noreferrer'
-              className='flex items-center space-x-1 hover:text-LIGHT_100'
+              className='flex items-center space-x-1 hover:text-foreground'
             >
-              <Link2 className='w-4 h-4 text-LIGHT_500' />
-              <span className='text-LIGHT_500'>Ver acompanhamento</span>
+              <Link2 className='w-4 h-4 text-subtle-foreground' />
+              <span className='text-subtle-foreground'>Ver acompanhamento</span>
             </a>
           </div>
         )}
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+        <section className='bg-muted rounded-lg p-6 space-y-4 border-border border'>
           {loading || !order ? (
             <div className='space-y-2'>
               <Skeleton className='h-6 w-1/2' />
@@ -153,62 +153,62 @@ export default function DetalhesOrdemPage() {
             <div className='space-y-6'>
               {/* === Primário (Placa, Veículo, Cliente, Status) === */}
               {/* == LINHA 1: DADOS PRINCIPAIS == */}
-              <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
+              <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 truncate '>
                 {/* Placa */}
-                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                <div className='bg-background rounded-md p-4 flex flex-col items-start'>
                   <div className='flex items-center gap-2'>
-                    <Tag className='w-5 h-5 text-TINTS_CAKE_200' />
-                    <span className='text-xs uppercase text-LIGHT_500'>
+                    <Tag className='w-5 h-5 text-secondary-highlight' />
+                    <span className='text-xs uppercase text-subtle-foreground'>
                       Placa
                     </span>
                   </div>
-                  <span className='mt-1 text-lg font-semibold text-TINTS_CAKE_200'>
+                  <span className='mt-1 text-lg font-semibold text-secondary-highlight'>
                     {order.vehicle.plate}
                   </span>
                 </div>
 
                 {/* Veículo */}
-                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                <div className='bg-background rounded-md p-4 flex flex-col items-start'>
                   <div className='flex items-center gap-2'>
-                    <Car className='w-5 h-5 text-TINTS_CAKE_200' />
-                    <span className='text-xs uppercase text-LIGHT_500'>
+                    <Car className='w-5 h-5 text-secondary-highlight' />
+                    <span className='text-xs uppercase text-subtle-foreground'>
                       Veículo
                     </span>
                   </div>
-                  <span className='mt-1 text-lg font-medium text-LIGHT_100'>
+                  <span className='mt-1 text-lg font-medium text-foreground'>
                     {formatModelBrand(order.vehicle.model, order.vehicle.brand)}
                   </span>
                 </div>
 
                 {/* Cliente */}
-                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                <div className='bg-background rounded-md p-4 flex flex-col items-start'>
                   <div className='flex items-center gap-2'>
-                    <User className='w-5 h-5 text-TINTS_CAKE_200' />
-                    <span className='text-xs uppercase text-LIGHT_500'>
+                    <User className='w-5 h-5 text-secondary-highlight' />
+                    <span className='text-xs uppercase text-subtle-foreground'>
                       Cliente
                     </span>
                   </div>
                   <Link
                     href={`/clientes/${order.vehicle.client.id}`}
-                    className='mt-1 text-lg font-medium text-TINTS_CARROT_100 hover:underline'
+                    className='mt-1 text-lg font-medium text-tertiary hover:underline'
                   >
                     {order.vehicle.client.name}
                   </Link>
                 </div>
 
                 {/* Status */}
-                <div className='bg-DARK_800 rounded-xl p-4 flex flex-col items-start'>
+                <div className='bg-background rounded-md p-4 flex flex-col items-start'>
                   <div className='flex items-center gap-2'>
-                    <Clock className='w-5 h-5 text-TINTS_CAKE_200' />
-                    <span className='text-xs uppercase text-LIGHT_500'>
+                    <Clock className='w-5 h-5 text-secondary-highlight' />
+                    <span className='text-xs uppercase text-subtle-foreground'>
                       Status
                     </span>
                   </div>
                   <span
-                    className={`mt-1 inline-flex items-center px-2 py-1 text-xs rounded ${
+                    className={`mt-2 inline-flex items-center px-2 py-1 text-xs rounded ${
                       order.status === 'FINALIZADO'
-                        ? 'bg-TINTS_MINT_100 text-DARK_100'
-                        : 'bg-TINTS_CARROT_100 text-DARK_100'
+                        ? 'bg-success text-success-foreground'
+                        : 'bg-tertiary text-tertiary-foreground'
                     }`}
                   >
                     {statusLabels[order.status] || order.status}
@@ -219,29 +219,31 @@ export default function DetalhesOrdemPage() {
               {/* == LINHA 2: DADOS SECUNDÁRIOS == */}
               <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-4'>
                 {/* Combustível */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
                     Combustível
                   </span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {fuelLabels[order.fuelLevel] || '-'}
                   </p>
                 </div>
 
                 {/* AdBlue */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
                     AdBlue
                   </span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {order.adblueLevel || '-'}
                   </p>
                 </div>
 
                 {/* Km */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>Km</span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
+                    Km
+                  </span>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {typeof order.km === 'number'
                       ? `${order.km.toLocaleString()} km`
                       : '—'}
@@ -249,65 +251,65 @@ export default function DetalhesOrdemPage() {
                 </div>
 
                 {/* Pneus */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
                     Pneus
                   </span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {order.tireStatus || '-'}
                   </p>
                 </div>
 
                 {/* Espelhos */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
                     Espelhos
                   </span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {order.mirrorStatus || '-'}
                   </p>
                 </div>
 
                 {/* Pintura */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-4 flex flex-col'>
-                  <span className='text-xs uppercase text-LIGHT_500'>
+                <div className='bg-background rounded-lg shadow p-4 flex flex-col'>
+                  <span className='text-xs uppercase text-subtle-foreground'>
                     Pintura
                   </span>
-                  <p className='mt-1 text-sm font-bold text-LIGHT_300'>
+                  <p className='mt-1 text-sm font-bold text-soft-foreground'>
                     {order.paintingStatus || '-'}
                   </p>
                 </div>
               </div>
 
-              <hr className='border-DARK_900' />
+              <hr className='border-border' />
 
               <section className='grid grid-cols-1 gap-6 mt-4'>
                 {/* Reclamações */}
-                <div className='bg-DARK_800 rounded-2xl shadow p-6'>
-                  <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-TINTS_CAKE_200'>
+                <div className='bg-background rounded-lg shadow p-6'>
+                  <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-secondary-highlight'>
                     <AlertCircle className='w-4 h-4' />
                     Reclamações
                   </h3>
-                  <p className='mt-2 text-sm leading-relaxed text-LIGHT_100'>
+                  <p className='mt-2 text-sm leading-relaxed text-foreground'>
                     {order.complaints || '-'}
                   </p>
                 </div>
 
                 {/* Observações (se houver) */}
                 {order.notes && (
-                  <div className='bg-DARK_800 rounded-2xl shadow p-6'>
-                    <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-TINTS_CAKE_200'>
+                  <div className='bg-background rounded-lg shadow p-6'>
+                    <h3 className='flex items-center gap-2 text-xs font-semibold uppercase text-secondary-highlight'>
                       <Notebook className='w-4 h-4' />
                       Observações
                     </h3>
-                    <p className='mt-2 text-sm leading-relaxed text-LIGHT_100'>
+                    <p className='mt-2 text-sm leading-relaxed text-foreground'>
                       {order.notes}
                     </p>
                   </div>
                 )}
 
-                <div className='bg-DARK_800 rounded-2xl shadow p-4'>
-                  <h3 className='flex items-center gap-2  text-xs font-semibold uppercase text-TINTS_CAKE_200 mb-2'>
+                <div className='bg-background rounded-lg shadow p-4'>
+                  <h3 className='flex items-center gap-2  text-xs font-semibold uppercase text-secondary-highlight mb-2'>
                     <Camera className='w-4 h-4' />
                     Fotos
                   </h3>
@@ -324,7 +326,7 @@ export default function DetalhesOrdemPage() {
                           fill
                           className='object-cover'
                         />
-                        <div className='absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px]'>
+                        <div className='absolute inset-0 bg-tertiary-foreground/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-foreground text-[10px]'>
                           ver
                         </div>
                       </div>
@@ -342,15 +344,15 @@ export default function DetalhesOrdemPage() {
 
                 {/* Conclusão (se FINALIZADO) */}
                 {order.status === 'FINALIZADO' && order.report?.description && (
-                  <div className='bg-DARK_800 rounded-2xl shadow p-6 flex items-center justify-between'>
+                  <div className='bg-background rounded-lg shadow p-6 flex items-center justify-between'>
                     <div className='flex-1'>
                       <div className='flex items-center gap-2'>
-                        <CheckCircle className='w-4 h-4 text-TINTS_MINT_100' />
-                        <span className='text-xs font-semibold uppercase text-TINTS_MINT_100'>
+                        <CheckCircle className='w-4 h-4 text-success' />
+                        <span className='text-xs font-semibold uppercase text-success'>
                           Conclusão
                         </span>
                       </div>
-                      <p className='mt-2 text-sm leading-relaxed text-LIGHT_100 whitespace-pre-line'>
+                      <p className='mt-2 text-sm leading-relaxed text-foreground whitespace-pre-line'>
                         {order.report.description}
                       </p>
                     </div>
@@ -371,7 +373,7 @@ export default function DetalhesOrdemPage() {
 
               {/* === BOTÃO FINALIZAR ATENDIMENTO === */}
               {order.status !== 'FINALIZADO' && (
-                <div className='pt-4 border-t border-DARK_900 flex justify-center'>
+                <div className='pt-4 border-t border-border flex justify-center'>
                   <FinalizarAtendimentoModal
                     orderId={order.id}
                     onSuccess={() => {

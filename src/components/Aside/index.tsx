@@ -37,10 +37,10 @@ export function Aside() {
   return (
     <>
       {/* Desktop Aside */}
-      <aside className='hidden md:fixed  md:inset-y-0 md:flex md:w-64 md:flex-col bg-DARK_700 p-6 space-y-6 pb-12 z-50'>
+      <aside className='hidden md:fixed  md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted p-6 space-y-6 pb-12 z-50'>
         <Link
           href='/painel'
-          className='text-2xl font-bold text-TINTS_CARROT_100 flex items-center gap-2 hover:opacity-90'
+          className='text-2xl font-bold text-TINTS_PASSION_100 flex items-center gap-2 hover:opacity-90'
         >
           <Image
             src='/gearIcon.svg'
@@ -137,7 +137,7 @@ export function Aside() {
                 <div className='absolute bottom-12 right-0 ml-3 bg-DARK_700 text-LIGHT_100 shadow-lg rounded-md overflow-hidden z-50 w-40'>
                   <Link
                     href='/agendamentos'
-                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-DARK_800 transition w-full'
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition w-full'
                   >
                     <CalendarClock size={16} /> Agendamentos
                   </Link>

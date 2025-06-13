@@ -181,7 +181,7 @@ export default function NovaOrdemPage() {
           backHref='/ordens'
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6'>
+        <section className='bg-muted rounded-lg p-6'>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='grid grid-cols-1 md:grid-cols-2 gap-6'
@@ -189,7 +189,7 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='clientId'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Cliente
               </label>
@@ -204,7 +204,7 @@ export default function NovaOrdemPage() {
                     <PopoverTrigger asChild>
                       <button
                         type='button'
-                        className='w-full bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-left text-LIGHT_100 flex items-center justify-between'
+                        className='w-full bg-background border border-border rounded-md px-4 py-2 text-sm text-left text-foreground flex items-center justify-between'
                         onClick={() => setIsPopoverOpen(true)}
                       >
                         {clients.find((c) => c.id === field.value)?.name ||
@@ -214,23 +214,23 @@ export default function NovaOrdemPage() {
                     </PopoverTrigger>
 
                     <PopoverContent
-                      className='p-0 mt-1 z-50 w-[var(--radix-popover-trigger-width)] border border-DARK_900 bg-DARK_800 text-LIGHT_100 shadow-lg rounded-none'
+                      className='p-0 mt-1 z-50 w-[var(--radix-popover-trigger-width)] border border-border bg-popover text-popover-foreground shadow-lg rounded-none'
                       align='start'
                       sideOffset={4}
                     >
-                      <Command className='bg-DARK_800'>
+                      <Command className='bg-popover'>
                         <CommandInput
                           placeholder='Buscar cliente...'
-                          className='h-9 bg-DARK_800'
+                          className='h-9 bg-popover text-foreground placeholder:text-placeholder'
                         />
                         <CommandEmpty>Nenhum cliente encontrado.</CommandEmpty>
 
-                        <CommandGroup className='bg-DARK_800'>
+                        <CommandGroup className='bg-popover'>
                           {clients.map((client) => (
                             <CommandItem
                               key={client.id}
                               value={client.name}
-                              className='px-4 py-2 text-sm text-LIGHT_100 bg-DARK_800 hover:bg-DARK_700 cursor-pointer'
+                              className='px-4 py-2 text-sm text-foreground bg-popover hover:bg-hover cursor-pointer'
                               onSelect={() => {
                                 field.onChange(client.id);
                                 setIsPopoverOpen(false);
@@ -255,14 +255,14 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='vehicleId'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Veículo
               </label>
               <select
                 id='vehicleId'
                 {...register('vehicleId')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione um veículo</option>
                 {filteredVehicles.map((vehicle) => (
@@ -285,17 +285,19 @@ export default function NovaOrdemPage() {
               )}
             </div>
 
+            {/** Os próximos campos seguem o mesmo padrão **/}
+
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='fuelLevel'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Nível de Combustível
               </label>
               <select
                 id='fuelLevel'
                 {...register('fuelLevel')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {fuelLevels.map(({ value, label }) => (
@@ -317,14 +319,14 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='adblueLevel'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Nível de Adblue
               </label>
               <select
                 id='adblueLevel'
                 {...register('adblueLevel')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {adblueLevels.map((level) => (
@@ -346,14 +348,14 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='paintingStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Pintura
               </label>
               <select
                 id='paintingStatus'
                 {...register('paintingStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {paintingStatuses.map((status) => (
@@ -375,14 +377,14 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='tireStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Estado dos Pneus
               </label>
               <select
                 id='tireStatus'
                 {...register('tireStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {tireStatuses.map((status) => (
@@ -404,14 +406,14 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='mirrorStatus'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Espelhos
               </label>
               <select
                 id='mirrorStatus'
                 {...register('mirrorStatus')}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               >
                 <option value=''>Selecione</option>
                 {mirrorStatuses.map((status) => (
@@ -433,7 +435,7 @@ export default function NovaOrdemPage() {
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='km'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Atual
               </label>
@@ -446,9 +448,8 @@ export default function NovaOrdemPage() {
                   const raw = parseKmInput(e.target.value);
                   setValue('km', raw, { shouldValidate: true });
                 }}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               />
-
               {errors.km && (
                 <span className='text-red-500 text-xs'>
                   {errors.km.message}
@@ -459,7 +460,7 @@ export default function NovaOrdemPage() {
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='complaints'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Reclamações
               </label>
@@ -467,7 +468,7 @@ export default function NovaOrdemPage() {
                 id='complaints'
                 {...register('complaints')}
                 placeholder='Descreva as reclamações do cliente...'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none min-h-[100px]'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none min-h-[100px]'
               />
               {errors.complaints && (
                 <span className='text-red-500 text-xs'>
@@ -479,7 +480,7 @@ export default function NovaOrdemPage() {
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='notes'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Observações (opcional)
               </label>
@@ -487,14 +488,14 @@ export default function NovaOrdemPage() {
                 id='notes'
                 {...register('notes')}
                 placeholder='Informações adicionais...'
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none min-h-[80px]'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none min-h-[80px]'
               />
             </div>
 
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='photos'
-                className='text-sm text-LIGHT_500'
+                className='text-sm text-placeholder'
               >
                 Imagens (opcional)
               </label>
@@ -504,13 +505,13 @@ export default function NovaOrdemPage() {
                 multiple
                 accept='image/*'
                 onChange={handleFiles}
-                className='bg-DARK_800 border border-DARK_900 rounded-md px-4 py-2 text-sm text-LIGHT_100 outline-none'
+                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
               />
               <div className='flex flex-wrap gap-2'>
                 {selectedFiles.map((file, idx) => (
                   <span
                     key={idx}
-                    className='text-xs text-LIGHT_400 bg-DARK_900 rounded px-2 py-1'
+                    className='text-xs text-subtle-foreground bg-accent rounded px-2 py-1'
                   >
                     {file.name}
                   </span>

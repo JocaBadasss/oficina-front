@@ -13,77 +13,76 @@ body {
 
 @layer base {
   :root {
-    --background: #0d1d25; /* Azul marinho escuro (#0f172a) */
-    --foreground: 0 0% 100%; /* Branco (#ffffff) */
+    /* === Fundos principais === */
+    --app-background: 200 100% 3%; /* #000A0F → bg-DARK_400 */
 
-    --card: 220 39% 15%; /* mesmo fundo */
-    --card-foreground: 0 0% 100%;
+    --background: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --muted: 199 100% 5%; /* #001119 → bg-DARK_700 */
+    --input: 200 48% 10%; /* #0D1D25 → border-DARK_900 > USADO PELO SHADCN PARA AS BORDAS DO INPUT */
+    --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
+    --border-focus: 200 48% 16%; /* #14303D — derivado de --border */
 
-    --popover: 220 39% 15%;
-    --popover-foreground: 0 0% 100%;
+    --card: 201 100% 5%; /* #00111A → bg-DARK_600 */
+    --card-hover: 201 35% 8%; /* mesma cor de --background (DARK_800) */
 
-    --primary: 44 90% 55%; /* Amarelo queimado (#F4B400) */
-    --primary-foreground: 0 0% 0%; /* Preto (#000000) */
+    --primary: 44 100% 48%; /* #F4B400 > TINTS_PASSION_100 */
 
-    --secondary: 215 28% 17%; /* Azul petróleo (#1e293b) */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 201 100% 5%; /* #00111A → bg-DARK_600 */
+    --secondary-foreground: 0 0% 100%; /* texto no hover */
 
-    --muted: 215 19% 27%; /* Cinza escuro (#334155) */
-    --muted-foreground: 210 20% 80%; /* Cinza claro (#cbd5e1) */
+    --tertiary: 32 96% 64%; /* TINTS_CARROT_100 (#FBA94C) */
+    --tertiary-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
 
-    --accent: 215 28% 17%;
-    --accent-foreground: 0 0% 100%;
+    /* === Textos e contrastes === */
+    --foreground: 0 0% 100%; /* #FFFFFF → text-foreground > LIGHT_100 */
+    --muted-foreground: 43 100% 97%; /* #FFFAF1 → text-muted-foreground > LIGHT_200 */
+    --soft-foreground: 240 9% 89%; /* #E1E1E6 > LIGHT_300 */
+    --subtle-foreground: 240 7% 78%; /* #C4C4CC → placeholder > LIGHT_400 > ESTÁ SUBSTITUINDO QUANDO USA-SE LIGHT_500 FORA DE UM PLACEHOLDER */
+    --placeholder: 240 6% 51%; /* #7C7C8A → text-subtle-foreground > LIGHT_500> EXCLUSIVO DE PLACEHOLDER */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --highlight: 32 96% 64%; /* #FBA94C > TINTS_CARROT_100 */
+    --secondary-highlight: 186 100% 75%; /* #82F3FF → text-secondary-highlight > TINTS_CAKE_200 */
+    --highlight-soft: 32 96% 70%; /* mais clarinho */
+    --highlight-foreground: 0 0% 0%;
 
-    --border: 215 28% 80%;
-    --input: 215 28% 80%;
-    --ring: 215 20% 40%;
+    --success: 147 96% 42%; /* #04D361 > TINTS_MINT_100 */
+    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* === Marca / Branding === */
+    --brand: 44 100% 48%; /* #F4B400 → bg-brand / text-brand > TINTS_PASSION_100 */
+    --brand-foreground: 192 100% 1%; /* #000000 → text-brand-foreground > DARK_100*/
+
+    /* === Erros / Ações destrutivas === */
+    --destructive: 0 67% 41%; /* #AB222E > TINTS_TOMATO_300 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* === Outros === */
+
+    /* === Popover === */
+    --popover: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --popover-foreground: 0 0% 100%; /* #FFFFFF → text-LIGHT_100 */
+
+    /* === Border (usado em PopoverContent e CommandItem) === */
+    --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
+
+    /* === Command === */
+    --command: 201 35% 8%; /* mesmo fundo do popover */
+    --command-foreground: 0 0% 100%; /* texto padrão */
+    --command-placeholder: 0 0% 77%; /* #C4C4CC → placeholder */
+
+    /* === Highlight (hover) === */
+
+    /* === Accent opcional (ex: botão “novo cliente”) === */
+    --accent: 200 48% 10%; /* #0D1D25 → DARK_900 */
+    --accent-foreground: 0 0% 100%; /* #000A0F > DARK_400 */
 
     --radius: 0.5rem;
+
+    --hover: 200 48% 10%; /* #0D1D25 → DARK_900 */
   }
 
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+  .light {
+    /* você pode definir valores mais claros aqui no futuro */
   }
 }
 
@@ -102,4 +101,9 @@ main {
 
 body {
   font-family: var(--font-roboto);
+}
+
+input:focus {
+  border-color: hsl(var(--border-focus));
+  box-shadow: 0 0 0 1px hsl(var(--border-focus));
 }

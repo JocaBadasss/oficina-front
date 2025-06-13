@@ -62,7 +62,7 @@ export default function DetalhesVeiculoPage() {
           isDetails
         />
 
-        <section className='bg-DARK_700 rounded-lg p-6 space-y-4'>
+        <section className='bg-muted rounded-lg p-6 space-y-4 border border-border'>
           {loading || !vehicle ? (
             <div className='space-y-2'>
               <Skeleton className='h-6 w-1/2' />
@@ -74,48 +74,56 @@ export default function DetalhesVeiculoPage() {
             <div className='space-y-4'>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Placa</h2>
-                  <p className='text-lg font-semibold text-TINTS_CAKE_200'>
+                  <h2 className='text-sm text-subtle-foreground uppercase'>
+                    Placa
+                  </h2>
+                  <p className='text-lg font-semibold text-secondary-highlight'>
                     {formatPlate(vehicle.plate)}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Ano</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.year || "-"}
+                  <h2 className='text-sm text-subtle-foreground uppercase'>
+                    Ano
+                  </h2>
+                  <p className='text-lg font-medium text-foreground'>
+                    {vehicle.year || '-'}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Marca</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.brand || "-"}
+                  <h2 className='text-sm text-subtle-foreground uppercase'>
+                    Marca
+                  </h2>
+                  <p className='text-lg font-medium text-foreground'>
+                    {vehicle.brand || '-'}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>Modelo</h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
-                    {vehicle.model || "-"}
+                  <h2 className='text-sm text-subtle-foreground uppercase'>
+                    Modelo
+                  </h2>
+                  <p className='text-lg font-medium text-foreground'>
+                    {vehicle.model || '-'}
                   </p>
                 </div>
                 <div>
-                  <h2 className='text-sm text-LIGHT_500 uppercase'>
+                  <h2 className='text-sm text-subtle-foreground uppercase'>
                     Adicionado em
                   </h2>
-                  <p className='text-lg font-medium text-LIGHT_100'>
+                  <p className='text-lg font-medium text-foreground'>
                     {format(new Date(vehicle.createdAt), 'dd/MM/yyyy HH:mm')}
                   </p>
                 </div>
               </div>
 
-              <hr className='border-DARK_900 my-4' />
+              <hr className='border-border my-4' />
 
               <div>
-                <h2 className='text-sm text-LIGHT_500 uppercase mb-1'>
+                <h2 className='text-sm text-subtle-foreground uppercase mb-1'>
                   Cliente
                 </h2>
                 <Link
                   href={`/clientes/${vehicle.clientId}`}
-                  className='block text-lg font-semibold text-TINTS_CARROT_100 hover:underline'
+                  className='block text-lg font-semibold text-tertiary hover:underline'
                 >
                   {vehicle.client.name}
                 </Link>

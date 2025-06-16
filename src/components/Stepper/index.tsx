@@ -25,7 +25,7 @@ export function StepperMUI({ currentStatus }: StepperMUIProps) {
             color: '#192227', // DARK_600
           },
           '& .MuiStepIcon-root.Mui-active': {
-            color: isFinalizado ? '#04D361' : '#FBA94C',
+            color: isFinalizado ? '#11D361' : '#FBA94C',
           },
           '& .MuiStepIcon-root.Mui-completed': {
             color: '#04D361',
@@ -36,7 +36,7 @@ export function StepperMUI({ currentStatus }: StepperMUIProps) {
             fontFamily: 'Poppins',
           },
           '& .MuiStepLabel-label.Mui-active': {
-            color: isFinalizado ? '#04D361' : '#FBA94C',
+            color: isFinalizado ? '#D361' : '#FBA94C',
             fontWeight: 600,
           },
           '& .MuiStepLabel-label.Mui-completed': {

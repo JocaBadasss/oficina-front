@@ -81,6 +81,7 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        buttonHover: 'hsl(var(--button-hover))',
 
         // 🧱 Suporte a tokens fixos legados (temporário até refatoração completa)
         LIGHT_100: '#FFFFFF',

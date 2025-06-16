@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Pencil } from 'lucide-react';
 import Link from 'next/link';
+import { ThemeToggle } from '../ThemeToggle';
 
 interface PageHeaderProps {
   title: string;
@@ -27,16 +28,18 @@ export function PageHeader({
   onLogout,
 }: PageHeaderProps) {
   return (
-    <header
-      className={`w-full px-4 py-4 md:px-6 md:py-6 border-b border-DARK_600 bg-DARK_400 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap`}
-    >
+    <header className='w-full px-4 py-4 md:px-6 md:py-6 border-b border-border bg-app-background flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap'>
       {/* Título e subtítulo */}
       <div>
         <h1 className='text-2xl sm:text-3xl font-bold font-roboto'>{title}</h1>
         {subtitle && (
-          <p className='text-LIGHT_500 mt-1 text-sm sm:text-base'>{subtitle}</p>
+          <p className='text-subtle-foreground mt-1 text-sm sm:text-base'>
+            {subtitle}
+          </p>
         )}
       </div>
+
+      <ThemeToggle />
 
       {/* Painel do usuário */}
       {userName && onLogout ? (
@@ -46,7 +49,7 @@ export function PageHeader({
           </span>
           <button
             onClick={onLogout}
-            className='bg-TINTS_CARROT_100 hover:bg-TINTS_CARROT_100/90 text-DARK_100 font-semibold px-4 py-2 rounded transition text-sm md:text-base'
+            className='bg-tertiary hover:bg-[hsl(var(--button-hover))] text-muted-foreground font-semibold px-4 py-2 rounded transition text-sm md:text-base'
           >
             Logout
           </button>
@@ -57,7 +60,7 @@ export function PageHeader({
           {isDetails && showEdit && editHref && (
             <Link
               href={editHref}
-              className='bg-TINTS_CARROT_100 text-LIGHT_200 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/90 transition flex items-center justify-center gap-2'
+              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[hsl(var(--button-hover))] transition flex items-center justify-center gap-2'
             >
               <Pencil size={16} /> Editar
             </Link>
@@ -65,7 +68,7 @@ export function PageHeader({
           {backHref && (
             <Link
               href={backHref}
-              className='bg-transparent border border-TINTS_CARROT_100 text-TINTS_CARROT_100 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-TINTS_CARROT_100/10 transition flex items-center justify-center gap-2'
+              className='bg-transparent border border-tertiary text-tertiary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-tertiary/10 transition flex items-center justify-center gap-2'
             >
               <ArrowLeft size={16} /> Voltar
             </Link>

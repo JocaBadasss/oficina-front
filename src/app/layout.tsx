@@ -3,6 +3,7 @@ import { Roboto, Poppins } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -29,10 +30,12 @@ export default function RootLayout({
   return (
     <html lang='pt-br'>
       <body className={`${poppins.variable} ${roboto.variable}`}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <ThemeProvider attribute='class'>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

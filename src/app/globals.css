@@ -79,11 +79,91 @@ body {
     --radius: 0.5rem;
 
     --hover: 200 48% 10%; /* #0D1D25 → DARK_900 */
+    --button-hover: 32 96% 55%; /* um pouco mais escura que o tertiary (#f49a2e) */
   }
 
-  .light {
-    /* você pode definir valores mais claros aqui no futuro */
-  }
+.light {
+  
+    /* === Fundos principais === */
+    --app-background: 0 0% 98%; /* Um branco muito suave, quase off-white, para o fundo principal da aplicação */
+    --background: 0 0% 96%; /* Um cinza muito claro e neutro para o fundo de seções e cards */
+    --muted: 0 0% 94%; /* Um tom de cinza claro e neutro para elementos secundários, como divisores ou backgrounds de itens desabilitados */
+    --input: 0 0% 92%; /* Um cinza claro e neutro para o fundo de inputs, garantindo visibilidade e contraste com o texto */
+    --border: 0 0% 90%; /* Borda clara e neutra para elementos, mantendo a coerência com o input */
+    --border-focus: 0 0% 80%; /* Uma borda um pouco mais escura e neutra para o estado de foco, indicando interatividade */
+
+    --card: 0 0% 96%; /* Fundo de card claro e neutro, com um leve tom para se destacar do background principal */
+    --card-hover: 0 0% 94%; /* Um cinza neutro um pouco mais escuro para o hover do card, indicando interação sutil */
+
+
+
+
+    --primary: 44 100% 48%; /* Mantém a cor primária (amarelo vibrante), pois funciona bem em ambos os modos */
+
+    --secondary: 0 0% 94%; /* Cor secundária clara e neutra, similar ao --muted, para elementos de destaque secundários */
+    --secondary-foreground: 0 0% 0%; /* Texto preto para garantir contraste em fundos claros */
+
+    --tertiary: 32 96% 64%; /* Mantém a cor terciária (laranja), que também funciona bem em ambos os modos */
+    --tertiary-foreground: 0 0% 0%; /* Texto preto para garantir contraste em fundos claros */
+
+
+
+
+    /* === Textos e contrastes === */
+    --foreground: 0 0% 0%; /* Texto principal preto para alto contraste em fundos claros */
+    --muted-foreground: 0 0% 20%; /* Um cinza escuro neutro para textos secundários, mantendo legibilidade */
+    --soft-foreground: 0 0% 30%; /* Um cinza um pouco mais claro e neutro para textos com menor hierarquia */
+    --subtle-foreground: 0 0% 40%; /* Cinza neutro para placeholders e textos muito sutis */
+    --placeholder: 0 0% 50%; /* Cinza médio neutro para placeholders, garantindo visibilidade sem ser intrusivo */
+
+    --highlight: 32 96% 64%; /* Mantém a cor de destaque */
+    --secondary-highlight: 186 100% 25%; /* Um azul mais escuro para destaque secundário, que se destaca em fundos claros */
+    --highlight-soft: 32 96% 50%; /* Uma versão mais suave da cor de destaque */
+    --highlight-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de destaque */
+
+    --success: 147 96% 42%; /* Mantém a cor de sucesso */
+    --success-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de sucesso */
+
+
+
+
+    /* === Marca / Branding === */
+    --brand: 44 100% 48%; /* Mantém a cor da marca */
+    --brand-foreground: 0 0% 100%; /* Texto branco para contraste com a cor da marca */
+
+    /* === Erros / Ações destrutivas === */
+    --destructive: 0 67% 41%; /* Mantém a cor destrutiva */
+    --destructive-foreground: 0 0% 100%; /* Texto branco para contraste com a cor destrutiva */
+
+    /* === Outros === */
+
+    /* === Popover === */
+    --popover: 0 0% 96%; /* Fundo do popover claro e neutro, similar ao --background */
+    --popover-foreground: 0 0% 0%; /* Texto preto para contraste com o popover */
+
+    /* === Border (usado em PopoverContent e CommandItem) === */
+    --border: 0 0% 90%; /* Borda clara e neutra, mantendo a consistência */
+
+    /* === Command === */
+    --command: 0 0% 96%; /* Fundo do command claro e neutro, similar ao popover */
+    --command-foreground: 0 0% 0%; /* Texto preto para contraste com o command */
+    --command-placeholder: 0 0% 50%; /* Cinza neutro para placeholder do command */
+
+    /* === Highlight (hover) === */
+
+    /* === Accent opcional (ex: botão “novo cliente”) === */
+    --accent: 0 0% 90%; /* Accent claro e neutro, similar ao --input e --border */
+    --accent-foreground: 0 0% 0%; /* Texto preto para contraste com o accent */
+
+    --radius: 0.5rem;
+
+    --hover: 0 0% 90%; /* Cor de hover clara e neutra, sutil */
+    --button-hover: 32 96% 55%; /* Mantém a cor de hover do botão */
+  
+}
+
+
+
 }
 
 main {

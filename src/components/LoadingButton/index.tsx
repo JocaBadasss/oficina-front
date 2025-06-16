@@ -22,7 +22,7 @@ export function LoadingButton({
       type='submit'
       disabled={isLoading || disabled}
       className={cn(
-        'w-full bg-TINTS_CARROT_100 text-LIGHT_100 font-bold py-3 px-6 rounded-md hover:bg-[#d98b3e] transition-colors flex items-center justify-center gap-2',
+        'w-full bg-tertiary text-muted-foreground font-bold py-3 px-6 rounded-md hover:bg-buttonHover transition-colors flex items-center justify-center gap-2',
         className
       )}
       {...props}

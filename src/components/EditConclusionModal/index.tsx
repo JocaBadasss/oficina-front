@@ -60,13 +60,13 @@ export function EditConclusaoModal({
       <DialogTrigger asChild>
         <button
           type='button'
-          className='ml-4 text-xs font-semibold text-TINTS_CARROT_100 hover:text-TINTS_CAKE_200'
+          className='ml-4 text-xs font-semibold text-tertiary hover:text-secondary-highlight'
         >
           Editar
         </button>
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[48rem] max-h-[80vh] border-none bg-DARK_600'>
+      <DialogContent className='sm:max-w-[48rem] max-h-[80vh] border-none bg-card'>
         <DialogHeader>
           <DialogTitle>Editar Conclusão</DialogTitle>
           <DialogDescription>
@@ -80,7 +80,7 @@ export function EditConclusaoModal({
             placeholder='Digite a conclusão...'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className='border-DARK_900 bg-DARK_800'
+            className='border-border bg-background placeholder:text-placeholder text-foreground'
           />
         </div>
 
@@ -89,14 +89,14 @@ export function EditConclusaoModal({
             variant='secondary'
             onClick={() => setOpen(false)}
             disabled={loading}
-            className='px-6 py-2 bg-TINTS_TOMATO_100 text-LIGHT_200 font-semibold rounded-lg transition'
+            className='px-6 py-2 bg-destructive hover:bg-destructive/70 text-destructive-foreground font-semibold rounded-lg transition'
           >
             Cancelar
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={loading}
-            className='bg-TINTS_CARROT_100 hover:bg-TINTS_CARROT_100/90 text-LIGHT_200 font-semibold px-6 py-2 rounded-lg transition'
+            className='bg-tertiary hover:bg-tertiary/70 text-muted-foreground font-semibold px-6 py-2 rounded-lg transition'
           >
             {loading ? 'Salvando...' : 'Salvar'}
           </Button>

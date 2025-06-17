@@ -8,6 +8,7 @@ import { ptBR } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import { ConcludeAppointmentButton } from '@/components/ConcludeAppointmentButton';
 
 interface Appointment {
   id: string;
@@ -27,12 +28,13 @@ interface Appointment {
 
 const statusLabels: Record<string, string> = {
   PENDENTE: 'Pendente',
-  CONFIRMADO: 'Confirmado',
+  CONCLUIDO: 'Concluido',
   CANCELADO: 'Cancelado',
 };
 
 export default function DetalhesAgendamentoPage() {
-  const { id } = useParams();
+  const { id } = useParams() as { id?: string };
+
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -49,6 +51,8 @@ export default function DetalhesAgendamentoPage() {
     }
     if (id) fetchData();
   }, [id]);
+
+  if (!id) return null;
 
   return (
     <AppLayout>
@@ -110,7 +114,7 @@ export default function DetalhesAgendamentoPage() {
                   </h2>
                   <p
                     className={`text-xs font-semibold px-2 py-1 rounded w-fit ${
-                      appointment.status === 'CONFIRMADO'
+                      appointment.status === 'CONCLUIDO'
                         ? 'bg-success text-success-foreground'
                         : appointment.status === 'CANCELADO'
                         ? 'bg-destructive text-destructive-foreground'
@@ -132,6 +136,19 @@ export default function DetalhesAgendamentoPage() {
                   </p>
                 </div>
               )}
+            </div>
+          )}
+          {appointment?.status !== 'CONCLUIDO' && (
+            <div className='pt-4 border-t border-border flex justify-center'>
+              <ConcludeAppointmentButton
+                appointmentId={id}
+                disabled={loading}
+                onSuccess={() => {
+                  setAppointment((prev) =>
+                    prev ? { ...prev, status: 'CONCLUIDO' } : prev
+                  );
+                }}
+              />
             </div>
           )}
         </section>

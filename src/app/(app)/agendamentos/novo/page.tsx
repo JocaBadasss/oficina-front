@@ -6,18 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { format, parse } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { api } from '@/services/api';
 import { mask } from 'remask';
 import { CheckCircle2 } from 'lucide-react';
-import { ptBR } from 'date-fns/locale';
 import { AppLayout } from '@/components/AppLayout';
 import { AxiosError } from 'axios';
 import { PageHeader } from '@/components/PageHeader';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
 import { LoadingButton } from '@/components/LoadingButton';
+import { CalendarPicker } from '@/components/ui/CalendarPicker';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -206,15 +205,9 @@ export default function NovoAgendamentoPage() {
             Escolha a data
           </h2>
           <div className='flex justify-center items-center'>
-            <Calendar
-              mode='single'
-              selected={date}
-              onSelect={setDate}
-              locale={ptBR}
-              modifiersClassNames={{ weekend: 'bg-destructive' }}
-              modifiers={{ weekend: (day) => [0, 6].includes(day.getDay()) }}
-              disabled={(d) => [0, 6].includes(d.getDay())}
-              className='max-w-sm flex justify-center self-center w-full rounded-md shadow-md'
+            <CalendarPicker
+              date={date}
+              setDate={setDate}
             />
           </div>
         </section>

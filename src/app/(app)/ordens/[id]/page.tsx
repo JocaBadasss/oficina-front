@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { api } from '@/services/api';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -84,8 +84,6 @@ export default function DetalhesOrdemPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchOrder() {
@@ -376,8 +374,10 @@ export default function DetalhesOrdemPage() {
                 <div className='pt-4 border-t border-border flex justify-center'>
                   <FinalizarAtendimentoModal
                     orderId={order.id}
-                    onSuccess={() => {
-                      router.refresh();
+                    onSuccess={(partialOrder) => {
+                      setOrder((prev) =>
+                        prev ? { ...prev, ...partialOrder } : prev
+                      );
                     }}
                   />
                 </div>

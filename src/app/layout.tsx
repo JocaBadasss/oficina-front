@@ -28,9 +28,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='pt-br'>
+    <html lang='pt-br' suppressHydrationWarning>
       <body className={`${poppins.variable} ${roboto.variable}`}>
-        <ThemeProvider attribute='class'>
+        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
           <AuthProvider>
             {children}
             <Toaster />

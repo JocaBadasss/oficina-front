@@ -122,7 +122,7 @@ body {
     --highlight-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de destaque */
 
     --success: 147 96% 42%; /* Mantém a cor de sucesso */
-    --success-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de sucesso */
+    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
 
 
 

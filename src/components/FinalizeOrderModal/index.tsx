@@ -14,13 +14,47 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { api } from '@/services/api';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
+import { toast } from '../ui/use-toast';
 
+interface Order {
+  id: string;
+  complaints: string;
+  notes: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  fuelLevel: string;
+  adblueLevel: string;
+  km: number;
+  tireStatus: string;
+  mirrorStatus: string;
+  paintingStatus: string;
+  vehicle: {
+    id: string;
+    plate: string;
+    brand: string;
+    model: string;
+    year: number;
+    client: {
+      id: string;
+      name: string;
+    };
+  };
+  report?: { description: string };
+  photos: PhotoDTO[];
+}
+
+interface PhotoDTO {
+  id: string;
+  filename: string;
+  url: string;
+}
 export function FinalizarAtendimentoModal({
   orderId,
   onSuccess,
 }: {
   orderId: string;
-  onSuccess: () => void;
+  onSuccess: (partialOrder: Partial<Order>) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState('');
@@ -38,8 +72,15 @@ export function FinalizarAtendimentoModal({
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+      toast({
+        description: 'Atendimento finalizado com sucesso!',
+      });
+
       setOpen(false);
-      onSuccess();
+      onSuccess({
+        status: 'FINALIZADO',
+        report: { description },
+      });
     } catch (err) {
       handleAxiosError(err, 'Erro ao finalizar atendimento');
     } finally {

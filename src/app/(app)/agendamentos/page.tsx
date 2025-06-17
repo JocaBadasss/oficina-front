@@ -29,7 +29,7 @@ interface Appointment {
 
 const statusLabels: Record<string, string> = {
   PENDENTE: 'Pendente',
-  CONFIRMADO: 'Confirmado',
+  CONCLUIDO: 'Concluido',
   CANCELADO: 'Cancelado',
 };
 
@@ -136,7 +136,7 @@ export default function AgendamentosPage() {
                           <span
                             className={`text-[0.625rem] font-semibold px-3 py-1 rounded capitalize w-fit
                           ${
-                            appt.status === 'CONFIRMADO'
+                            appt.status === 'CONCLUIDO'
                               ? 'bg-success text-success-foreground'
                               : appt.status === 'CANCELADO'
                               ? 'bg-destructive text-destructive-foreground'

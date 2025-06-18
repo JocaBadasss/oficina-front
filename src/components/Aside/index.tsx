@@ -1,4 +1,3 @@
-// Componente de navegação inferior estilo Instagram (mobile only)
 'use client';
 
 import {
@@ -10,34 +9,41 @@ import {
   CalendarClock,
   MoreHorizontal,
   Settings,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { ThemeTogglePopover } from '../ui/ThemeTogglePopover';
+import { useThemeHintPopover } from '@/hooks/useThemeHintPopover';
 
 const navItems = [
-  { href: '/painel', icon: Home, label: 'Painel', isNewOrder: false },
-  {
-    href: '/novo-atendimento',
-    icon: UserPlus,
-    label: 'Novo Atendimento',
-    isNewOrder: true,
-  },
-  { href: '/clientes', icon: Users, label: 'Clientes', isNewOrder: false },
-  { href: '/veiculos', icon: Truck, label: 'Veículos', isNewOrder: false },
-  { href: '/ordens', icon: Wrench, label: 'Ordens', isNewOrder: false },
+  { href: '/painel', icon: Home, label: 'Painel' },
+  { href: '/clientes', icon: Users, label: 'Clientes' },
+  { href: '/veiculos', icon: Truck, label: 'Veículos' },
+  { href: '/ordens', icon: Wrench, label: 'Ordens' },
   { href: '/agendamentos', icon: CalendarClock, label: 'Agendamentos' },
 ];
 
 export function Aside() {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+  const { showPopover, dismissPopover, isMobile } = useThemeHintPopover({
+    dropdownOpen: open,
+  });
+
+  const isLight = theme === 'light';
 
   return (
     <>
       {/* Desktop Aside */}
-      <aside className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted p-6 space-y-6 pb-12 z-50'>
+      <aside className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted p-6 space-y-6 pb-12 z-50 border borde-border'>
         <Link
           href='/painel'
           className='text-2xl font-bold text-brand flex items-center gap-2 hover:opacity-90'
@@ -53,38 +59,49 @@ export function Aside() {
 
         <nav className='flex flex-col justify-between h-full text-foreground'>
           <div className='flex flex-col gap-4'>
-            {navItems.map(({ href, icon: Icon, label, isNewOrder }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`hover:text-tertiary flex gap-2 items-center ${
-                  pathname === href
-                    ? 'text-tertiary'
-                    : isNewOrder
-                    ? 'text-secondary-highlight'
-                    : ''
-                }`}
-              >
-                <Icon size={16} /> {label}
-              </Link>
-            ))}
+            {navItems.map(({ href, icon: Icon, label }) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex gap-2 items-center transition ${
+                    isActive
+                      ? 'text-tertiary'
+                      : 'text-foreground hover:text-tertiary'
+                  }`}
+                >
+                  <Icon size={16} /> {label}
+                </Link>
+              );
+            })}
           </div>
 
-          <button
-            type='button'
-            className='hover:text-tertiary flex gap-2 items-center cursor-default hover:cursor-pointer'
-            onClick={() => {}}
-          >
-            <Wrench size={16} /> Configurações
-          </button>
+          {/* Preferências */}
+          {/* Preferências fixas no final do aside */}
+          <div className='mt-auto pt-6 border-t border-border flex flex-col gap-2'>
+            <ThemeTogglePopover
+              showPopover={showPopover}
+              dismissPopover={dismissPopover}
+              isMobile={isMobile}
+            />
+
+            <button
+              type='button'
+              onClick={() => {}}
+              className='hover:text-tertiary flex gap-2 items-center cursor-pointer transition'
+            >
+              <Wrench size={16} /> Configurações
+            </button>
+          </div>
         </nav>
       </aside>
 
       {/* Mobile BottomNav */}
       <nav className='fixed bottom-0 z-50 w-full bg-muted border-t border-border md:hidden'>
         <ul className='flex justify-around items-center p-2 relative'>
-          {/* Ícones principais no mobile */}
-          {[navItems[0], navItems[2], navItems[4]].map(
+          {/* Navegação padrão */}
+          {[navItems[0], navItems[1], navItems[3]].map(
             ({ href, icon: Icon, label }) => {
               const isActive = pathname === href;
               return (
@@ -105,7 +122,7 @@ export function Aside() {
             }
           )}
 
-          {/* Botão flutuante central */}
+          {/* Botão flutuante */}
           <li className='absolute -top-6 left-1/2 transform -translate-x-1/2'>
             <Link
               href='/novo-atendimento'
@@ -115,7 +132,7 @@ export function Aside() {
             </Link>
           </li>
 
-          {/* Botão de mais opções */}
+          {/* Dropdown de mais opções */}
           <li className='relative'>
             <div className='relative'>
               <button
@@ -128,22 +145,33 @@ export function Aside() {
 
               {open && (
                 <div className='absolute bottom-12 right-0 ml-3 bg-muted text-foreground shadow-lg rounded-md overflow-hidden z-50 w-40 border border-border'>
-                  <Link
-                    href='/agendamentos'
+                  {[navItems[4], navItems[2]].map(
+                    ({ href, icon: Icon, label }) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition w-full'
+                      >
+                        <Icon size={16} /> {label}
+                      </Link>
+                    )
+                  )}
+
+                  <div className='border-t border-border my-1' />
+
+                  <button
+                    type='button'
+                    onClick={toggleTheme}
                     className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition w-full'
                   >
-                    <CalendarClock size={16} /> Agendamentos
-                  </Link>
-                  <Link
-                    href='/veiculos'
-                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition w-full'
-                  >
-                    <Truck size={16} /> Veículos
-                  </Link>
+                    {isLight ? <Moon size={16} /> : <Sun size={16} />}
+                    {isLight ? 'Modo Escuro' : 'Modo Claro'}
+                  </button>
+
                   <button
                     type='button'
                     onClick={() => {}}
-                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition hover:cursor-pointer text-left w-full'
+                    className='flex items-center gap-2 px-4 py-2 text-sm hover:bg-hover transition w-full'
                   >
                     <Settings size={16} /> Configurações
                   </button>

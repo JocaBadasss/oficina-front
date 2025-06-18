@@ -43,6 +43,8 @@ export default function AgendamentosPage() {
       try {
         const response = await api.get('/appointments');
         setAppointments(response.data);
+
+        console.log(response.data);
       } catch (err) {
         console.error('Erro ao buscar agendamentos:', err);
       } finally {
@@ -83,8 +85,8 @@ export default function AgendamentosPage() {
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-muted rounded-lg p-4 space-y-4'>
-              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background'>
+            <div className='bg-muted rounded-lg p-4 space-y-4 border borde-border'>
+              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background '>
                 <Search
                   size={16}
                   className='text-subtle-foreground'
@@ -124,13 +126,22 @@ export default function AgendamentosPage() {
                           <div className='flex items-center gap-2 text-sm text-subtle-foreground'>
                             <CalendarClock
                               size={16}
-                              className='text-tertiary'
+                              className='text-tertiary flex-shrink-0'
                             />
-                            {format(
-                              new Date(appt.createdAt),
-                              "dd 'de' MMMM 'de' yyyy",
-                              { locale: ptBR }
-                            )}
+                            <div className='flex flex-col leading-tight'>
+                              <span className='text-xs text-muted-foreground'>
+                                Previsto para
+                              </span>
+                              <span className='text-base font-medium text-foreground'>
+                                {format(
+                                  new Date(appt.date),
+                                  "dd 'de' MMMM 'de' yyyy",
+                                  {
+                                    locale: ptBR,
+                                  }
+                                )}
+                              </span>
+                            </div>
                           </div>
 
                           <span
@@ -215,7 +226,7 @@ export default function AgendamentosPage() {
           </div>
 
           {/* Lateral – Agendamentos Pendentes */}
-          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-center items-center gap-4 min-h-44 text-center'>
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-center items-center gap-4 min-h-44 text-center border borde-border'>
             <CalendarClock
               size={32}
               className='text-tertiary'

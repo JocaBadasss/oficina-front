@@ -155,11 +155,13 @@ export default function AcompanhamentoPage() {
         </header>
 
         <div className='bg-muted rounded-xl p-6 mb-6'>
-          <p className='text-xl font-bold text-tertiary mb-1'>Cliente</p>
-          <p className='text-lg font-medium'>{data.client.name}</p>
-          <p className='text-sm text-subtle-foreground'>
-            {mask(data.client.phone, ['(99) 99999-9999'])}
-          </p>
+          <div className='p-4'>
+            <p className='text-xl font-bold text-tertiary mb-1'>Cliente</p>
+            <p className='text-lg font-medium'>{data.client.name}</p>
+            <p className='text-sm text-subtle-foreground'>
+              {mask(data.client.phone, ['(99) 99999-9999'])}
+            </p>
+          </div>
         </div>
 
         <section className='bg-muted rounded-lg p-6 space-y-6'>

@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ChevronsDown } from 'lucide-react';
+import { ChevronsDown, Upload } from 'lucide-react';
 import {
   CommandEmpty,
   CommandGroup,
@@ -27,14 +27,25 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { LoadingButton } from '@/components/LoadingButton';
+import Image from 'next/image';
+import { CustomSelect } from '@/components/ui/customSelect';
 
 const orderSchema = z.object({
-  clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
+  clientId: z
+    .string({
+      required_error: 'Cliente é obrigatório',
+      invalid_type_error: 'Valor inválido',
+    })
+    .nonempty('Cliente é obrigatório')
+    .min(1, 'Cliente é obrigatório'),
   vehicleId: z.string().uuid({ message: 'Veículo é obrigatório' }),
   fuelLevel: z.string().min(1, 'Nível de combustível é obrigatório'),
   adblueLevel: z.string().min(1, 'Nível de Arla é obrigatório'),
   km: z
-    .number({ invalid_type_error: 'KM deve ser um número' })
+    .number({
+      required_error: 'KM é obrigatório',
+      invalid_type_error: 'KM deve ser um número',
+    })
     .min(0, 'KM inválido')
     .int()
     .max(5_000_000, 'KM muito alto — confere esse valor aí!'),
@@ -99,8 +110,17 @@ export default function NovaOrdemPage() {
   const selectedClientId = watch('clientId');
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles(files);
+    if (!e.target.files) return;
+
+    const newFiles = Array.from(e.target.files);
+
+    setSelectedFiles((prev) => {
+      const existing = new Set(prev.map((f) => f.name + f.size));
+      const unique = newFiles.filter((f) => !existing.has(f.name + f.size));
+      return [...prev, ...unique];
+    });
+
+    e.target.value = '';
   }
 
   useEffect(() => {
@@ -245,13 +265,12 @@ export default function NovaOrdemPage() {
                   </Popover>
                 )}
               />
-              {errors.clientId && (
+              {errors.clientId?.message && (
                 <span className='text-red-500 text-xs'>
-                  {errors.clientId.message}
+                  {errors.clientId?.message || 'Campo obrigatório'}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='vehicleId'
@@ -259,7 +278,7 @@ export default function NovaOrdemPage() {
               >
                 Veículo
               </label>
-              <select
+              <CustomSelect
                 id='vehicleId'
                 {...register('vehicleId')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -277,16 +296,14 @@ export default function NovaOrdemPage() {
                     })}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.vehicleId && (
                 <span className='text-red-500 text-xs'>
                   {errors.vehicleId.message}
                 </span>
               )}
             </div>
-
             {/** Os próximos campos seguem o mesmo padrão **/}
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='fuelLevel'
@@ -294,7 +311,7 @@ export default function NovaOrdemPage() {
               >
                 Nível de Combustível
               </label>
-              <select
+              <CustomSelect
                 id='fuelLevel'
                 {...register('fuelLevel')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -308,14 +325,13 @@ export default function NovaOrdemPage() {
                     {label}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.fuelLevel && (
                 <span className='text-red-500 text-xs'>
                   {errors.fuelLevel.message}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='adblueLevel'
@@ -323,7 +339,7 @@ export default function NovaOrdemPage() {
               >
                 Nível de Adblue
               </label>
-              <select
+              <CustomSelect
                 id='adblueLevel'
                 {...register('adblueLevel')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -337,14 +353,13 @@ export default function NovaOrdemPage() {
                     {level}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.adblueLevel && (
                 <span className='text-red-500 text-xs'>
                   {errors.adblueLevel.message}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='paintingStatus'
@@ -352,7 +367,7 @@ export default function NovaOrdemPage() {
               >
                 Pintura
               </label>
-              <select
+              <CustomSelect
                 id='paintingStatus'
                 {...register('paintingStatus')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -366,14 +381,13 @@ export default function NovaOrdemPage() {
                     {status}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.paintingStatus && (
                 <span className='text-red-500 text-xs'>
                   {errors.paintingStatus.message}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='tireStatus'
@@ -381,7 +395,7 @@ export default function NovaOrdemPage() {
               >
                 Estado dos Pneus
               </label>
-              <select
+              <CustomSelect
                 id='tireStatus'
                 {...register('tireStatus')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -395,14 +409,13 @@ export default function NovaOrdemPage() {
                     {status}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.tireStatus && (
                 <span className='text-red-500 text-xs'>
                   {errors.tireStatus.message}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='mirrorStatus'
@@ -410,7 +423,7 @@ export default function NovaOrdemPage() {
               >
                 Espelhos
               </label>
-              <select
+              <CustomSelect
                 id='mirrorStatus'
                 {...register('mirrorStatus')}
                 className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
@@ -424,20 +437,19 @@ export default function NovaOrdemPage() {
                     {status}
                   </option>
                 ))}
-              </select>
+              </CustomSelect>
               {errors.mirrorStatus && (
                 <span className='text-red-500 text-xs'>
                   {errors.mirrorStatus.message}
                 </span>
               )}
             </div>
-
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='km'
                 className='text-sm text-placeholder'
               >
-                Atual
+                KM atual
               </label>
               <input
                 type='text'
@@ -456,7 +468,6 @@ export default function NovaOrdemPage() {
                 </span>
               )}
             </div>
-
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='complaints'
@@ -476,7 +487,6 @@ export default function NovaOrdemPage() {
                 </span>
               )}
             </div>
-
             <div className='md:col-span-2 flex flex-col gap-2'>
               <label
                 htmlFor='notes'
@@ -499,26 +509,58 @@ export default function NovaOrdemPage() {
               >
                 Imagens (opcional)
               </label>
+
               <input
                 id='photos'
                 type='file'
                 multiple
                 accept='image/*'
                 onChange={handleFiles}
-                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
+                className='hidden'
               />
-              <div className='flex flex-wrap gap-2'>
-                {selectedFiles.map((file, idx) => (
-                  <span
-                    key={idx}
-                    className='text-xs text-subtle-foreground bg-accent rounded px-2 py-1'
-                  >
-                    {file.name}
-                  </span>
-                ))}
+
+              <label
+                htmlFor='photos'
+                className='inline-flex items-center gap-2 bg-background border border-border text-sm text-subtle-foreground px-4 py-2 rounded-md cursor-pointer hover:bg-hover transition w-full justify-center'
+              >
+                <Upload size={16} />
+                Selecionar arquivos
+              </label>
+
+              <div className='flex flex-wrap gap-2 bg-muted rounded-lg p-4 border border-border mt-2'>
+                {selectedFiles.length > 0 ? (
+                  selectedFiles.map((file, i) => (
+                    <div
+                      key={i}
+                      className='relative'
+                    >
+                      <Image
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        width={96}
+                        height={96}
+                        className='object-cover rounded'
+                      />
+                      <button
+                        type='button'
+                        onClick={() =>
+                          setSelectedFiles((files) =>
+                            files.filter((_, index) => index !== i)
+                          )
+                        }
+                        className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-foreground text-xs'
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <p className='text-sm text-placeholder'>
+                    Nenhuma imagem selecionada.
+                  </p>
+                )}
               </div>
             </div>
-
             <div className='md:col-span-2'>
               <LoadingButton
                 type='submit'

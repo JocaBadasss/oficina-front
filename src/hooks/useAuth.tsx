@@ -72,10 +72,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let isMounted = true;
 
     // 1) Se estivermos em /login, não tentamos buscar user
-    if (pathname === '/login') {
-      setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
-      setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
-      return; // saímos do efeito
+    //18/06 mexi nisso chat acesso publico e subdomnio
+    // if (pathname === '/login') {
+    //   setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
+    //   setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
+    //   return; // saímos do efeito
+    // }
+
+    const PUBLIC_PATHS = ['/login', '/acompanhamento'];
+
+    if (PUBLIC_PATHS.some((publicPath) => pathname.startsWith(publicPath))) {
+      setIsLoading(false);
+      setHasFetchedUser(true);
+      return;
     }
 
     // 2) Para todas as outras rotas, resetamos nosso estado

@@ -13,6 +13,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatVehicleLine } from '@/utils/helpers/vehicles';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
+import { StatusFilterComponent } from '@/components/ui/statusFilter';
 
 interface Order {
   id: string;
@@ -40,6 +41,7 @@ export default function OrdensPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     async function fetchOrders() {
@@ -58,11 +60,14 @@ export default function OrdensPage() {
   const filteredOrders = orders.filter((order) => {
     const searchLower = search.toLowerCase();
 
-    return (
+    const matchesSearch =
       order.vehicle.plate?.toLowerCase().includes(searchLower) ||
       order.vehicle.model?.toLowerCase().includes(searchLower) ||
-      order.vehicle.client.name?.toLowerCase().includes(searchLower)
-    );
+      order.vehicle.client.name?.toLowerCase().includes(searchLower);
+
+    const matchesStatus = statusFilter ? order.status === statusFilter : true;
+
+    return matchesSearch && matchesStatus;
   });
 
   const mockChartData = [
@@ -95,18 +100,25 @@ export default function OrdensPage() {
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-muted rounded-lg p-4 sm:p-6 space-y-4'>
-              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background focus-within:ring-2 ring-highlight transition'>
-                <Search
-                  size={16}
-                  className='text-subtle-foreground'
-                />
-                <input
-                  type='text'
-                  placeholder='Buscar ordem...'
-                  className='bg-transparent outline-none flex-1 text-sm text-foreground placeholder:text-placeholder'
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+            <div className='bg-muted rounded-lg p-4 sm:p-6 space-y-4 border borde-border'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4'>
+                <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background flex-1'>
+                  <Search
+                    size={16}
+                    className='text-subtle-foreground'
+                  />
+                  <input
+                    type='text'
+                    placeholder='Buscar ordem...'
+                    className='bg-transparent outline-none flex-1 text-sm text-foreground placeholder:text-placeholder'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                <StatusFilterComponent
+                  statusFilter={statusFilter}
+                  setStatusFilter={setStatusFilter}
                 />
               </div>
 
@@ -227,7 +239,7 @@ export default function OrdensPage() {
           </div>
 
           {/* Painel lateral com gráfico */}
-          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44 border borde-border'>
             <div className='w-full text-center'>
               <h2 className='text-sm text-subtle-foreground uppercase tracking-wide'>
                 Ordens Criadas

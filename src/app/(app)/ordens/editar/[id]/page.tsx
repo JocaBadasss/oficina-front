@@ -14,13 +14,19 @@ import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import Image from 'next/image';
 import { LoadingButton } from '@/components/LoadingButton';
+import { Upload } from 'lucide-react';
 
 const orderSchema = z.object({
   fuelLevel: z.string().min(1, 'Nível de combustível é obrigatório'),
   adblueLevel: z.string().min(1, 'Nível de Arla é obrigatório'),
   km: z
-    .number({ invalid_type_error: 'KM deve ser um número' })
-    .min(0, 'KM inválido'),
+    .number({
+      required_error: 'KM é obrigatório',
+      invalid_type_error: 'KM deve ser um número',
+    })
+    .min(0, 'KM inválido')
+    .int()
+    .max(5_000_000, 'KM muito alto — confere esse valor aí!'),
   tireStatus: z.string().min(1, 'Estado dos pneus é obrigatório'),
   mirrorStatus: z.string().min(1, 'Espelhos é obrigatório'),
   paintingStatus: z.string().min(1, 'Pintura é obrigatória'),
@@ -408,26 +414,52 @@ export default function EditarOrdemPage() {
               )}
             </div>
 
-            <div className='md:col-span-2 flex flex-col gap-2'>
-              <label
-                htmlFor='newPhotos'
-                className='text-sm text-placeholder'
-              >
-                Adicionar Fotos
-              </label>
-              <input
-                id='newPhotos'
-                type='file'
-                multiple
-                accept='image/*'
-                onChange={(e) =>
-                  setSelectedFiles(
-                    e.target.files ? Array.from(e.target.files) : []
-                  )
-                }
-                className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-              />
-              <div className='flex flex-wrap gap-2'>
+            <div className='md:col-span-2 flex flex-col gap-2 '>
+              <div className='flex flex-col gap-2'>
+                <label
+                  htmlFor='newPhotos'
+                  className='text-sm text-placeholder'
+                >
+                  Adicionar Fotos
+                </label>
+
+                <input
+                  id='newPhotos'
+                  type='file'
+                  multiple
+                  accept='image/*'
+                  onChange={(e) => {
+                    if (!e.target.files) return;
+
+                    const newFiles = Array.from(e.target.files);
+
+                    // Evita arquivos duplicados com base no nome + tamanho
+                    setSelectedFiles((prev) => {
+                      const existing = new Set(
+                        prev.map((f) => f.name + f.size)
+                      );
+                      const unique = newFiles.filter(
+                        (f) => !existing.has(f.name + f.size)
+                      );
+                      return [...prev, ...unique];
+                    });
+
+                    // Reseta o input pra permitir selecionar o mesmo arquivo de novo se quiser
+                    e.target.value = '';
+                  }}
+                  className='hidden'
+                />
+
+                <label
+                  htmlFor='newPhotos'
+                  className='inline-flex items-center gap-2 bg-background border border-border text-sm text-subtle-foreground px-4 py-2 rounded-md cursor-pointer hover:bg-hover transition justify-center'
+                >
+                  <Upload size={16} />
+                  Selecionar arquivos
+                </label>
+              </div>
+
+              {/* <div className='flex flex-wrap gap-2'>
                 {selectedFiles.map((f, i) => (
                   <span
                     key={i}
@@ -436,20 +468,21 @@ export default function EditarOrdemPage() {
                     {f.name}
                   </span>
                 ))}
-              </div>
+              </div> */}
             </div>
 
-            <div className='md:col-span-2 flex flex-wrap gap-2 bg-muted rounded-lg p-4 border-border border'>
-              {existingPhotos.length > 0 ? (
-                existingPhotos.map((photo) => (
+            <div className='md:col-span-2 flex flex-wrap gap-2 bg-muted rounded-lg p-4 border border-border'>
+              {[...existingPhotos, ...selectedFiles].map((item, i) => {
+                const isExisting = 'url' in item;
+
+                return (
                   <div
-                    key={photo.id}
-                    className='relative '
+                    key={isExisting ? item.id : i}
+                    className='relative'
                   >
                     <Image
-                      key={photo.id}
-                      src={photo.url}
-                      alt={photo.filename}
+                      src={isExisting ? item.url : URL.createObjectURL(item)}
+                      alt={isExisting ? item.filename : item.name}
                       width={96}
                       height={96}
                       className='object-cover rounded'
@@ -457,18 +490,27 @@ export default function EditarOrdemPage() {
                     <button
                       type='button'
                       onClick={() => {
-                        setRemovePhotoIds((ids) => [...ids, photo.id]);
-                        setExistingPhotos((ps) =>
-                          ps.filter((p) => p.id !== photo.id)
-                        );
+                        if (isExisting) {
+                          setRemovePhotoIds((ids) => [...ids, item.id]);
+                          setExistingPhotos((ps) =>
+                            ps.filter((p) => p.id !== item.id)
+                          );
+                        } else {
+                          setSelectedFiles((fs) =>
+                            fs.filter(
+                              (_, idx) => idx !== i - existingPhotos.length
+                            )
+                          );
+                        }
                       }}
                       className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-foreground text-xs'
                     >
                       ×
                     </button>
                   </div>
-                ))
-              ) : (
+                );
+              })}
+              {existingPhotos.length === 0 && selectedFiles.length === 0 && (
                 <p className='text-sm text-placeholder'>
                   Nenhuma foto cadastrada.
                 </p>

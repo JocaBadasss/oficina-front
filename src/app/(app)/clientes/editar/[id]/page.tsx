@@ -36,7 +36,7 @@ export default function EditarClientePage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors},
     setValue,
     watch,
   } = useForm<ClientFormData>({

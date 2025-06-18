@@ -22,12 +22,14 @@ import {
 } from '@/components/ui/popover';
 import { PageHeader } from '@/components/PageHeader';
 import { fullSchema, NovoAtendimentoFormData } from './schemas/novoAtendimento';
-import { ChevronsDown, Plus } from 'lucide-react';
+import { ChevronsDown, Plus, Upload } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
 import { LoadingButton } from '@/components/LoadingButton';
 import { formatKmForDisplay, parseKmInput } from '@/utils/helpers/orders';
+import Image from 'next/image';
+import { CustomSelect } from '@/components/ui/customSelect';
 
 interface Client {
   id: string;
@@ -60,8 +62,17 @@ export default function NovoAtendimentoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles(files);
+    if (!e.target.files) return;
+
+    const newFiles = Array.from(e.target.files);
+
+    setSelectedFiles((prev) => {
+      const existing = new Set(prev.map((f) => f.name + f.size));
+      const unique = newFiles.filter((f) => !existing.has(f.name + f.size));
+      return [...prev, ...unique];
+    });
+
+    e.target.value = '';
   }
 
   const {
@@ -183,7 +194,7 @@ export default function NovoAtendimentoPage() {
         },
       });
 
-      toast({ title: 'Atendimento criado com sucesso!' });
+      toast({ title: 'Atendimento criado com sucesso!', variant: 'success' });
       router.push(`/ordens/${res.data.orderId}`);
       setCreateNewClient(false);
       setSelectedVehicleId('');
@@ -219,10 +230,10 @@ export default function NovoAtendimentoPage() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='space-y-6'
+          className='space-y-6 '
         >
           {/* Seção CLIENTE */}
-          <section className='bg-muted rounded-lg p-6 space-y-4'>
+          <section className='bg-muted rounded-lg p-6 space-y-4 border borde-border'>
             <h2 className='text-xl font-semibold text-muted-foreground'>
               Cliente
             </h2>
@@ -256,11 +267,12 @@ export default function NovoAtendimentoPage() {
                 align='start'
                 sideOffset={4}
               >
-                <Command className='  '>
+                <Command className=''>
                   <CommandInput
                     placeholder='Buscar cliente...'
-                    className='h-9  '
+                    className='h-9 border-0 focus:ring-0 focus:outline-none shadow-none bg-transparent text-foreground placeholder:text-placeholder px-3 text-sm'
                   />
+
                   <CommandEmpty>Nenhum cliente encontrado.</CommandEmpty>
 
                   <CommandGroup className=''>
@@ -414,18 +426,19 @@ export default function NovoAtendimentoPage() {
               </div>
             )}
           </section>
-          <section className='bg-muted rounded-lg p-6 space-y-4'>
+          <section className='bg-muted rounded-lg p-6 space-y-4 border borde-border'>
             <h2 className='text-xl font-semibold text-muted-foreground'>
               Veículo
             </h2>
 
             {selectedClient && (
-              <div className='flex flex-col gap-2'>
+              <div className='flex flex-col gap-2 '>
                 <label className='text-sm text-subtle-foreground'>
                   Selecionar veículo existente
                 </label>
-                <select
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+
+                <CustomSelect
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground appearance-none w-full '
                   onChange={(e) => {
                     const vehicleId = e.target.value;
                     setSelectedVehicleId(vehicleId);
@@ -452,12 +465,12 @@ export default function NovoAtendimentoPage() {
                       {vehicle.plate} - {vehicle.model} ({vehicle.brand})
                     </option>
                   ))}
-                </select>
+                </CustomSelect>
               </div>
             )}
 
             {(!selectedClient || selectedVehicleId === '') && (
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 '>
                 <div className='flex flex-col gap-1'>
                   <label
                     htmlFor='plate'
@@ -542,7 +555,7 @@ export default function NovoAtendimentoPage() {
           </section>
 
           {/* Seção ORDEM DE SERVIÇO */}
-          <section className='bg-muted rounded-lg p-6 space-y-4'>
+          <section className='bg-muted rounded-lg p-6 space-y-4 border borde-border'>
             <h2 className='text-xl font-semibold text-muted-foreground'>
               Ordem de Serviço
             </h2>
@@ -587,6 +600,107 @@ export default function NovoAtendimentoPage() {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
               <div className='flex flex-col gap-1'>
                 <label
+                  htmlFor='fuelLevel'
+                  className='text-sm text-subtle-foreground'
+                >
+                  Nível de Combustível
+                </label>
+                <CustomSelect
+                  id='fuelLevel'
+                  {...register('fuelLevel')}
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+                >
+                  <option value=''>Selecione</option>
+                  <option value='RESERVA'>Reserva</option>
+                  <option value='QUARTO'>1/4</option>
+                  <option value='METADE'>Metade</option>
+                  <option value='TRES_QUARTOS'>3/4</option>
+                  <option value='CHEIO'>Cheio</option>
+                </CustomSelect>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <label
+                  htmlFor='adblueLevel'
+                  className='text-sm text-subtle-foreground'
+                >
+                  Nível de Adblue
+                </label>
+                <CustomSelect
+                  id='adblueLevel'
+                  {...register('adblueLevel')}
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+                >
+                  <option value=''>Selecione</option>
+                  <option value='VAZIO'>Vazio</option>
+                  <option value='BAIXO'>Baixo</option>
+                  <option value='METADE'>Metade</option>
+                  <option value='CHEIO'>Cheio</option>
+                </CustomSelect>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <label
+                  htmlFor='tireStatus'
+                  className='text-sm text-subtle-foreground'
+                >
+                  Estado dos Pneus
+                </label>
+                <CustomSelect
+                  id='tireStatus'
+                  {...register('tireStatus')}
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+                >
+                  <option value=''>Selecione</option>
+                  <option value='RUIM'>Ruim</option>
+                  <option value='REGULAR'>Regular</option>
+                  <option value='BOM'>Bom</option>
+                  <option value='NOVO'>Novo</option>
+                </CustomSelect>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <label
+                  htmlFor='mirrorStatus'
+                  className='text-sm text-subtle-foreground'
+                >
+                  Espelhos
+                </label>
+                <CustomSelect
+                  id='mirrorStatus'
+                  {...register('mirrorStatus')}
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+                >
+                  <option value=''>Selecione</option>
+                  <option value='OK'>Ok</option>
+                  <option value='QUEBRADO'>Quebrado</option>
+                  <option value='RACHADO'>Rachado</option>
+                  <option value='FALTANDO'>Faltando</option>
+                </CustomSelect>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <label
+                  htmlFor='paintingStatus'
+                  className='text-sm text-subtle-foreground'
+                >
+                  Pintura
+                </label>
+                <CustomSelect
+                  id='paintingStatus'
+                  {...register('paintingStatus')}
+                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
+                >
+                  <option value=''>Selecione</option>
+                  <option value='INTACTA'>Intacta</option>
+                  <option value='ARRANHADA'>Arranhada</option>
+                  <option value='AMASSADA'>Amassada</option>
+                  <option value='REPARADA'>Reparada</option>
+                </CustomSelect>
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <label
                   htmlFor='km'
                   className='text-sm text-subtle-foreground'
                 >
@@ -610,107 +724,6 @@ export default function NovoAtendimentoPage() {
                 )}
               </div>
 
-              <div className='flex flex-col gap-1'>
-                <label
-                  htmlFor='fuelLevel'
-                  className='text-sm text-subtle-foreground'
-                >
-                  Nível de Combustível
-                </label>
-                <select
-                  id='fuelLevel'
-                  {...register('fuelLevel')}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-                >
-                  <option value=''>Selecione</option>
-                  <option value='RESERVA'>Reserva</option>
-                  <option value='QUARTO'>1/4</option>
-                  <option value='METADE'>Metade</option>
-                  <option value='TRES_QUARTOS'>3/4</option>
-                  <option value='CHEIO'>Cheio</option>
-                </select>
-              </div>
-
-              <div className='flex flex-col gap-1'>
-                <label
-                  htmlFor='adblueLevel'
-                  className='text-sm text-subtle-foreground'
-                >
-                  Nível de Adblue
-                </label>
-                <select
-                  id='adblueLevel'
-                  {...register('adblueLevel')}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-                >
-                  <option value=''>Selecione</option>
-                  <option value='VAZIO'>Vazio</option>
-                  <option value='BAIXO'>Baixo</option>
-                  <option value='METADE'>Metade</option>
-                  <option value='CHEIO'>Cheio</option>
-                </select>
-              </div>
-
-              <div className='flex flex-col gap-1'>
-                <label
-                  htmlFor='tireStatus'
-                  className='text-sm text-subtle-foreground'
-                >
-                  Estado dos Pneus
-                </label>
-                <select
-                  id='tireStatus'
-                  {...register('tireStatus')}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-                >
-                  <option value=''>Selecione</option>
-                  <option value='RUIM'>Ruim</option>
-                  <option value='REGULAR'>Regular</option>
-                  <option value='BOM'>Bom</option>
-                  <option value='NOVO'>Novo</option>
-                </select>
-              </div>
-
-              <div className='flex flex-col gap-1'>
-                <label
-                  htmlFor='mirrorStatus'
-                  className='text-sm text-subtle-foreground'
-                >
-                  Espelhos
-                </label>
-                <select
-                  id='mirrorStatus'
-                  {...register('mirrorStatus')}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-                >
-                  <option value=''>Selecione</option>
-                  <option value='OK'>Ok</option>
-                  <option value='QUEBRADO'>Quebrado</option>
-                  <option value='RACHADO'>Rachado</option>
-                  <option value='FALTANDO'>Faltando</option>
-                </select>
-              </div>
-
-              <div className='flex flex-col gap-1'>
-                <label
-                  htmlFor='paintingStatus'
-                  className='text-sm text-subtle-foreground'
-                >
-                  Pintura
-                </label>
-                <select
-                  id='paintingStatus'
-                  {...register('paintingStatus')}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground'
-                >
-                  <option value=''>Selecione</option>
-                  <option value='INTACTA'>Intacta</option>
-                  <option value='ARRANHADA'>Arranhada</option>
-                  <option value='AMASSADA'>Amassada</option>
-                  <option value='REPARADA'>Reparada</option>
-                </select>
-              </div>
-
               <div className='md:col-span-2 flex flex-col gap-2'>
                 <label
                   htmlFor='photos'
@@ -718,23 +731,56 @@ export default function NovoAtendimentoPage() {
                 >
                   Imagens (opcional)
                 </label>
+
                 <input
                   id='photos'
                   type='file'
                   multiple
                   accept='image/*'
                   onChange={handleFiles}
-                  className='bg-background border border-border rounded-md px-4 py-2 text-sm text-foreground outline-none'
+                  className='hidden'
                 />
-                <div className='flex flex-wrap gap-2'>
-                  {selectedFiles.map((file, idx) => (
-                    <span
-                      key={idx}
-                      className='text-xs text-subtle-foreground bg-accent rounded px-2 py-1'
-                    >
-                      {file.name}
-                    </span>
-                  ))}
+
+                <label
+                  htmlFor='photos'
+                  className='inline-flex items-center gap-2 bg-background border border-border text-sm text-subtle-foreground px-4 py-2 rounded-md cursor-pointer hover:bg-hover transition w-full justify-center'
+                >
+                  <Upload size={16} />
+                  Selecionar arquivos
+                </label>
+
+                <div className='flex flex-wrap gap-2 bg-muted rounded-lg p-4 border border-border mt-2'>
+                  {selectedFiles.length > 0 ? (
+                    selectedFiles.map((file, i) => (
+                      <div
+                        key={i}
+                        className='relative'
+                      >
+                        <Image
+                          src={URL.createObjectURL(file)}
+                          alt={file.name}
+                          width={96}
+                          height={96}
+                          className='object-cover rounded'
+                        />
+                        <button
+                          type='button'
+                          onClick={() =>
+                            setSelectedFiles((files) =>
+                              files.filter((_, index) => index !== i)
+                            )
+                          }
+                          className='absolute -top-1 -right-1 bg-red-600 rounded-full p-1 text-foreground text-xs'
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p className='text-sm text-placeholder'>
+                      Nenhuma imagem selecionada.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

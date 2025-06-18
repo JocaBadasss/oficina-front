@@ -70,10 +70,10 @@ export default function ClientesPage() {
           backHref='/painel'
         />
 
-        <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
+        <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start '>
           {/* Lista de Clientes */}
-          <div className='col-span-1 xl:col-span-2'>
-            <div className='bg-muted rounded-lg p-4 sm:p-6 space-y-4'>
+          <div className='col-span-1 xl:col-span-2 '>
+            <div className='bg-muted rounded-lg p-4 sm:p-6 space-y-4 border borde-border'>
               <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background focus-within:ring-2 ring-highlight transition'>
                 <Search
                   size={16}
@@ -178,7 +178,7 @@ export default function ClientesPage() {
           </div>
 
           {/* Total de Clientes com gráfico */}
-          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44 border borde-border'>
             <div className='w-full text-center'>
               <h2 className='text-sm text-subtle-foreground uppercase tracking-wide'>
                 Clientes Cadastrados

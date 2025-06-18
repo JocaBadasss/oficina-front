@@ -2,7 +2,6 @@
 
 import { ArrowLeft, Pencil } from 'lucide-react';
 import Link from 'next/link';
-import { ThemeToggle } from '../ThemeToggle';
 
 interface PageHeaderProps {
   title: string;
@@ -38,8 +37,6 @@ export function PageHeader({
           </p>
         )}
       </div>
-
-      <ThemeToggle />
 
       {/* Painel do usuário */}
       {userName && onLogout ? (

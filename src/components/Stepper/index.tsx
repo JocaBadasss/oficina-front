@@ -22,25 +22,33 @@ export function StepperMUI({ currentStatus }: StepperMUIProps) {
         alternativeLabel
         sx={{
           '& .MuiStepIcon-root': {
-            color: '#192227', // DARK_600
+            color: 'hsl(var(--accent))', // inativo
           },
           '& .MuiStepIcon-root.Mui-active': {
-            color: isFinalizado ? '#11D361' : '#FBA94C',
+            color: isFinalizado
+              ? 'hsl(var(--success))'
+              : 'hsl(var(--tertiary))',
           },
           '& .MuiStepIcon-root.Mui-completed': {
-            color: '#04D361',
+            color: 'hsl(var(--success))',
           },
           '& .MuiStepLabel-label': {
-            color: '#7C7C8A', // LIGHT_500
+            color: 'hsl(var(--placeholder))',
             fontWeight: 500,
             fontFamily: 'Poppins',
           },
           '& .MuiStepLabel-label.Mui-active': {
-            color: isFinalizado ? '#D361' : '#FBA94C',
+            color: isFinalizado
+              ? 'hsl(var(--success))'
+              : 'hsl(var(--tertiary))',
             fontWeight: 600,
           },
           '& .MuiStepLabel-label.Mui-completed': {
-            color: '#E1E1E6', // LIGHT_300
+            color: 'hsl(var(--soft-foreground))',
+          },
+          '& .MuiStepIcon-text': {
+            fill: 'hsl(var(--foreground))', // ou outra cor que quiser
+            fontWeight: 600,
           },
         }}
       >

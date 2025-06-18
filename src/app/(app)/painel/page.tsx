@@ -89,9 +89,9 @@ export default function PainelPage() {
       case 'FINALIZADO':
         return 'bg-TINTS_MINT_100 text-DARK_100';
       case 'EM_ANDAMENTO':
-        return 'bg-highlight hover:bg-highlight text-brand-foreground';
+        return 'bg-highlight hover:bg-highlight text-tertiary-foreground min-w-[6.25rem] text-center block';
       default: // PENDENTE ou AGUARDANDO
-        return 'bg-highlight/30 hover:bg-highlight/30 text-highlight min-w-[6.25rem] text-center block';
+        return 'bg-highlight/50 hover:bg-highlight/50 text-tertiary-foreground min-w-[6.25rem] text-center block';
     }
   };
 
@@ -315,20 +315,20 @@ export default function PainelPage() {
                   >
                     <CartesianGrid
                       strokeDasharray='3 3'
-                      stroke='#0D161B'
+                      stroke='hsl(var(--foreground))'
                     />
                     <XAxis
                       dataKey='name'
-                      stroke='#FFFFFF'
+                      stroke='hsl(var(--foreground))'
                       fontSize={12}
                     />
                     <YAxis
-                      stroke='#FFFFFF'
+                      stroke='hsl(var(--foreground))'
                       fontSize={12}
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#00111a',
+                        backgroundColor: '#1a0000',
                         borderRadius: 4,
                       }}
                       labelStyle={{ color: '#FFFFFF' }}

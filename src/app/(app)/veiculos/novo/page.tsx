@@ -27,7 +27,13 @@ import { LoadingButton } from '@/components/LoadingButton';
 import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 const vehicleSchema = z.object({
-  clientId: z.string().uuid({ message: 'Cliente é obrigatório' }),
+  clientId: z
+    .string({
+      required_error: 'Cliente é obrigatório',
+      invalid_type_error: 'Valor inválido',
+    })
+    .nonempty('Cliente é obrigatório')
+    .min(1, 'Cliente é obrigatório'),
   plate: z
     .string()
     .min(7, 'Placa inválida')

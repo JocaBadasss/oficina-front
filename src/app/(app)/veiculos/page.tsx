@@ -65,11 +65,13 @@ export default function VeiculosPage() {
   }, []);
 
   const filtered = vehicles.filter((vehicle) => {
+    const searchLower = search.toLowerCase();
+
     return (
-      vehicle.plate.toLowerCase().includes(search.toLowerCase()) ||
-      vehicle.model.toLowerCase().includes(search.toLowerCase()) ||
-      vehicle.brand.toLowerCase().includes(search.toLowerCase()) ||
-      vehicle.client?.name.toLowerCase().includes(search.toLowerCase())
+      vehicle.plate?.toLowerCase().includes(searchLower) ||
+      vehicle.model?.toLowerCase().includes(searchLower) ||
+      vehicle.brand?.toLowerCase().includes(searchLower) ||
+      vehicle.client?.name?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -92,8 +94,8 @@ export default function VeiculosPage() {
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 items-start'>
           <div className='sm:col-span-1 xl:col-span-2'>
-            <div className='bg-muted rounded-lg p-6 space-y-4'>
-              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background'>
+            <div className='bg-muted rounded-lg p-6 space-y-4 border borde-border'>
+              <div className='flex items-center gap-2 border border-border rounded-md px-3 py-2 bg-background '>
                 <Search
                   size={16}
                   className='text-subtle-foreground'
@@ -197,7 +199,7 @@ export default function VeiculosPage() {
             </div>
           </div>
 
-          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44'>
+          <div className='bg-muted rounded-lg p-4 sm:p-6 flex flex-col justify-between items-center relative overflow-hidden min-h-44 border borde-border'>
             <div className='w-full text-center'>
               <h2 className='text-sm text-subtle-foreground uppercase tracking-wide'>
                 Veículos Cadastrados

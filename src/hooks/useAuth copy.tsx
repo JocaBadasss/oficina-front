@@ -71,6 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
+    // 1) Se estivermos em /login, não tentamos buscar user
+    //18/06 mexi nisso chat acesso publico e subdomnio
+    // if (pathname === '/login') {
+    //   setIsLoading(false); // marcamos que já “carregamos” (mesmo sem buscar)
+    //   setHasFetchedUser(true); // sinalizamos que o fetch já foi tentado
+    //   return; // saímos do efeito
+    // }
+
     const PUBLIC_PATHS = ['/login', '/acompanhamento'];
 
     if (PUBLIC_PATHS.some((publicPath) => pathname.startsWith(publicPath))) {
@@ -85,19 +93,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // 3) Fazemos a chamada real à API
     api
-      .get<User>('/users/me', { withRefresh: true })
+      .get<User>('/users/me')
       .then((res) => {
         if (isMounted) setUser(res.data); // se completou, armazenamos o user
       })
-      .catch((error) => {
-        if (!isMounted) return;
-
-        const shouldSignOut =
-          error?.response?.status === 401 && !error?.config?.withRefresh;
-
-        if (shouldSignOut) {
-          setUser(null);
-          signOut();
+      .catch(() => {
+        if (isMounted) {
+          setUser(null); // se falhou, limpamos o user
+          signOut(); // e executamos o logout (redirect + toast)
         }
       })
       .finally(() => {
@@ -110,6 +113,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isMounted = false;
     };
   }, [pathname, signOut]);
+
+  // useEffect(() => {
+  //   setIsLoading(false);
+  //   setHasFetchedUser(true);
+  // }, []);
 
   return (
     <AuthContext.Provider

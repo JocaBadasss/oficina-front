@@ -22,10 +22,17 @@ import { useThemeHintPopover } from '@/hooks/useThemeHintPopover';
 
 const navItems = [
   { href: '/painel', icon: Home, label: 'Painel' },
+
   { href: '/clientes', icon: Users, label: 'Clientes' },
   { href: '/veiculos', icon: Truck, label: 'Veículos' },
   { href: '/ordens', icon: Wrench, label: 'Ordens' },
   { href: '/agendamentos', icon: CalendarClock, label: 'Agendamentos' },
+  {
+    href: '/novo-atendimento',
+    icon: UserPlus,
+    label: 'Novo Atendimento',
+    isNewOrder: true,
+  },
 ];
 
 export function Aside() {
@@ -59,7 +66,7 @@ export function Aside() {
 
         <nav className='flex flex-col justify-between h-full text-foreground'>
           <div className='flex flex-col gap-4'>
-            {navItems.map(({ href, icon: Icon, label }) => {
+            {navItems.map(({ href, icon: Icon, label, isNewOrder }) => {
               const isActive = pathname === href;
               return (
                 <Link
@@ -69,7 +76,7 @@ export function Aside() {
                     isActive
                       ? 'text-tertiary'
                       : 'text-foreground hover:text-tertiary'
-                  }`}
+                  }  ${isNewOrder && 'text-secondary-highlight'}`}
                 >
                   <Icon size={16} /> {label}
                 </Link>

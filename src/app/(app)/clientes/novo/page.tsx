@@ -11,6 +11,7 @@ import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
 import { formatCpfCnpjInput, formatPhoneInput } from '@/utils/helpers/clients';
 import { LoadingButton } from '@/components/LoadingButton';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 const clientSchema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -59,11 +60,7 @@ export default function NovoClientePage() {
       });
       router.push('/clientes');
     } catch (error) {
-      console.error('Erro ao criar cliente:', error);
-      toast({
-        title: 'Erro ao criar cliente.',
-        variant: 'destructive',
-      });
+      handleAxiosError(error, 'Erro ao cadastrar cliente');
     } finally {
       setIsSubmitting(false);
     }

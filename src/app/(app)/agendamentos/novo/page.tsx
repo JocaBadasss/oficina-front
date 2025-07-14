@@ -12,11 +12,11 @@ import { api } from '@/services/api';
 import { mask } from 'remask';
 import { CheckCircle2 } from 'lucide-react';
 import { AppLayout } from '@/components/AppLayout';
-import { AxiosError } from 'axios';
 import { PageHeader } from '@/components/PageHeader';
 import { smartFormatPlate } from '@/utils/helpers/vehicles';
 import { LoadingButton } from '@/components/LoadingButton';
 import { CalendarPicker } from '@/components/ui/CalendarPicker';
+import { handleAxiosError } from '@/utils/Axios/handleAxiosErrors';
 
 const schema = z.object({
   name: z.string().min(1, 'Nome é obrigatório'),
@@ -51,17 +51,6 @@ const schema = z.object({
   time: z.string().min(1, 'Escolha um horário'),
   notes: z.string().optional(),
 });
-
-interface ValidationErrorResponse {
-  statusCode: number;
-  code: string;
-  message:
-    | string
-    | {
-        code: string;
-        message: string[];
-      };
-}
 
 type FormData = z.infer<typeof schema>;
 
@@ -159,22 +148,9 @@ export default function NovoAgendamentoPage() {
       setShowSuccess(true);
       setTimeout(() => router.push('/agendamentos'), 2000);
     } catch (err) {
-      const axiosError = err as AxiosError;
-      const errorData = axiosError.response?.data as ValidationErrorResponse;
-
-      let errorMessage = 'Erro ao criar agendamento';
-
-      if (typeof errorData?.message === 'string') {
-        errorMessage = errorData.message;
-      } else if (Array.isArray(errorData?.message?.message)) {
-        errorMessage = errorData.message.message.join(', ');
-      }
-
-      toast({
-        title: 'Erro ao criar agendamento',
-        description: errorMessage,
-        variant: 'destructive',
-      });
+      console.log(err);
+      handleAxiosError(err, 'Erro ao criar agendamento');
+      setIsSubmitting(false);
     }
   }
 

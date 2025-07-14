@@ -3,58 +3,77 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { login } from '@/services/authService';
 import Image from 'next/image';
 import { toast } from '@/components/ui/use-toast';
-import { extractErrorMessage } from '@/utils/Axios/extractErrorMessage';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useState } from 'react';
-
-export const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve conter pelo menos 6 caracteres'),
-});
-
-export type LoginSchema = z.infer<typeof loginSchema>;
+import { api } from '@/services/api';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [generalError, setGeneralError] = useState('');
+  // const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  async function onSubmit(data: LoginSchema) {
-    setGeneralError(''); // limpa erro geral antes
-    try {
-      await login(data);
-      router.refresh();
-      router.replace('/painel');
-    } catch (error) {
-      const message = extractErrorMessage(error);
+  //ORIGINAL AQUI ORIGINAL AQUI ORIGINAL AQUI
+  // async function handleSubmit(e: React.FormEvent) {
+  //   e.preventDefault();
+  //   setLoading(true);
 
-      if (message === 'Credenciais inválidas') {
-        setGeneralError('Email ou senha incorretos.');
-      } else {
-        toast({
-          title: 'Erro ao logar',
-          description: message,
-          variant: 'destructive',
-        });
+  //   try {
+  //     // 1) Faz o login e recebe os cookies
+  //     await login({ email, password });
+
+  //     // 2) REFRESHA o App Router inteiro, reiniciando o AuthProvider
+  //     router.refresh();
+
+  //     // 3) Aí sim, vai pro painel
+  //     window.location.href = '/painel';
+  //   } catch {
+  //     toast({ title: 'Erro ao logar', variant: 'destructive' });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    async function waitForUser(retries = 5, delay = 1000): Promise<void> {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          await api.get('/users/me');
+          return; // sucesso
+        } catch (error) {
+          console.log(`Tentativa ${attempt} de /users/me falhou...`);
+          if (attempt === retries) throw error;
+          await new Promise((res) => setTimeout(res, delay));
+        }
       }
+    }
+
+    try {
+      // 1. Faz login e salva os tokens
+      await login({ email, password });
+
+      // 2. Espera o backend acordar e o /me responder
+      await waitForUser();
+
+      // 3. Redireciona quando tudo estiver OK
+      window.location.href = '/painel';
+    } catch {
+      toast({ title: 'Erro ao logar', variant: 'destructive' });
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div className='flex flex-col md:flex-row h-screen overflow-hidden'>
+      {/* Lado Esquerdo (Desktop) */}
       <div className='hidden md:flex md:w-1/2 items-center justify-center bg-background'>
         <div className='text-center'>
           <div className='flex items-center justify-center mb-4'>
@@ -65,15 +84,18 @@ export default function LoginPage() {
               width={48}
               height={48}
             />
-            <h1 className='text-3xl font-bold text-brand'>OFICINA</h1>
+
+            <h1 className='text-3xl font-bold text-brand '> OFICINA</h1>
           </div>
+          {/* Espaço pra imagem ou logo futuramente */}
           <p className='text-muted-foreground text-lg'>
             Confiança e qualidade no serviço.
           </p>
         </div>
       </div>
 
-      <div className='flex-1 flex items-center justify-center bg-secondary h-full'>
+      {/* Lado Direito (Formulário) */}
+      <div className='flex-1 flex items-center justify-center bg-secondary  h-full'>
         <div className='w-full max-w-sm px-6 py-8 sm:px-8'>
           <div className='flex items-center justify-center flex-col'>
             <div className='flex items-center justify-center mb-4 md:hidden gap-2'>
@@ -84,7 +106,8 @@ export default function LoginPage() {
                 width={48}
                 height={48}
               />
-              <h1 className='text-3xl font-bold text-primary'>OFICINA</h1>
+
+              <h1 className='text-3xl font-bold text-primary '> OFICINA</h1>
             </div>
             <h2 className='text-2xl font-bold text-center mb-6 text-brand'>
               Faça login
@@ -92,10 +115,9 @@ export default function LoginPage() {
           </div>
 
           <form
-            onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col gap-4'
+            onSubmit={handleSubmit}
           >
-            {/* Email */}
             <div className='grid w-full items-center gap-1.5'>
               <Label
                 htmlFor='email'
@@ -105,17 +127,15 @@ export default function LoginPage() {
               </Label>
               <Input
                 id='email'
-                type='text'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder='seuemail@exemplo.com'
                 className='bg-muted border border-border text-foreground mt-1 placeholder:text-placeholder'
-                {...register('email')}
+                required
               />
-              <p className='text-destructive text-xs h-[0.75rem] mt-1'>
-                {errors.email?.message || '\u00A0'}
-              </p>
             </div>
 
-            {/* Senha */}
             <div className='grid w-full items-center gap-1.5'>
               <Label htmlFor='password'>Senha</Label>
               <Input
@@ -123,24 +143,19 @@ export default function LoginPage() {
                 type='password'
                 placeholder='************'
                 className='bg-muted border border-border text-foreground mt-1 placeholder:text-placeholder'
-                {...register('password')}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              <p className='text-destructive text-xs h-[0.75rem] mt-1'>
-                {errors.password?.message || '\u00A0'}
-              </p>
             </div>
 
             <Button
               type='submit'
-              disabled={isSubmitting}
-              className='w-full bg-brand text-primaryForeground hover:bg-brand/90 '
+              disabled={loading}
+              className='w-full bg-brand text-primaryForeground hover:bg-brand/90 mt-4'
             >
-              {isSubmitting ? 'Entrando...' : 'Entrar'}
+              {loading ? 'Entrando...' : 'Entrar'}
             </Button>
-
-            <p className='text-destructive text-sm text-center mt-2 h-[1.25rem]'>
-              {generalError}
-            </p>
           </form>
 
           <p className='text-center text-sm text-muted-foreground hover:underline cursor-pointer pt-4'>

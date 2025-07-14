@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { mask } from 'remask';
 import { Plus, Search } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { api } from '@/services/api';
 import Link from 'next/link';
 import { User, Phone, Calendar, ArrowRight } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader';
 import { AppLayout } from '@/components/AppLayout';
+import * as Skeletons from '@/components/Skeletons'; // ✅ novo import
 
 interface Client {
   id: string;
@@ -28,7 +28,6 @@ export default function ClientesPage() {
       try {
         const response = await api.get<Client[]>('/clients');
         setClients(response.data);
-        
       } catch (error) {
         console.error('Erro ao buscar clientes:', error);
       } finally {
@@ -93,11 +92,11 @@ export default function ClientesPage() {
               </h2>
 
               {loading ? (
-                <div className='space-y-2'>
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                </div>
+                <>
+                  <Skeletons.CardSkeleton />
+                  <Skeletons.CardSkeleton />
+                  <Skeletons.CardSkeleton />
+                </>
               ) : filteredClients.length === 0 ? (
                 <p className='text-subtle-foreground text-sm'>
                   Nenhum cliente encontrado.
@@ -184,7 +183,7 @@ export default function ClientesPage() {
                 Clientes Cadastrados
               </h2>
               {loading ? (
-                <Skeleton className='h-8 w-16 mt-2 mx-auto' />
+                <Skeletons.CardSkeleton />
               ) : (
                 <p className='text-5xl sm:text-6xl font-bold text-primary mt-1'>
                   {clients.length}

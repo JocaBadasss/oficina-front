@@ -9,10 +9,10 @@ import { AppLayout } from '@/components/AppLayout';
 import { PageHeader } from '@/components/PageHeader';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
+
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, FileText, Users } from 'lucide-react';
-import { useMediaQuery } from 'usehooks-ts'; // 👈 topo do arquivo
+import { useMediaQuery } from 'usehooks-ts';
 import {
   ResponsiveContainer,
   LineChart,
@@ -28,6 +28,7 @@ import {
 import { format } from 'date-fns';
 import { formatPlate } from '@/utils/helpers/vehicles';
 import { ptBR } from 'date-fns/locale';
+import { CardSkeleton } from '@/components/Skeletons';
 
 export default function PainelPage() {
   const {
@@ -51,7 +52,7 @@ export default function PainelPage() {
 
   const COLORS = ['#F4B400', '#8884d8'];
 
-  const isMobile = useMediaQuery('(max-width: 639px)'); // até sm
+  const isMobile = useMediaQuery('(max-width: 639px)');
 
   const cards = [
     {
@@ -74,7 +75,6 @@ export default function PainelPage() {
     },
   ];
 
-  // Atualiza mockStatsData
   mockStatsData[0].value = totalAppointmentsToday;
   mockStatsData[1].value = totalOpenOrders;
   mockStatsData[2].value = totalClients;
@@ -87,11 +87,12 @@ export default function PainelPage() {
   const getBadgeClass = (status: string) => {
     switch (status) {
       case 'FINALIZADO':
-        return 'bg-TINTS_MINT_100 text-DARK_100';
+        return 'bg-success text-success-foreground min-w-[6.25rem] text-center block';
       case 'EM_ANDAMENTO':
-        return 'bg-highlight hover:bg-highlight text-tertiary-foreground min-w-[6.25rem] text-center block';
-      default: // PENDENTE ou AGUARDANDO
-        return 'bg-highlight/50 hover:bg-highlight/50 text-tertiary-foreground min-w-[6.25rem] text-center block';
+        return 'bg-tertiary text-tertiary-foreground min-w-[6.25rem] text-center block';
+      case 'AGUARDANDO':
+      default:
+        return 'bg-border text-foreground min-w-[6.25rem] text-center block';
     }
   };
 
@@ -109,36 +110,40 @@ export default function PainelPage() {
         />
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 h-full'>
-          {/* Cards e Listagens */}
           <div className='xl:col-span-2 space-y-6 h-full'>
-            {/* Cards de Estatísticas */}
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full'>
-              {cards.map(({ label, value, Icon, href }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  className='h-full'
-                >
-                  <Card className=' rounded-xl p-6 shadow-sm hover:bg-card-hover transition cursor-pointer h-full'>
-                    <div className='flex items-center gap-4 h-full'>
-                      <Icon className='w-6 h-6 text-highlight' />
-                      <div className='flex flex-col justify-center flex-1'>
-                        <div className='text-2xl lg:text-2xl md:text-xl font-bold text-foreground'>
-                          {value}
-                        </div>
-                        <div className='text-sm text-muted-foreground truncate'>
-                          {label}
+              {loading ? (
+                <>
+                  <CardSkeleton />
+                  <CardSkeleton />
+                  <CardSkeleton />
+                </>
+              ) : (
+                cards.map(({ label, value, Icon, href }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    className='h-full'
+                  >
+                    <Card className=' rounded-xl p-6 shadow-sm hover:bg-card-hover transition cursor-pointer h-full'>
+                      <div className='flex items-center gap-4 h-full'>
+                        <Icon className='w-6 h-6 text-highlight' />
+                        <div className='flex flex-col justify-center flex-1'>
+                          <div className='text-2xl lg:text-2xl md:text-xl font-bold text-foreground'>
+                            {value}
+                          </div>
+                          <div className='text-sm text-muted-foreground truncate'>
+                            {label}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
+                    </Card>
+                  </Link>
+                ))
+              )}
             </div>
 
-            {/* Listagens */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-              {/* Próximos Agendamentos */}
               <Card className=' rounded-xl overflow-hidden'>
                 <div className='bg-background p-4 border-b border-border'>
                   <h3 className='text-lg font-semibold text-foreground'>
@@ -147,10 +152,9 @@ export default function PainelPage() {
                 </div>
                 <ScrollArea className='h-60 '>
                   {loading ? (
-                    <div className='p-4 space-y-2'>
-                      <Skeleton className='h-4 w-full' />
-                      <Skeleton className='h-4 w-full' />
-                      <Skeleton className='h-4 w-full' />
+                    <div className='p-4 space-y-4'>
+                      <CardSkeleton />
+                      <CardSkeleton />
                     </div>
                   ) : appointments.length === 0 ? (
                     <div className='p-6 text-center text-sm text-subtle-foreground'>
@@ -194,7 +198,6 @@ export default function PainelPage() {
                 </ScrollArea>
               </Card>
 
-              {/* Ordens em Andamento */}
               <Card className=' rounded-xl overflow-hidden'>
                 <div className='bg-background p-4 border-b border-border'>
                   <h3 className='text-lg font-semibold text-foreground'>
@@ -203,10 +206,9 @@ export default function PainelPage() {
                 </div>
                 <ScrollArea className='h-60'>
                   {loading ? (
-                    <div className='p-4 space-y-2'>
-                      <Skeleton className='h-4 w-full' />
-                      <Skeleton className='h-4 w-full' />
-                      <Skeleton className='h-4 w-full' />
+                    <div className='p-4 space-y-4'>
+                      <CardSkeleton />
+                      <CardSkeleton />
                     </div>
                   ) : openOrders.length === 0 ? (
                     <div className='p-6 text-center text-sm text-subtle-foreground'>
@@ -249,16 +251,12 @@ export default function PainelPage() {
             </div>
           </div>
 
-          {/* Gráficos */}
           <div className='space-y-6 h-full flex flex-col justify-between'>
-            {/* Pizza */}
             <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between '>
               <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Ordens Abertas vs Finalizadas
               </h3>
               <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>
-                {' '}
-                {/* ✅ Altura Fixa no Mobile */}
                 <ResponsiveContainer
                   width='100%'
                   height='100%'
@@ -293,14 +291,11 @@ export default function PainelPage() {
               </div>
             </Card>
 
-            {/* Linha */}
             <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between  '>
               <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Evolução Mensal de Ordens
               </h3>
               <div className='w-full h-[12.5rem] sm:h-[13.75rem] md:h-[13.75rem] lg:h-full'>
-                {' '}
-                {/* ✅ Altura Fixa no Mobile */}
                 <ResponsiveContainer
                   width='100%'
                   height='100%'

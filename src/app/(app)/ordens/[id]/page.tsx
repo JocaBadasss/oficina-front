@@ -19,6 +19,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { FinalizarAtendimentoModal } from '@/components/FinalizeOrderModal';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 import 'yet-another-react-lightbox/styles.css';
+
 import {
   AlertCircle,
   Notebook,
@@ -31,6 +32,7 @@ import {
   Link2,
 } from 'lucide-react';
 import { EditConclusaoModal } from '@/components/EditConclusionModal';
+import { OrderStatusPopover } from '@/components/OrderStatusPopover';
 
 interface PhotoDTO {
   id: string;
@@ -65,11 +67,16 @@ interface Order {
   photos: PhotoDTO[];
 }
 
-const statusLabels: Record<string, string> = {
-  AGUARDANDO: 'Aguardando',
-  EM_ANDAMENTO: 'Em andamento',
-  FINALIZADO: 'Finalizado',
-};
+// const statusOptions = [
+//   { value: 'AGUARDANDO', label: 'Aguardando' },
+//   { value: 'EM_ANDAMENTO', label: 'Em andamento' },
+// ];
+
+// const statusLabels: Record<string, string> = {
+//   AGUARDANDO: 'Aguardando',
+//   EM_ANDAMENTO: 'Em andamento',
+//   FINALIZADO: 'Finalizado',
+// };
 
 const fuelLabels: Record<string, string> = {
   RESERVA: 'Reserva',
@@ -84,6 +91,17 @@ export default function DetalhesOrdemPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  async function updateOrderStatus(newStatus: string) {
+    try {
+      await api.patch(`/service-orders/${order?.id}`, {
+        status: newStatus,
+      });
+      setOrder((prev) => prev && { ...prev, status: newStatus });
+    } catch (error) {
+      handleAxiosError(error);
+    }
+  }
 
   useEffect(() => {
     async function fetchOrder() {
@@ -179,8 +197,8 @@ export default function DetalhesOrdemPage() {
                 </div>
 
                 {/* Cliente */}
-                <div className='bg-background rounded-md p-4 flex flex-col items-start'>
-                  <div className='flex items-center gap-2'>
+                <div className='bg-background rounded-md p-4 flex flex-col items-start truncate'>
+                  <div className='flex items-center gap-2 '>
                     <User className='w-5 h-5 text-secondary-highlight' />
                     <span className='text-xs uppercase text-subtle-foreground'>
                       Cliente
@@ -188,7 +206,7 @@ export default function DetalhesOrdemPage() {
                   </div>
                   <Link
                     href={`/clientes/${order.vehicle.client.id}`}
-                    className='mt-1 text-lg font-medium text-tertiary hover:underline'
+                    className='mt-1 text-lg font-medium text-tertiary hover:underline '
                   >
                     {order.vehicle.client.name}
                   </Link>
@@ -202,15 +220,20 @@ export default function DetalhesOrdemPage() {
                       Status
                     </span>
                   </div>
-                  <span
-                    className={`mt-2 inline-flex items-center px-2 py-1 text-xs rounded ${
-                      order.status === 'FINALIZADO'
-                        ? 'bg-success text-success-foreground'
-                        : 'bg-tertiary text-tertiary-foreground'
-                    }`}
-                  >
-                    {statusLabels[order.status] || order.status}
-                  </span>
+
+                  <div className='mt-1'>
+                    <OrderStatusPopover
+                      status={
+                        order.status as
+                          | 'AGUARDANDO'
+                          | 'EM_ANDAMENTO'
+                          | 'FINALIZADO'
+                      }
+                      onChange={async (newStatus) => {
+                        await updateOrderStatus(newStatus);
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -340,7 +363,7 @@ export default function DetalhesOrdemPage() {
                   />
                 </div>
 
-                {/* Conclusão (se FINALIZADO) */}
+                {/* Conclusão (se iIZADO) */}
                 {order.status === 'FINALIZADO' && order.report?.description && (
                   <div className='bg-background rounded-lg shadow p-6 flex items-center justify-between'>
                     <div className='flex-1'>

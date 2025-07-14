@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 
 import { api } from '@/services/api';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -14,6 +13,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { formatVehicleLine } from '@/utils/helpers/vehicles';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { StatusFilterComponent } from '@/components/ui/statusFilter';
+import * as Skeletons from '@/components/Skeletons'; // ✅ atualizado
 
 interface Order {
   id: string;
@@ -127,11 +127,11 @@ export default function OrdensPage() {
               </h2>
 
               {loading ? (
-                <div className='space-y-2'>
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                  <Skeleton className='h-6 w-full' />
-                </div>
+                <>
+                  <Skeletons.CardSkeleton />
+                  <Skeletons.CardSkeleton />
+                  <Skeletons.CardSkeleton />
+                </>
               ) : filteredOrders.length === 0 ? (
                 <p className='text-subtle-foreground text-sm'>
                   Nenhuma ordem encontrada.
@@ -161,12 +161,14 @@ export default function OrdensPage() {
                             )}
                           </div>
                           <span
-                            className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap
-                          ${
-                            order.status === 'FINALIZADO'
-                              ? 'bg-success text-success-foreground'
-                              : 'bg-tertiary text-tertiary-foreground'
-                          }`}
+                            className={`text-[0.625rem] font-semibold px-2 py-1 rounded uppercase whitespace-nowrap min-w-24 text-center
+                              ${
+                                order.status === 'FINALIZADO'
+                                  ? 'bg-success text-success-foreground'
+                                  : order.status === 'EM_ANDAMENTO'
+                                  ? 'bg-tertiary text-tertiary-foreground'
+                                  : 'bg-border text-foreground'
+                              }`}
                           >
                             {statusLabels[order.status] || order.status}
                           </span>
@@ -245,7 +247,7 @@ export default function OrdensPage() {
                 Ordens Criadas
               </h2>
               {loading ? (
-                <Skeleton className='h-8 w-16 mt-2 mx-auto' />
+                <Skeletons.CardSkeleton />
               ) : (
                 <p className='text-5xl sm:text-6xl font-bold text-primary mt-1'>
                   {orders.length}

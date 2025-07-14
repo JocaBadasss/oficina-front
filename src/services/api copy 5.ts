@@ -1,13 +1,6 @@
 // src/services/api.ts
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-declare module 'axios' {
-  export interface AxiosRequestConfig {
-    withRefresh?: boolean;
-  }
-}
-
-
 const REFRESH_PATH = '/sessions/refresh';
 
 export const api = axios.create({
@@ -61,7 +54,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && req.withRefresh && !req._retry) {
+    if (error.response?.status === 401 && !req._retry) {
       req._retry = true;
 
       if (isRefreshing) {

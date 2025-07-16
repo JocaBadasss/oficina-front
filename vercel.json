@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rechcaminhoes.com.br"
+        }
+      ],
+      "destination": "https://rechcaminhoes.com.br/:1",
+      "permanent": true
+    }
+  ]
+}

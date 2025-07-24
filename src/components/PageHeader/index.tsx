@@ -11,8 +11,6 @@ interface PageHeaderProps {
   editHref?: string;
   showEdit?: boolean;
   rightSlot?: React.ReactNode;
-  userName?: string;
-  onLogout?: () => void;
 }
 
 export function PageHeader({
@@ -23,12 +21,10 @@ export function PageHeader({
   editHref,
   showEdit = false,
   rightSlot,
-  userName,
-  onLogout,
+  
 }: PageHeaderProps) {
   return (
-    <header className='w-full px-4 py-4 md:px-6 md:py-6 border-b border-border bg-app-background flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap'>
-      {/* Título e subtítulo */}
+    <header className='w-full px-4  md:px-6  pb-6 border-b border-border bg-app-background flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between flex-wrap'>
       <div>
         <h1 className='text-2xl sm:text-3xl font-bold font-roboto'>{title}</h1>
         {subtitle && (
@@ -38,40 +34,27 @@ export function PageHeader({
         )}
       </div>
 
-      {/* Painel do usuário */}
-      {userName && onLogout ? (
-        <div className='flex items-center gap-2 md:gap-4 w-full sm:w-auto justify-between sm:justify-end'>
-          <span className='text-sm truncate max-w-[160px] md:max-w-none'>
-            Olá, {userName}
-          </span>
-          <button
-            onClick={onLogout}
-            className='bg-tertiary hover:bg-[hsl(var(--button-hover))] text-muted-foreground font-semibold px-4 py-2 rounded transition text-sm md:text-base'
+      <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
+        {!isDetails && rightSlot}
+
+        {isDetails && showEdit && editHref && (
+          <Link
+            href={editHref}
+            className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[hsl(var(--button-hover))] transition flex items-center justify-center gap-2'
           >
-            Logout
-          </button>
-        </div>
-      ) : (
-        <div className='flex flex-col sm:flex-row gap-2 w-full sm:w-auto'>
-          {!isDetails && rightSlot}
-          {isDetails && showEdit && editHref && (
-            <Link
-              href={editHref}
-              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[hsl(var(--button-hover))] transition flex items-center justify-center gap-2'
-            >
-              <Pencil size={16} /> Editar
-            </Link>
-          )}
-          {backHref && (
-            <Link
-              href={backHref}
-              className='bg-transparent border border-tertiary text-tertiary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-tertiary/10 transition flex items-center justify-center gap-2'
-            >
-              <ArrowLeft size={16} /> Voltar
-            </Link>
-          )}
-        </div>
-      )}
+            <Pencil size={16} /> Editar
+          </Link>
+        )}
+
+        {backHref && (
+          <Link
+            href={backHref}
+            className='bg-transparent border border-tertiary text-tertiary px-4 py-2 rounded-lg text-sm font-semibold hover:bg-tertiary/10 transition flex items-center justify-center gap-2'
+          >
+            <ArrowLeft size={16} /> Voltar
+          </Link>
+        )}
+      </div>
     </header>
   );
 }

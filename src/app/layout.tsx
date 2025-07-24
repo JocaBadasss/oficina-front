@@ -4,6 +4,9 @@ import './globals.css';
 import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { SocketBadgeProvider } from '@/contexts/SocketBadgeContext';
+import { SocketListener } from '@/components/SocketListener';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -39,8 +42,11 @@ export default function RootLayout({
           enableSystem
         >
           <AuthProvider>
-            {children}
-            <Toaster />
+            <SocketBadgeProvider>
+              <SocketListener />
+              <TooltipProvider>{children}</TooltipProvider>
+              <Toaster />
+            </SocketBadgeProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

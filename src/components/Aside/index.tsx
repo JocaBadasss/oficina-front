@@ -19,6 +19,8 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { ThemeTogglePopover } from '../ui/ThemeTogglePopover';
 import { useThemeHintPopover } from '@/hooks/useThemeHintPopover';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { useAuth } from '@/hooks/useAuth';
 
 const navItems = [
   { href: '/painel', icon: Home, label: 'Painel' },
@@ -39,6 +41,7 @@ export function Aside() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { user} = useAuth();
 
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
   const { showPopover, dismissPopover, isMobile } = useThemeHintPopover({
@@ -50,21 +53,26 @@ export function Aside() {
   return (
     <>
       {/* Desktop Aside */}
-      <aside className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted p-6 space-y-6 pb-12 z-50 border borde-border'>
-        <Link
-          href='/painel'
-          className='text-2xl font-bold text-brand flex items-center gap-2 hover:opacity-90'
-        >
-          <Image
-            src='/gearIcon.svg'
-            alt='Ícone de engrenagem'
-            width={32}
-            height={32}
-          />
-          <span>OFICINA</span>
-        </Link>
+      <aside className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted  z-50 border-r border-border'>
+        {/* Header fixo com altura igual à anterior */}
+        <div className='h-[3.9rem] px-6 flex items-center border-b border-border bg-muted'>
+          <Link
+            href='/painel'
+            className='w-full text-2xl font-bold text-brand flex items-center gap-2 hover:opacity-90 '
+          >
+            <Image
+              src='/gearIcon.svg'
+              alt='Ícone de engrenagem'
+              width={32}
+              height={32}
+              className='block'
+            />
+            <span className='leading-none '>OFICINA</span>
+          </Link>
+        </div>
 
-        <nav className='flex flex-col justify-between h-full text-foreground'>
+        {/* Conteúdo com padding normal */}
+        <div className='flex flex-col justify-between h-full text-foreground p-6 space-y-6'>
           <div className='flex flex-col gap-4'>
             {navItems.map(({ href, icon: Icon, label, isNewOrder }) => {
               const isActive = pathname === href;
@@ -76,7 +84,7 @@ export function Aside() {
                     isActive
                       ? 'text-tertiary'
                       : 'text-foreground hover:text-tertiary'
-                  }  ${isNewOrder && 'text-secondary-highlight'}`}
+                  } ${isNewOrder && 'text-secondary-highlight'}`}
                 >
                   <Icon size={16} /> {label}
                 </Link>
@@ -84,9 +92,8 @@ export function Aside() {
             })}
           </div>
 
-          {/* Preferências */}
-          {/* Preferências fixas no final do aside */}
-          <div className='mt-auto pt-6 border-t border-border flex flex-col gap-2'>
+          {/* Preferências no final do aside */}
+          <div className='mt-auto pt-6 border-t border-border flex flex-col gap-4'>
             <ThemeTogglePopover
               showPopover={showPopover}
               dismissPopover={dismissPopover}
@@ -100,8 +107,37 @@ export function Aside() {
             >
               <Wrench size={16} /> Configurações
             </button>
+
+            <div className='pt-4 border-t border-border flex items-center justify-between px-1'>
+              <div className='flex items-center gap-3 min-w-0'>
+                <Avatar className='h-8 w-8'>
+                  <AvatarImage
+                    src='/avatar.png'
+                    alt='@user'
+                  />
+                  <AvatarFallback>
+                    {user?.name?.slice(0, 2).toUpperCase() || 'AD'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className='flex flex-col min-w-0'>
+                  <span className='text-sm font-medium text-foreground truncate'>
+                    {user?.name || 'Usuário'}
+                  </span>
+                  <span className='text-xs text-muted-foreground truncate'>
+                    {user?.email || 'email@oficina.com.br'}
+                  </span>
+                </div>
+              </div>
+              <button
+                type='button'
+                className='text-muted-foreground hover:text-foreground transition'
+                onClick={() => {}}
+              >
+                <MoreHorizontal size={18} />
+              </button>
+            </div>
           </div>
-        </nav>
+        </div>
       </aside>
 
       {/* Mobile BottomNav */}
@@ -151,7 +187,7 @@ export function Aside() {
               </button>
 
               {open && (
-                <div className='absolute bottom-12 right-0 ml-3 bg-muted text-foreground shadow-lg rounded-md overflow-hidden z-50 w-40 border border-border'>
+                <div className='absolute bottom-12 right-0 ml-3 bg-muted text-foreground shadow-lg rounded-md overflow-hidden z-50 min-w-[12rem] max-w-[calc(100vw-2rem)] w-fit border border-border'>
                   {[navItems[4], navItems[2]].map(
                     ({ href, icon: Icon, label }) => (
                       <Link
@@ -182,6 +218,26 @@ export function Aside() {
                   >
                     <Settings size={16} /> Configurações
                   </button>
+
+                  <div className='border-t border-border px-4 py-3 flex items-center gap-3 min-w-0'>
+                    <Avatar className='h-7 w-7'>
+                      <AvatarImage
+                        src='/avatar.png'
+                        alt='@user'
+                      />
+                      <AvatarFallback>
+                        {user?.name?.slice(0, 2).toUpperCase() || 'AD'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className='flex flex-col min-w-0'>
+                      <span className='text-sm font-medium leading-none truncate'>
+                        {user?.name || 'Usuário'}
+                      </span>
+                      <span className='text-xs text-muted-foreground truncate'>
+                        {user?.email || 'email@oficina.com.br'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

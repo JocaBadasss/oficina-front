@@ -37,7 +37,7 @@ import { OrderStatusPopover } from '@/components/OrderStatusPopover';
 interface PhotoDTO {
   id: string;
   filename: string;
-  url: string;
+  publicId: string;
 }
 interface Order {
   id: string;
@@ -66,17 +66,6 @@ interface Order {
   report?: { description: string };
   photos: PhotoDTO[];
 }
-
-// const statusOptions = [
-//   { value: 'AGUARDANDO', label: 'Aguardando' },
-//   { value: 'EM_ANDAMENTO', label: 'Em andamento' },
-// ];
-
-// const statusLabels: Record<string, string> = {
-//   AGUARDANDO: 'Aguardando',
-//   EM_ANDAMENTO: 'Em andamento',
-//   FINALIZADO: 'Finalizado',
-// };
 
 const fuelLabels: Record<string, string> = {
   RESERVA: 'Reserva',
@@ -342,7 +331,7 @@ export default function DetalhesOrdemPage() {
                         onClick={() => setLightboxIndex(idx)}
                       >
                         <Image
-                          src={photo.url}
+                          src={`https://rech.gumlet.io/${photo.publicId}.jpeg`}
                           alt={photo.filename}
                           fill
                           className='object-cover'
@@ -356,7 +345,9 @@ export default function DetalhesOrdemPage() {
                   <Lightbox
                     open={lightboxIndex !== null}
                     close={() => setLightboxIndex(null)}
-                    slides={order.photos.map((photo) => ({ src: photo.url }))}
+                    slides={order.photos.map((photo) => ({
+                      src: `https://rech.gumlet.io/${photo.publicId}.jpeg`,
+                    }))}
                     index={lightboxIndex ?? 0}
                     plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                     carousel={{ finite: true }}

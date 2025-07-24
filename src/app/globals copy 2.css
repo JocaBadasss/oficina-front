@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* globals.css */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d0d; /* ou o fundo padrão do seu app */
+}
+
+@layer base {
+  :root {
+    /* === Fundos principais === */
+    --app-background: 200 100% 3%; /* #000A0F → bg-DARK_400 */
+
+    --background: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --muted: 199 100% 5%; /* #001119 → bg-DARK_700 */
+    --input: 200 48% 10%; /* #0D1D25 → border-DARK_900 > USADO PELO SHADCN PARA AS BORDAS DO INPUT */
+    --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
+    --border-focus: 200 48% 16%; /* #14303D — derivado de --border */
+
+    --card: 201 100% 5%; /* #00111A → bg-DARK_600 */
+    --card-hover: 201 35% 8%; /* mesma cor de --background (DARK_800) */
+
+    --primary: 44 100% 48%; /* #F4B400 > TINTS_PASSION_100 */
+
+    --secondary: 201 100% 5%; /* #00111A → bg-DARK_600 */
+    --secondary-foreground: 0 0% 100%; /* texto no hover */
+
+    --tertiary: 32 96% 64%; /* TINTS_CARROT_100 (#FBA94C) */
+    --tertiary-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+
+    /* === Textos e contrastes === */
+    --foreground: 0 0% 100%; /* #FFFFFF → text-foreground > LIGHT_100 */
+    --muted-foreground: 43 100% 97%; /* #FFFAF1 → text-muted-foreground > LIGHT_200 */
+    --soft-foreground: 240 9% 89%; /* #E1E1E6 > LIGHT_300 */
+    --subtle-foreground: 240 7% 78%; /* #C4C4CC → placeholder > LIGHT_400 > ESTÁ SUBSTITUINDO QUANDO USA-SE LIGHT_500 FORA DE UM PLACEHOLDER */
+    --placeholder: 240 6% 51%; /* #7C7C8A → text-subtle-foreground > LIGHT_500> EXCLUSIVO DE PLACEHOLDER */
+
+    --highlight: 32 96% 64%; /* #FBA94C > TINTS_CARROT_100 */
+    --secondary-highlight: 186 100% 75%; /* #82F3FF → text-secondary-highlight > TINTS_CAKE_200 */
+    --highlight-soft: 32 96% 70%; /* mais clarinho */
+    --highlight-foreground: 0 0% 0%;
+
+    --success: 147 96% 42%; /* #04D361 > TINTS_MINT_100 */
+    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+
+    /* === Marca / Branding === */
+    --brand: 44 100% 48%; /* #F4B400 → bg-brand / text-brand > TINTS_PASSION_100 */
+    --brand-foreground: 192 100% 1%; /* #000000 → text-brand-foreground > DARK_100*/
+
+    /* === Erros / Ações destrutivas === */
+    --destructive: 0 67% 41%; /* #AB222E > TINTS_TOMATO_300 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* === Outros === */
+
+    /* === Popover === */
+    --popover: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --popover-foreground: 0 0% 100%; /* #FFFFFF → text-LIGHT_100 */
+
+    /* === Border (usado em PopoverContent e CommandItem) === */
+    --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
+
+    /* === Command === */
+    --command: 201 35% 8%; /* mesmo fundo do popover */
+    --command-foreground: 0 0% 100%; /* texto padrão */
+    --command-placeholder: 0 0% 77%; /* #C4C4CC → placeholder */
+
+    /* === Highlight (hover) === */
+
+    /* === Accent opcional (ex: botão “novo cliente”) === */
+    --accent: 200 48% 10%; /* #0D1D25 → DARK_900 */
+    --accent-foreground: 0 0% 100%; /* #000A0F > DARK_400 */
+
+    --radius: 0.5rem;
+
+    --hover: 200 48% 10%; /* #0D1D25 → DARK_900 */
+    --button-hover: 32 96% 55%; /* um pouco mais escura que o tertiary (#f49a2e) */
+  }
+
+.light {
+  
+    /* === Fundos principais === */
+    --app-background: 0 0% 98%; /* Um branco muito suave, quase off-white, para o fundo principal da aplicação */
+    --background: 0 0% 96%; /* Um cinza muito claro e neutro para o fundo de seções e cards */
+    --muted: 0 0% 94%; /* Um tom de cinza claro e neutro para elementos secundários, como divisores ou backgrounds de itens desabilitados */
+    --input: 0 0% 92%; /* Um cinza claro e neutro para o fundo de inputs, garantindo visibilidade e contraste com o texto */
+    --border: 0 0% 90%; /* Borda clara e neutra para elementos, mantendo a coerência com o input */
+    --border-focus: 0 0% 80%; /* Uma borda um pouco mais escura e neutra para o estado de foco, indicando interatividade */
+
+    --card: 0 0% 96%; /* Fundo de card claro e neutro, com um leve tom para se destacar do background principal */
+    --card-hover: 0 0% 94%; /* Um cinza neutro um pouco mais escuro para o hover do card, indicando interação sutil */
+
+
+
+
+    --primary: 44 100% 48%; /* Mantém a cor primária (amarelo vibrante), pois funciona bem em ambos os modos */
+
+    --secondary: 0 0% 94%; /* Cor secundária clara e neutra, similar ao --muted, para elementos de destaque secundários */
+    --secondary-foreground: 0 0% 0%; /* Texto preto para garantir contraste em fundos claros */
+
+    --tertiary: 32 96% 64%; /* Mantém a cor terciária (laranja), que também funciona bem em ambos os modos */
+    --tertiary-foreground: 0 0% 0%; /* Texto preto para garantir contraste em fundos claros */
+
+
+
+
+    /* === Textos e contrastes === */
+    --foreground: 0 0% 0%; /* Texto principal preto para alto contraste em fundos claros */
+    --muted-foreground: 0 0% 20%; /* Um cinza escuro neutro para textos secundários, mantendo legibilidade */
+    --soft-foreground: 0 0% 30%; /* Um cinza um pouco mais claro e neutro para textos com menor hierarquia */
+    --subtle-foreground: 0 0% 40%; /* Cinza neutro para placeholders e textos muito sutis */
+    --placeholder: 0 0% 50%; /* Cinza médio neutro para placeholders, garantindo visibilidade sem ser intrusivo */
+
+    --highlight: 32 96% 64%; /* Mantém a cor de destaque */
+    --secondary-highlight: 186 100% 25%; /* Um azul mais escuro para destaque secundário, que se destaca em fundos claros */
+    --highlight-soft: 32 96% 50%; /* Uma versão mais suave da cor de destaque */
+    --highlight-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de destaque */
+
+    --success: 147 96% 42%; /* Mantém a cor de sucesso */
+    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+
+
+
+
+    /* === Marca / Branding === */
+    --brand: 44 100% 48%; /* Mantém a cor da marca */
+    --brand-foreground: 0 0% 100%; /* Texto branco para contraste com a cor da marca */
+
+    /* === Erros / Ações destrutivas === */
+    --destructive: 0 67% 41%; /* Mantém a cor destrutiva */
+    --destructive-foreground: 0 0% 100%; /* Texto branco para contraste com a cor destrutiva */
+
+    /* === Outros === */
+
+    /* === Popover === */
+    --popover: 0 0% 96%; /* Fundo do popover claro e neutro, similar ao --background */
+    --popover-foreground: 0 0% 0%; /* Texto preto para contraste com o popover */
+
+    /* === Border (usado em PopoverContent e CommandItem) === */
+    --border: 0 0% 90%; /* Borda clara e neutra, mantendo a consistência */
+
+    /* === Command === */
+    --command: 0 0% 96%; /* Fundo do command claro e neutro, similar ao popover */
+    --command-foreground: 0 0% 0%; /* Texto preto para contraste com o command */
+    --command-placeholder: 0 0% 50%; /* Cinza neutro para placeholder do command */
+
+    /* === Highlight (hover) === */
+
+    /* === Accent opcional (ex: botão “novo cliente”) === */
+    --accent: 0 0% 90%; /* Accent claro e neutro, similar ao --input e --border */
+    --accent-foreground: 0 0% 0%; /* Texto preto para contraste com o accent */
+
+    --radius: 0.5rem;
+
+    --hover: 0 0% 90%; /* Cor de hover clara e neutra, sutil */
+    --button-hover: 32 96% 55%; /* Mantém a cor de hover do botão */
+  
+}
+
+
+
+}
+
+main {
+  margin-bottom: 4rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply text-foreground;
+  }
+}
+
+body {
+  font-family: var(--font-roboto);
+}
+
+input:focus {
+  border-color: hsl(var(--border-focus));
+  box-shadow: 0 0 0 1px hsl(var(--border-focus));
+}
+
+
+
+

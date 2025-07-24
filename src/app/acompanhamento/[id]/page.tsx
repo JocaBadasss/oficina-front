@@ -48,7 +48,7 @@ interface TrackingData {
   };
   photos: {
     filename: string;
-    url: string;
+    publicId: string;
   }[];
 }
 
@@ -77,6 +77,8 @@ export default function AcompanhamentoPage() {
       try {
         const res = await api.get(`/tracking/${id}`);
         setData(res.data);
+
+        console.log(res.data);
       } catch (error) {
         console.error('Erro ao carregar acompanhamento:', error);
       } finally {
@@ -249,7 +251,7 @@ export default function AcompanhamentoPage() {
                     onClick={() => setLightboxIndex(index)}
                   >
                     <Image
-                      src={photo.url}
+                      src={`https://rech.gumlet.io/${photo.publicId}`}
                       alt={photo.filename}
                       width={400}
                       height={300}
@@ -264,7 +266,9 @@ export default function AcompanhamentoPage() {
               <Lightbox
                 open={lightboxIndex !== null}
                 close={() => setLightboxIndex(null)}
-                slides={data.photos.map((photo) => ({ src: photo.url }))}
+                slides={data.photos.map((photo) => ({
+                  src: `https://rech.gumlet.io/${photo.publicId}.jpeg`,
+                }))}
                 index={lightboxIndex ?? 0}
                 plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
                 carousel={{ finite: true }}

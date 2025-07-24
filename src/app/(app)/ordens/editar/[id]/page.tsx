@@ -56,7 +56,7 @@ const statusOptions = [
 interface PhotoDTO {
   id: string;
   filename: string; // ← adiciona aqui
-  url: string;
+  publicId: string;
 }
 
 interface ServiceOrderWithPhotos {
@@ -150,7 +150,7 @@ export default function EditarOrdemPage() {
       });
 
       toast({ title: 'Ordem atualizada com sucesso!', variant: 'success' });
-      router.push('/ordens');
+      router.push(`/ordens/${id}`);
     } catch (err) {
       handleAxiosError(err, 'Erro ao atualizar ordem');
     } finally {
@@ -473,7 +473,7 @@ export default function EditarOrdemPage() {
 
             <div className='md:col-span-2 flex flex-wrap gap-2 bg-muted rounded-lg p-4 border border-border'>
               {[...existingPhotos, ...selectedFiles].map((item, i) => {
-                const isExisting = 'url' in item;
+                const isExisting = 'publicId' in item;
 
                 return (
                   <div
@@ -481,8 +481,16 @@ export default function EditarOrdemPage() {
                     className='relative'
                   >
                     <Image
-                      src={isExisting ? item.url : URL.createObjectURL(item)}
-                      alt={isExisting ? item.filename : item.name}
+                      src={
+                        isExisting
+                          ? `https://rech.gumlet.io/${item.publicId}`
+                          : URL.createObjectURL(item)
+                      }
+                      alt={
+                        isExisting
+                          ? `https://rech.gumlet.io/${item.publicId}`
+                          : item.name
+                      }
                       width={96}
                       height={96}
                       className='object-cover rounded'

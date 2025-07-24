@@ -390,7 +390,7 @@ export default function DetalhesOrdemPage() {
                     orderId={order.id}
                     onSuccess={(partialOrder) => {
                       setOrder((prev) =>
-                        prev ? { ...prev, ...partialOrder } : prev
+                        prev ? ({ ...prev, ...partialOrder } as Order) : prev
                       );
                     }}
                   />

@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type": "tsc --noEmit"
   },
   "dependencies": {
     "@date-io/date-fns": "^3.2.1",

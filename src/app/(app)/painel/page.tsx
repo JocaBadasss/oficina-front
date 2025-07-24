@@ -3,8 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useDashboardData } from '@/hooks/useDashboardData';
-import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+
 import { AppLayout } from '@/components/AppLayout';
 import { PageHeader } from '@/components/PageHeader';
 import { Card } from '@/components/ui/card';
@@ -41,8 +40,6 @@ export default function PainelPage() {
     stats,
     monthlyStats,
   } = useDashboardData();
-  const { user, signOut } = useAuth();
-  const router = useRouter();
 
   const mockStatsData = [
     { name: 'Agend.', value: 0 },
@@ -102,11 +99,6 @@ export default function PainelPage() {
         <PageHeader
           title='Painel'
           subtitle='Visão geral das operações'
-          userName={user?.name}
-          onLogout={() => {
-            signOut();
-            router.push('/login');
-          }}
         />
 
         <section className='grid grid-cols-1 xl:grid-cols-3 gap-6 h-full'>

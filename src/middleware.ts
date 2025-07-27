@@ -47,6 +47,7 @@ export const config = {
     '/',
     '/login',
     '/acompanhamento',
+    '/politica-de-privacidade', // ✅ adicionado aqui
     '/painel',
     '/clientes/:path*',
     '/ordens/:path*',

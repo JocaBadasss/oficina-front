@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, FileText, Users } from 'lucide-react';
-// import { useMediaQuery } from 'usehooks-ts';
+import { useMediaQuery } from 'usehooks-ts';
 import {
   ResponsiveContainer,
   LineChart,
@@ -47,10 +47,9 @@ export default function PainelPage() {
     { name: 'Clientes', value: 0 },
   ];
 
-  // const COLORS = ['#bc292e', '#0e29f1'];
-  const COLORS = ['hsl(var(--brand))', 'hsl(var(--tertiary))'];
+  const COLORS = ['#F4B400', '#8884d8'];
 
-  // const isMobile = useMediaQuery('(max-width: 639px)');
+  const isMobile = useMediaQuery('(max-width: 639px)');
 
   const cards = [
     {
@@ -245,7 +244,7 @@ export default function PainelPage() {
           </div>
 
           <div className='space-y-6 h-full flex flex-col justify-between'>
-            <Card className='rounded-xl p-6 shadow-sm flex flex-col min-h-[12.5rem] max-h-[22rem]'>
+            <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between '>
               <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Ordens Abertas vs Finalizadas
               </h3>
@@ -261,7 +260,7 @@ export default function PainelPage() {
                       nameKey='name'
                       cx='50%'
                       cy='50%'
-                      outerRadius='50%'
+                      outerRadius={isMobile ? 40 : 50}
                       label
                     >
                       {chartPieData.map((_, index: number) => (
@@ -284,7 +283,7 @@ export default function PainelPage() {
               </div>
             </Card>
 
-            <Card className='rounded-xl p-6 shadow-sm flex flex-col min-h-[12.5rem] max-h-[22rem]'>
+            <Card className=' rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between  '>
               <h3 className='text-base font-semibold text-foreground mb-4 text-center'>
                 Evolução Mensal de Ordens
               </h3>
@@ -325,7 +324,7 @@ export default function PainelPage() {
                     <Line
                       type='monotone'
                       dataKey='total'
-                      stroke={COLORS[1]}
+                      stroke='#F4B400'
                       strokeWidth={2}
                       dot
                     />

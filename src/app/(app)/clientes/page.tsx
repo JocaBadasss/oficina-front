@@ -23,6 +23,8 @@ export default function ClientesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
+  const COLORS = ['hsl(var(--tertiary))'];
+
   useEffect(() => {
     async function fetchClients() {
       try {
@@ -61,7 +63,7 @@ export default function ClientesPage() {
           rightSlot={
             <Link
               href='/clientes/novo'
-              className='bg-highlight text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-highlight/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-tertiary text-tertiary-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Adicionar Cliente
             </Link>
@@ -185,7 +187,7 @@ export default function ClientesPage() {
               {loading ? (
                 <Skeletons.CardSkeleton />
               ) : (
-                <p className='text-5xl sm:text-6xl font-bold text-primary mt-1'>
+                <p className='text-5xl sm:text-6xl font-bold text-tertiary mt-1'>
                   {clients.length}
                 </p>
               )}
@@ -202,7 +204,7 @@ export default function ClientesPage() {
                   <Line
                     type='monotone'
                     dataKey='value'
-                    stroke='#F4B400'
+                    stroke={COLORS[0]}
                     strokeWidth={3}
                     dot={false}
                   />

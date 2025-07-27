@@ -71,7 +71,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
-    const PUBLIC_PATHS = ['/login', '/acompanhamento'];
+    const PUBLIC_PATHS = [
+      '/login',
+      '/acompanhamento',
+      '/politica-de-privacidade',
+    ];
 
     if (PUBLIC_PATHS.some((publicPath) => pathname.startsWith(publicPath))) {
       setIsLoading(false);

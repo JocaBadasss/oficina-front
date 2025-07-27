@@ -21,7 +21,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Oficina',
+  title: 'Rech Caminhões',
   description: 'Sistema de gestão para oficinas',
 };
 

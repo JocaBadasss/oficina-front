@@ -38,6 +38,9 @@ export default function AgendamentosPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
+
+
+
   useEffect(() => {
     async function fetchAppointments() {
       try {
@@ -75,7 +78,7 @@ export default function AgendamentosPage() {
           rightSlot={
             <Link
               href='/agendamentos/novo'
-              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-tertiary text-tertiary-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Novo Agendamento
             </Link>
@@ -238,7 +241,7 @@ export default function AgendamentosPage() {
               {loading ? (
                 <Skeleton className='h-8 w-16 mt-2 mx-auto' />
               ) : (
-                <p className='text-4xl font-bold text-primary mt-1'>
+                <p className='text-5xl sm:text-6xl font-bold text-tertiary mt-1'>
                   {pendingCount}
                 </p>
               )}

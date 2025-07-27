@@ -41,11 +41,7 @@ export function Aside() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { user } = useAuth();
-
-  const { resolvedTheme } = useTheme();
-
-  const logoSrc = resolvedTheme === 'dark' ? '/logo-dark.svg' : '/logo.svg';
+  const { user} = useAuth();
 
   const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
   const { showPopover, dismissPopover, isMobile } = useThemeHintPopover({
@@ -59,18 +55,19 @@ export function Aside() {
       {/* Desktop Aside */}
       <aside className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col bg-muted  z-50 border-r border-border'>
         {/* Header fixo com altura igual à anterior */}
-        <div className='h-[3.9rem] px-6 flex items-center justify-center border-b border-border bg-muted'>
+        <div className='h-[3.9rem] px-6 flex items-center border-b border-border bg-muted'>
           <Link
             href='/painel'
-            className='w-full hover:opacity-90 flex items-center justify-center'
+            className='w-full text-2xl font-bold text-brand flex items-center gap-2 hover:opacity-90 '
           >
             <Image
-              src={logoSrc}
-              alt='Logo Oficina'
-              width={120}
+              src='/gearIcon.svg'
+              alt='Ícone de engrenagem'
+              width={32}
               height={32}
-              priority
+              className='block'
             />
+            <span className='leading-none '>OFICINA</span>
           </Link>
         </div>
 
@@ -85,7 +82,7 @@ export function Aside() {
                   href={href}
                   className={`flex gap-2 items-center transition ${
                     isActive
-                      ? 'text-highlight'
+                      ? 'text-tertiary'
                       : 'text-foreground hover:text-tertiary'
                   } ${isNewOrder && 'text-secondary-highlight'}`}
                 >

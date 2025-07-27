@@ -40,7 +40,7 @@ export function PageHeader({
         {isDetails && showEdit && editHref && (
           <Link
             href={editHref}
-            className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[hsl(var(--button-hover))] transition flex items-center justify-center gap-2'
+            className='bg-tertiary text-tertiary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[hsl(var(--button-hover))] transition flex items-center justify-center gap-2'
           >
             <Pencil size={16} /> Editar
           </Link>

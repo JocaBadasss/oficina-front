@@ -43,6 +43,9 @@ export default function OrdensPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
+  const COLORS = ['hsl(var(--tertiary))'];
+
+
   useEffect(() => {
     async function fetchOrders() {
       try {
@@ -90,7 +93,7 @@ export default function OrdensPage() {
           rightSlot={
             <Link
               href='/ordens/nova'
-              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-tertiary text-tertiary-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Nova Ordem
             </Link>
@@ -249,7 +252,7 @@ export default function OrdensPage() {
               {loading ? (
                 <Skeletons.CardSkeleton />
               ) : (
-                <p className='text-5xl sm:text-6xl font-bold text-primary mt-1'>
+                <p className='text-5xl sm:text-6xl font-bold text-tertiary mt-1'>
                   {orders.length}
                 </p>
               )}
@@ -266,7 +269,7 @@ export default function OrdensPage() {
                   <Line
                     type='monotone'
                     dataKey='value'
-                    stroke='hsl(var(--brand))'
+                    stroke={COLORS[0]}
                     strokeWidth={3}
                     dot={false}
                   />

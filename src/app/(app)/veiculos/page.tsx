@@ -50,6 +50,8 @@ export default function VeiculosPage() {
 
   const router = useRouter();
 
+  const COLORS = ['hsl(var(--tertiary))'];
+
   useEffect(() => {
     async function fetchVehicles() {
       try {
@@ -84,7 +86,7 @@ export default function VeiculosPage() {
           rightSlot={
             <Link
               href='/veiculos/novo'
-              className='bg-tertiary text-muted-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
+              className='bg-tertiary text-tertiary-foreground px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-tertiary/90 transition text-sm sm:text-base self-start sm:self-auto w-full justify-center'
             >
               <Plus size={16} /> Adicionar Veículo
             </Link>
@@ -207,7 +209,7 @@ export default function VeiculosPage() {
               {loading ? (
                 <Skeleton className='h-8 w-16 mt-2 mx-auto' />
               ) : (
-                <p className='text-6xl font-bold text-primary mt-1'>
+                <p className='text-5xl sm:text-6xl font-bold text-tertiary mt-1'>
                   {vehicles.length}
                 </p>
               )}
@@ -224,7 +226,7 @@ export default function VeiculosPage() {
                   <Line
                     type='monotone'
                     dataKey='value'
-                    stroke='#F4B400'
+                    stroke={COLORS[0]}
                     strokeWidth={3}
                     dot={false}
                   />

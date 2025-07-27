@@ -58,18 +58,17 @@ export default function LoginPage() {
       <div className='hidden md:flex md:w-1/2 items-center justify-center bg-background'>
         <div className='text-center'>
           <div className='flex items-center justify-center mb-4'>
-            <Image
-              src='/gearIcon.svg'
-              alt='Ícone de engrenagem'
-              className='w-12 h-12'
-              width={48}
-              height={48}
-            />
-            <h1 className='text-3xl font-bold text-brand'>OFICINA</h1>
+            <div className='mb-6'>
+              <Image
+                src='/logocompleta.svg'
+                alt='Logo OFICINA'
+                width={400}
+                height={60}
+                className='mx-auto'
+                priority
+              />
+            </div>
           </div>
-          <p className='text-muted-foreground text-lg'>
-            Confiança e qualidade no serviço.
-          </p>
         </div>
       </div>
 
@@ -77,14 +76,18 @@ export default function LoginPage() {
         <div className='w-full max-w-sm px-6 py-8 sm:px-8'>
           <div className='flex items-center justify-center flex-col'>
             <div className='flex items-center justify-center mb-4 md:hidden gap-2'>
-              <Image
-                src='/gearIcon.svg'
-                alt='Ícone de engrenagem'
-                className='w-12 h-12'
-                width={48}
-                height={48}
-              />
-              <h1 className='text-3xl font-bold text-primary'>OFICINA</h1>
+              <div className='mb-6 md:hidden'>
+                <div className=' md:hidden'>
+                  <Image
+                    src='/logocompleta.svg'
+                    alt='Logo OFICINA'
+                    width={200}
+                    height={60}
+                    className='mx-auto'
+                    priority
+                  />
+                </div>
+              </div>
             </div>
             <h2 className='text-2xl font-bold text-center mb-6 text-brand'>
               Faça login
@@ -133,7 +136,7 @@ export default function LoginPage() {
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='w-full bg-brand text-primaryForeground hover:bg-brand/90 '
+              className='w-full bg-brand text-brand-foreground hover:bg-brand/90 '
             >
               {isSubmitting ? 'Entrando...' : 'Entrar'}
             </Button>

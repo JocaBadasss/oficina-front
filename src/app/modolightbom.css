@@ -30,6 +30,9 @@ body {
     --secondary: 201 100% 5%; /* #00111A → bg-DARK_600 */
     --secondary-foreground: 0 0% 100%; /* texto no hover */
 
+    --tertiary: 32 96% 64%; /* TINTS_CARROT_100 (#FBA94C) */
+    --tertiary-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+
     /* === Textos e contrastes === */
     --foreground: 0 0% 100%; /* #FFFFFF → text-foreground > LIGHT_100 */
     --muted-foreground: 43 100% 97%; /* #FFFAF1 → text-muted-foreground > LIGHT_200 */
@@ -37,6 +40,8 @@ body {
     --subtle-foreground: 240 7% 78%; /* #C4C4CC → placeholder > LIGHT_400 > ESTÁ SUBSTITUINDO QUANDO USA-SE LIGHT_500 FORA DE UM PLACEHOLDER */
     --placeholder: 240 6% 51%; /* #7C7C8A → text-subtle-foreground > LIGHT_500> EXCLUSIVO DE PLACEHOLDER */
 
+    --highlight: 32 96% 64%; /* #FBA94C > TINTS_CARROT_100 */
+    --secondary-highlight: 186 100% 75%; /* #82F3FF → text-secondary-highlight > TINTS_CAKE_200 */
     --highlight-soft: 32 96% 70%; /* mais clarinho */
     --highlight-foreground: 0 0% 0%;
 
@@ -44,7 +49,7 @@ body {
     --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
 
     /* === Marca / Branding === */
-    --brand: 358 64% 45%; /* #F4B400 → bg-brand / text-brand > TINTS_PASSION_100 */
+    --brand: 44 100% 48%; /* #F4B400 → bg-brand / text-brand > TINTS_PASSION_100 */
     --brand-foreground: 192 100% 1%; /* #000000 → text-brand-foreground > DARK_100*/
 
     /* === Erros / Ações destrutivas === */
@@ -75,14 +80,6 @@ body {
 
     --hover: 200 48% 10%; /* #0D1D25 → DARK_900 */
     --button-hover: 32 96% 55%; /* um pouco mais escura que o tertiary (#f49a2e) */
-
-    --tertiary: 200 70% 28%; /* #256B8A – mais fechado, técnico, ainda com presença */
-
-    --highlight: 200 70% 52%; /* #3798C3 – destaque vivo */
-    --secondary-highlight: 186 100% 25%; /* #F1914D – contraste quente sem gritar */
-
-    --button-hover: 200 70% 36%; /* #3390B8 – hover bonito */
-    --tertiary-foreground: 0 0% 98%; /* #FAFAFA – branco suave */
   }
 
   .light {
@@ -153,6 +150,9 @@ body {
     --hover: 0 0% 90%; /* Cor de hover clara e neutra, sutil */
     --button-hover: 32 96% 55%; /* Mantém a cor de hover do botão */
   }
+
+
+
 }
 
 main {
@@ -176,3 +176,7 @@ input:focus {
   border-color: hsl(var(--border-focus));
   box-shadow: 0 0 0 1px hsl(var(--border-focus));
 }
+
+
+
+

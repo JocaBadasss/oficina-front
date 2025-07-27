@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* globals.css */
+/* globals.css - Versão Harmonizada com a Logo RECH */
 html,
 body {
   height: 100%;
@@ -16,19 +16,22 @@ body {
     /* === Fundos principais === */
     --app-background: 200 100% 3%; /* #000A0F → bg-DARK_400 */
 
-    --background: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --background: 233 89% 10%; /* Ajustado para harmonizar com o novo azul da logo */
     --muted: 199 100% 5%; /* #001119 → bg-DARK_700 */
     --input: 200 48% 10%; /* #0D1D25 → border-DARK_900 > USADO PELO SHADCN PARA AS BORDAS DO INPUT */
     --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
     --border-focus: 200 48% 16%; /* #14303D — derivado de --border */
 
     --card: 201 100% 5%; /* #00111A → bg-DARK_600 */
-    --card-hover: 201 35% 8%; /* mesma cor de --background (DARK_800) */
+    --card-hover: 233 89% 10%; /* Harmonizado com o novo azul da logo */
 
     --primary: 44 100% 48%; /* #F4B400 > TINTS_PASSION_100 */
 
     --secondary: 201 100% 5%; /* #00111A → bg-DARK_600 */
     --secondary-foreground: 0 0% 100%; /* texto no hover */
+
+    --tertiary: 233 89% 28%; /* #081B88 - Azul da logo */
+    --tertiary-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     /* === Textos e contrastes === */
     --foreground: 0 0% 100%; /* #FFFFFF → text-foreground > LIGHT_100 */
@@ -37,15 +40,17 @@ body {
     --subtle-foreground: 240 7% 78%; /* #C4C4CC → placeholder > LIGHT_400 > ESTÁ SUBSTITUINDO QUANDO USA-SE LIGHT_500 FORA DE UM PLACEHOLDER */
     --placeholder: 240 6% 51%; /* #7C7C8A → text-subtle-foreground > LIGHT_500> EXCLUSIVO DE PLACEHOLDER */
 
-    --highlight-soft: 32 96% 70%; /* mais clarinho */
-    --highlight-foreground: 0 0% 0%;
+    --highlight: 358 64% 45%; /* #BD292F - Vermelho da logo */
+    --secondary-highlight: 233 89% 50%; /* Azul mais claro baseado na logo */
+    --highlight-soft: 358 64% 70%; /* Vermelho mais suave */
+    --highlight-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     --success: 147 96% 42%; /* #04D361 > TINTS_MINT_100 */
-    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+    --success-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     /* === Marca / Branding === */
-    --brand: 358 64% 45%; /* #F4B400 → bg-brand / text-brand > TINTS_PASSION_100 */
-    --brand-foreground: 192 100% 1%; /* #000000 → text-brand-foreground > DARK_100*/
+    --brand: 358 64% 45%; /* #BD292F - Vermelho da logo */
+    --brand-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     /* === Erros / Ações destrutivas === */
     --destructive: 0 67% 41%; /* #AB222E > TINTS_TOMATO_300 */
@@ -54,35 +59,27 @@ body {
     /* === Outros === */
 
     /* === Popover === */
-    --popover: 201 35% 8%; /* #0D161B → bg-DARK_800 */
+    --popover: 233 89% 10%; /* Harmonizado com o novo azul da logo */
     --popover-foreground: 0 0% 100%; /* #FFFFFF → text-LIGHT_100 */
 
     /* === Border (usado em PopoverContent e CommandItem) === */
     --border: 200 48% 10%; /* #0D1D25 → border-DARK_900 */
 
     /* === Command === */
-    --command: 201 35% 8%; /* mesmo fundo do popover */
+    --command: 233 89% 10%; /* Harmonizado com o novo azul da logo */
     --command-foreground: 0 0% 100%; /* texto padrão */
     --command-placeholder: 0 0% 77%; /* #C4C4CC → placeholder */
 
     /* === Highlight (hover) === */
 
-    /* === Accent opcional (ex: botão “novo cliente”) === */
-    --accent: 200 48% 10%; /* #0D1D25 → DARK_900 */
-    --accent-foreground: 0 0% 100%; /* #000A0F > DARK_400 */
+    /* === Accent opcional (ex: botão "novo cliente") === */
+    --accent: 233 89% 10%; /* Harmonizado com o novo azul da logo */
+    --accent-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     --radius: 0.5rem;
 
-    --hover: 200 48% 10%; /* #0D1D25 → DARK_900 */
-    --button-hover: 32 96% 55%; /* um pouco mais escura que o tertiary (#f49a2e) */
-
-    --tertiary: 200 70% 28%; /* #256B8A – mais fechado, técnico, ainda com presença */
-
-    --highlight: 200 70% 52%; /* #3798C3 – destaque vivo */
-    --secondary-highlight: 186 100% 25%; /* #F1914D – contraste quente sem gritar */
-
-    --button-hover: 200 70% 36%; /* #3390B8 – hover bonito */
-    --tertiary-foreground: 0 0% 98%; /* #FAFAFA – branco suave */
+    --hover: 233 89% 15%; /* Harmonizado com o novo azul da logo */
+    --button-hover: 358 64% 55%; /* Vermelho mais claro para hover */
   }
 
   .light {
@@ -102,8 +99,8 @@ body {
     --secondary: 0 0% 94%; /* Cor secundária clara e neutra, similar ao --muted, para elementos de destaque secundários */
     --secondary-foreground: 0 0% 0%; /* Texto preto para garantir contraste em fundos claros */
 
-    --tertiary: 233 89% 50%; /* Mantém a cor terciária (laranja), que também funciona bem em ambos os modos */
-    --tertiary-foreground: 0 0% 100%; /* Texto preto para garantir contraste em fundos claros */
+    --tertiary: 233 89% 28%; /* #081B88 - Azul da logo */
+    --tertiary-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     /* === Textos e contrastes === */
     --foreground: 0 0% 0%; /* Texto principal preto para alto contraste em fundos claros */
@@ -112,16 +109,16 @@ body {
     --subtle-foreground: 0 0% 40%; /* Cinza neutro para placeholders e textos muito sutis */
     --placeholder: 0 0% 50%; /* Cinza médio neutro para placeholders, garantindo visibilidade sem ser intrusivo */
 
-    --highlight: 233 89% 28%; /* Mantém a cor de destaque */
-    --secondary-highlight: 186 100% 25%; /* Um azul mais escuro para destaque secundário, que se destaca em fundos claros */
-    --highlight-soft: 32 96% 50%; /* Uma versão mais suave da cor de destaque */
+    --highlight: 358 64% 45%; /* #BD292F - Vermelho da logo */
+    --secondary-highlight: 233 89% 50%; /* Azul mais claro baseado na logo */
+    --highlight-soft: 358 64% 70%; /* Vermelho mais suave */
     --highlight-foreground: 0 0% 100%; /* Texto branco para contraste em fundos de destaque */
 
     --success: 147 96% 42%; /* Mantém a cor de sucesso */
-    --success-foreground: 192 100% 1%; /*  → text-tertiary-foreground > DARK_100*/
+    --success-foreground: 0 0% 100%; /* Texto branco para contraste */
 
     /* === Marca / Branding === */
-    --brand: 358 64% 45%; /* Mantém a cor da marca */
+    --brand: 358 64% 45%; /* #BD292F - Vermelho da logo */
     --brand-foreground: 0 0% 100%; /* Texto branco para contraste com a cor da marca */
 
     /* === Erros / Ações destrutivas === */
@@ -144,14 +141,14 @@ body {
 
     /* === Highlight (hover) === */
 
-    /* === Accent opcional (ex: botão “novo cliente”) === */
+    /* === Accent opcional (ex: botão "novo cliente") === */
     --accent: 0 0% 90%; /* Accent claro e neutro, similar ao --input e --border */
     --accent-foreground: 0 0% 0%; /* Texto preto para contraste com o accent */
 
     --radius: 0.5rem;
 
     --hover: 0 0% 90%; /* Cor de hover clara e neutra, sutil */
-    --button-hover: 32 96% 55%; /* Mantém a cor de hover do botão */
+    --button-hover: 358 64% 55%; /* Vermelho mais claro para hover */
   }
 }
 
